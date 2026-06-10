@@ -18,17 +18,7 @@ namespace EffectPipeline
         internal ConnectionManager ConnectionManager = null!;
         protected override IEnumerable<GameObject> GetStartingGameObjects()
         {
-            yield return new Node(new SplitChannel(), "Split channels RGB")
-            { 
-                anchor = IPositioning.Center,
-                origin = IPositioning.Center,
-            };
-            yield return new Node(new MergeChannel(), "Merge channels RGB")
-            {
-                anchor = IPositioning.Center,
-                offset = new(10, 20),
-                origin = IPositioning.Center,
-            };
+            yield return new NodeCanvas();
             yield return ConnectionManager = new ConnectionManager();
         }
 
