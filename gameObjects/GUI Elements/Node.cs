@@ -15,10 +15,15 @@ namespace EffectPipeline.gameObjects
 {
     internal class Node : GUIElement
     {
-        public Node(IEffect effect, string title) 
+
+        public PipelineManager Manager { get; }
+
+        public Node(IEffect effect, string title, PipelineManager _Manager) 
         {
             this.effect = effect;
             title_text = title;
+
+            Manager = _Manager;
         }
         const int HEIGHT_PER_PARAM = 20;
         internal string title_text;
@@ -52,7 +57,7 @@ namespace EffectPipeline.gameObjects
             float y = -15;
             foreach (var input in effect.Inputs)
             {
-                Parameter param = new Parameter() { parentNode = this, is_input = true, name = input.Item1, offset = new Vector2(0, y) };
+                Parameter param = new Parameter() { parentNode = this, is_input = true, name = input.Item1, offset = new Vector2(0, y), type = input.Item2 };
                 y -= HEIGHT_PER_PARAM;
                 inputs.Add(param);
                 AddChildSpawnQueue(param);
@@ -60,7 +65,7 @@ namespace EffectPipeline.gameObjects
             y = -15;
             foreach (var output in effect.Outputs)
             {
-                Parameter param = new Parameter() { parentNode = this,  is_input = false, name = output.Item1, offset = new Vector2(0, y) };
+                Parameter param = new Parameter() { parentNode = this,  is_input = false, name = output.Item1, offset = new Vector2(0, y), type = output.Item2 };
                 y -= HEIGHT_PER_PARAM;
                 outputs.Add(param);
                 AddChildSpawnQueue(param);
