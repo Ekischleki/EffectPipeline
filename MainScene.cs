@@ -15,7 +15,7 @@ namespace EffectPipeline
 {
     internal class MainScene : GameScene
     {
-        internal ConnectionManager ConnectionManager = null!;
+        internal PipelineManager PipelineManager = null!;
         protected override IEnumerable<GameObject> GetStartingGameObjects()
         {
             yield return new NodeCanvas();
