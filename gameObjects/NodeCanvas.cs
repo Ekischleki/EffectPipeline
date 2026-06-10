@@ -15,19 +15,15 @@ namespace EffectPipeline.gameObjects
 {
     internal class NodeCanvas : GameObject
     {
+        PipelineManager pipelineManager;
         public override void Init()
         {
-            var p = new PipelineManager();
-
             var cam = new NodeCanvasCamera().WithChildren([
-                p
+                pipelineManager = new()    
             ]);
+            pipelineManager.InstantiateNewNode(new SplitChannel(), "Split channels RGB");
+            pipelineManager.InstantiateNewNode(new MergeChannel(), "Merge rgb channels");
             AddChildSpawnQueue(cam);
-
-
-            Node src = p.InstantiateNewNode(new ImageSource(RGBImage.WhiteImage(200, 200)), "Image Source");
-            Node outp = p.InstantiateNewNode(new ImageOutput(), "Image Output");
-            outp.offset = new Vector2(250, 0);
         }
 
         protected override void Update()
