@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,11 +19,14 @@ namespace EffectPipeline.GameObjects
         internal required bool is_input;
         internal required string name;
 
+        public required Node parentNode;
+
         [GetFrom(StoreType.PlaceholderTextureStore, "generated/box/red/10/10")]
         internal ManagedTexture texture = null!;
 
         [GetFrom(StoreType.FontStore, "std:oxanium.ttf@10")]
         internal RenderedFont font = null!;
+
         public override void Init()
         {
             var text = new TextGameObject() { Font = font, Text = name };

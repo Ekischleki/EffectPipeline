@@ -46,7 +46,7 @@ namespace EffectPipeline.gameObjects
             float y = -15;
             foreach (var input in effect.Inputs)
             {
-                Parameter param = new Parameter() { is_input = true, name = input.Item1, offset = IPositioning.Absolute(0, y) };
+                Parameter param = new Parameter() { parentNode = this, is_input = true, name = input.Item1, offset = IPositioning.Absolute(0, y) };
                 y -= HEIGHT_PER_PARAM;
                 inputs.Add(param);
                 AddChildSpawnQueue(param);
@@ -54,7 +54,7 @@ namespace EffectPipeline.gameObjects
             y = -15;
             foreach (var output in effect.Outputs)
             {
-                Parameter param = new Parameter() { is_input = false, name = output.Item1, offset = IPositioning.Absolute(0, y) };
+                Parameter param = new Parameter() { parentNode = this,  is_input = false, name = output.Item1, offset = IPositioning.Absolute(0, y) };
                 y -= HEIGHT_PER_PARAM;
                 outputs.Add(param);
                 AddChildSpawnQueue(param);
