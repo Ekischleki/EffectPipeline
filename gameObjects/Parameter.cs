@@ -1,4 +1,5 @@
-﻿using Pandemonium.Engine;
+﻿using EffectPipeline.gameObjects;
+using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
@@ -6,12 +7,13 @@ using Pupilmonium.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EffectPipeline.GameObjects
 {
-    internal class Parameter : GameObject
+    internal class Parameter : GUIElement
     {
         internal required bool is_input;
         internal required string name;
@@ -43,7 +45,27 @@ namespace EffectPipeline.GameObjects
 
         protected override void Update()
         {
+            HandleMouseInteraction();
             ((MainScene)ParentScene).ConnectionManager.RegisterDist(this);
         }
+
+
+        protected override void OnClick()
+        {
+            Size *= 1.02;
+        }
+
+        protected override void OnRelease()
+        {
+            Size /= 1.02;
+        }
+
+
+        protected override void OnDrag()
+        {
+            Vector2 new_offset = mouse.Position - (Vector2)mouseDragLast!;
+            offset = new Absolute(((Absolute)offset).position + new_offset);
+        }
+
     }
 }

@@ -1,6 +1,5 @@
 ﻿using EffectPipeline.GameObjects;
 using Pandemonium.Engine;
-using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.gameObjects
 {
-    internal class Node : GameObject
+    internal class Node : GUIElement
     {
         public Node(IEffect effect, string title) 
         {
@@ -29,11 +28,11 @@ namespace EffectPipeline.gameObjects
         internal int width;
         internal int height;
         internal TextGameObject title = null!;
-        Vector2? mouseDragLast = null;
+
         [GetFrom(StoreType.FontStore, "std:oxanium.ttf@15")]
         internal RenderedFont font = null!;
-        [GetFrom(Singleton.Mouse)]
-        Mouse mouse = null!;
+
+
         public override void Init()
         {
             title = new TextGameObject()
@@ -70,17 +69,24 @@ namespace EffectPipeline.gameObjects
 
         protected override void Update()
         {
-            if (mouse.MouseEvent.HasFlag(MouseEvent.Left) && ((IContainer)this).InContainer(mouse.Position)) {
-                if(mouseDragLast != null)
-                {
-                    Vector2 new_offset = mouse.Position - (Vector2)mouseDragLast;
-                    offset = new Absolute(((Absolute)offset).position + new_offset);
-                }
-                mouseDragLast = mouse.Position;
-            } else
-            {
-                mouseDragLast = null;
-            }
+            HandleMouseInteraction();
+        }
+
+
+        protected override void OnClick()
+        {
+            Size *= 1.02;
+        }
+
+        protected override void OnRelease()
+        {
+            Size /= 1.02;
+        }
+
+        protected override void OnDrag()
+        {
+            Vector2 new_offset = mouse.Position - (Vector2)mouseDragLast!;
+            offset = new Absolute(((Absolute)offset).position + new_offset);
         }
 
     }

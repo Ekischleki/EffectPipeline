@@ -15,8 +15,6 @@ namespace EffectPipeline.gameObjects
 
         internal Parameter? ClosestDragging = null;
         internal float ClosestDist = float.PositiveInfinity;
-        [GetFrom(Singleton.Mouse)]
-        Mouse mouse = null!;
 
         internal void RegisterDist(Parameter parameter)
         {

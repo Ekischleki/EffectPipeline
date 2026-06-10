@@ -23,7 +23,7 @@ namespace EffectPipeline
                 anchor = IPositioning.Center,
                 origin = IPositioning.Center,
             };
-            yield return new Node(new SplitChannel(), "Split channels RGB")
+            yield return new Node(new MergeChannel(), "Merge channels RGB")
             {
                 anchor = IPositioning.Center,
                 offset = IPositioning.Absolute(10, 20),
