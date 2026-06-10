@@ -120,7 +120,7 @@ namespace EffectPipeline.gameObjects
 
             if (outputPar == null)
             {
-                Console.WriteLine("Creation from input failed!");
+                defaultLogger.Warn("Creation from input failed!");
                 return;
             }
 
@@ -150,7 +150,7 @@ namespace EffectPipeline.gameObjects
 
             if (inputPar == null)
             {
-                Console.WriteLine("Creation from output failed!");
+                defaultLogger.Warn("Creation from output failed!");
                 return;
             }
 
@@ -163,7 +163,7 @@ namespace EffectPipeline.gameObjects
             var _ = pipelineManager.InstantiateNewConnection(inputPar, outputPar);
             if (_ == null)
             {
-                Console.WriteLine("Creation failed!");
+                defaultLogger.Warn("Creation failed!");
                 return;
             }
 
