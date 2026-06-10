@@ -20,7 +20,9 @@ namespace EffectPipeline.Effects
                 throw new ArgumentException("Input needs to be length 1");
             }
             RGBImage image = (RGBImage)inputs[0];
-            return image.channels;
+            return [new GreyscaleImage(image.width, image.height, image.red),
+                    new GreyscaleImage(image.width, image.height, image.green),
+                    new GreyscaleImage(image.width, image.height, image.blue),  ];
         }
     }
 }

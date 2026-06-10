@@ -1,4 +1,5 @@
 ﻿using EffectPipeline.Effects;
+using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
@@ -24,8 +25,9 @@ namespace EffectPipeline.gameObjects
             AddChildSpawnQueue(cam);
 
 
-            p.InstantiateNewNode(new MergeChannel(), "Merge RGB Channels");
-            p.InstantiateNewNode(new SplitChannel(), "Split into RGB Channels");
+            Node src = p.InstantiateNewNode(new ImageSource(RGBImage.WhiteImage(200, 200)), "Image Source");
+            Node outp = p.InstantiateNewNode(new ImageOutput(), "Image Output");
+            outp.offset = new Vector2(250, 0);
         }
 
         protected override void Update()
@@ -40,6 +42,9 @@ namespace EffectPipeline.gameObjects
         [GetFrom(Singleton.Mouse)]
         Mouse mouse = null!;
 
+        [GetFrom(Singleton.Keyboard)]
+        Keyboard keyboard = null!;
+
         Vector2? drag_start = null;
         Vector2 cam_pos = new();
         public override void Init()
@@ -48,7 +53,9 @@ namespace EffectPipeline.gameObjects
 
         protected override void Update()
         {
-            if(mouse.MouseEvent.HasFlag(Pupilmonium.Framework.MouseEvent.Middle))
+            if(mouse.MouseEvent.HasFlag(Pupilmonium.Framework.MouseEvent.Middle) || 
+                (mouse.MouseEvent.HasFlag(Pupilmonium.Framework.MouseEvent.Left) && keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LALT))
+                )
             {
                 drag_start ??= mouse.Position;
                 var new_offset = mouse.Position - drag_start.Value;

@@ -86,6 +86,8 @@ namespace EffectPipeline.gameObjects
 
         protected override void OnClick()
         {
+            position = offset;
+
             Size *= 1.02;
         }
 
