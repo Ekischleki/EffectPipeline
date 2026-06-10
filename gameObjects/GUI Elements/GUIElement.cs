@@ -19,6 +19,9 @@ namespace EffectPipeline.gameObjects
         [GetFrom(Singleton.Mouse)]
         protected Mouse mouse = null!;
 
+        [GetFrom(Singleton.Keyboard)]
+        protected Keyboard keyboard = null!;
+
         protected Vector2? mouseDragStart = null;
 
         static protected GUIElement Focus = null!;
@@ -55,7 +58,7 @@ namespace EffectPipeline.gameObjects
                 wasFocus = false;
             }
 
-            if (mouse.ClickedThisFrame && ((IContainer)this).InContainer(mouse.Position))
+            if (mouse.ClickedThisFrame && !keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LALT) && ((IContainer)this).InContainer(mouse.Position))
             {
                 GUIElement.Focus = this;
             }
