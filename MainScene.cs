@@ -18,7 +18,8 @@ namespace EffectPipeline
         internal PipelineManager PipelineManager = null!;
         protected override IEnumerable<GameObject> GetStartingGameObjects()
         {
-            yield return PipelineManager = new PipelineManager();
+            yield return new NodeCanvas();
+            yield return ConnectionManager = new ConnectionManager();
         }
 
         protected override bool OnExitRequest()
