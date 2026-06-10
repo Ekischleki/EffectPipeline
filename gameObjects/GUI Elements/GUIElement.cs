@@ -30,18 +30,12 @@ namespace EffectPipeline.gameObjects
 
         static protected GUIElement Focus = null!;
         public bool IsFocus { get => Focus == this; }
-
-
-        private bool wasFocus = false;
         
         protected void HandleMouseInteraction()
         {
             if (IsFocus)
             {
                 mouseDragStart ??= camera.Cam_mouse_pos;
-                if (!wasFocus) OnClick();
-
-                wasFocus = true;
 
                 if (mouse.ReleasedThisFrame)
                 {
@@ -59,12 +53,12 @@ namespace EffectPipeline.gameObjects
             else
             {
                 mouseDragStart = null;
-                wasFocus = false;
             }
 
             if (mouse.ClickedThisFrame && !keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LALT) && ((IContainer)this).InContainer(mouse.Position))
             {
                 GUIElement.Focus = this;
+                OnClick();
             }
         }
 

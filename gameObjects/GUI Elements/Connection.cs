@@ -49,6 +49,7 @@ namespace EffectPipeline.gameObjects
 
         protected override void OnClick()
         {
+            Console.WriteLine("Bwa");
         }
 
         protected override void OnRelease()
