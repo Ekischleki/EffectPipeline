@@ -16,20 +16,16 @@ namespace EffectPipeline.gameObjects
     {
         public override void Init()
         {
+            var p = new PipelineManager();
+
             var cam = new NodeCanvasCamera().WithChildren([
-                new Node(new SplitChannel(), "Split channels RGB")
-                {
-                    anchor = IPositioning.Center,
-                    origin = IPositioning.Center,
-                },
-                new Node(new MergeChannel(), "Merge channels RGB")
-                {
-                    anchor = IPositioning.Center,
-                    offset = new(10, 20),
-                    origin = IPositioning.Center,
-                }
+                p
             ]);
             AddChildSpawnQueue(cam);
+
+
+            p.InstantiateNewNode(new MergeChannel(), "Merge RGB Channels");
+            p.InstantiateNewNode(new SplitChannel(), "Split into RGB Channels");
         }
 
         protected override void Update()

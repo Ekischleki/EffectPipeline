@@ -20,12 +20,15 @@ namespace EffectPipeline.gameObjects
         public Node[] Nodes { get => nodes.ToArray(); }
 
 
-        ConnectionManager connectionManager;
+        protected List<Connection> connections = new List<Connection>();
+        public Connection[] Connections { get => connections.ToArray(); }
+
+        public ConnectionManager ConnectionManager { get;  }
 
         public PipelineManager()
         {
-            connectionManager = new ConnectionManager(this);
-            AddChildSpawnQueue(connectionManager);
+            ConnectionManager = new ConnectionManager(this);
+            AddChildSpawnQueue(ConnectionManager);
         }
 
         public override void Init()
@@ -39,14 +42,14 @@ namespace EffectPipeline.gameObjects
 
         public Node InstantiateNewNode(IEffect _effect, string _title)
         {
-            Node newNode = new Node(_effect, _title)
+            Node newNode = new Node(_effect, _title, this)
             {
                 anchor = IPositioning.Center,
                 origin = IPositioning.Center
             };
 
             nodes.Add(newNode);
-            connectionManager.AddNode(newNode);
+            ConnectionManager.AddNode(newNode);
 
             AddChildSpawnQueue(newNode);
 
@@ -60,7 +63,23 @@ namespace EffectPipeline.gameObjects
                 return;
 
             nodes.Remove(node);
-            connectionManager.RemoveNode(node);
+            ConnectionManager.RemoveNode(node);
+        }
+
+
+        public Connection? InstantiateNewConnection(Parameter _input, Parameter _output)
+        {
+            if (_input.type != _output.type ||
+                connections.Find((Connection x) => x.input == _input) != null) 
+                return null;
+
+            Connection newConnection = new Connection(_input, _output);
+
+            connections.Add(newConnection);
+
+            AddChildSpawnQueue(newConnection);
+
+            return newConnection;
         }
 
     }

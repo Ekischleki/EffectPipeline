@@ -20,6 +20,8 @@ namespace EffectPipeline.GameObjects
         internal required bool is_input;
         internal required string name;
 
+        public required Type type;
+
         public required Node parentNode;
 
         [GetFrom(StoreType.PlaceholderTextureStore, "generated/box/red/10/10")]
@@ -57,11 +59,15 @@ namespace EffectPipeline.GameObjects
         protected override void OnClick()
         {
             Size *= 1.02;
+
+            parentNode.Manager.ConnectionManager.StartCreatingConnection(this);
         }
 
         protected override void OnRelease()
         {
             Size /= 1.02;
+
+            parentNode.Manager.ConnectionManager.TryCreateConnection();
         }
 
 
