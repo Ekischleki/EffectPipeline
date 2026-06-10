@@ -26,7 +26,7 @@ namespace EffectPipeline
             yield return new Node(new MergeChannel(), "Merge channels RGB")
             {
                 anchor = IPositioning.Center,
-                offset = IPositioning.Absolute(10, 20),
+                offset = new(10, 20),
                 origin = IPositioning.Center,
             };
             yield return ConnectionManager = new ConnectionManager();
