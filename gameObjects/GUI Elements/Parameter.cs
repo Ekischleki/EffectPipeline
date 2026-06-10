@@ -4,6 +4,7 @@ using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pupilmonium.Framework;
+using SDL2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,6 @@ namespace EffectPipeline.GameObjects
         protected override void Update()
         {
             HandleMouseInteraction();
-            ((MainScene)ParentScene).ConnectionManager.RegisterDist(this);
         }
 
 
@@ -67,8 +67,6 @@ namespace EffectPipeline.GameObjects
 
         protected override void OnDrag()
         {
-            Vector2 new_offset = mouse.Position - (Vector2)mouseDragLast!;
-            offset = new Absolute(((Absolute)offset).position + new_offset);
         }
 
     }

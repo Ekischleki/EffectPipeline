@@ -32,21 +32,27 @@ namespace EffectPipeline.gameObjects
         [GetFrom(StoreType.FontStore, "std:oxanium.ttf@15")]
         internal RenderedFont font = null!;
 
-
+        /// <summary>
+        /// The internally stored position differs from the rendered position. Internally stored position is used for saving and loading
+        /// and only updated when a dragging operation is complete
+        /// </summary>
+        internal Vector2 position;
         public override void Init()
         {
+            position = offset;
+
             title = new TextGameObject()
             {
                 anchor = IPositioning.TopCenter,
                 origin = IPositioning.TopCenter,
-                offset = IPositioning.Absolute(0, 5.0f),
+                offset = new(0, 5.0f),
                 Font = font,
                 Text = title_text,
             };
             float y = -15;
             foreach (var input in effect.Inputs)
             {
-                Parameter param = new Parameter() { parentNode = this, is_input = true, name = input.Item1, offset = IPositioning.Absolute(0, y) };
+                Parameter param = new Parameter() { parentNode = this, is_input = true, name = input.Item1, offset = new Vector2(0, y) };
                 y -= HEIGHT_PER_PARAM;
                 inputs.Add(param);
                 AddChildSpawnQueue(param);
@@ -54,7 +60,7 @@ namespace EffectPipeline.gameObjects
             y = -15;
             foreach (var output in effect.Outputs)
             {
-                Parameter param = new Parameter() { parentNode = this,  is_input = false, name = output.Item1, offset = IPositioning.Absolute(0, y) };
+                Parameter param = new Parameter() { parentNode = this,  is_input = false, name = output.Item1, offset = new Vector2(0, y) };
                 y -= HEIGHT_PER_PARAM;
                 outputs.Add(param);
                 AddChildSpawnQueue(param);
@@ -81,12 +87,14 @@ namespace EffectPipeline.gameObjects
         protected override void OnRelease()
         {
             Size /= 1.02;
+            position += mouse.Position - mouseDragStart!.Value;
+            offset = position;
         }
 
         protected override void OnDrag()
         {
-            Vector2 new_offset = mouse.Position - (Vector2)mouseDragLast!;
-            offset = new Absolute(((Absolute)offset).position + new_offset);
+            Vector2 new_offset = mouse.Position - mouseDragStart!.Value;
+            offset = position + new_offset;
         }
 
     }

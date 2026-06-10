@@ -53,5 +53,15 @@ namespace EffectPipeline.gameObjects
             return newNode;
         }
 
+
+        public void DeleteNode(Node node)
+        {
+            if (!nodes.Contains(node))
+                return;
+
+            nodes.Remove(node);
+            connectionManager.RemoveNode(node);
+        }
+
     }
 }

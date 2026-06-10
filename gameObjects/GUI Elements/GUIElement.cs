@@ -19,7 +19,7 @@ namespace EffectPipeline.gameObjects
         [GetFrom(Singleton.Mouse)]
         protected Mouse mouse = null!;
 
-        protected Vector2? mouseDragLast = null;
+        protected Vector2? mouseDragStart = null;
 
         static protected GUIElement Focus = null!;
         public bool IsFocus { get => Focus == this; }
@@ -31,6 +31,7 @@ namespace EffectPipeline.gameObjects
         {
             if (IsFocus)
             {
+                mouseDragStart ??= mouse.Position;
                 if (!wasFocus) OnClick();
 
                 wasFocus = true;
@@ -45,13 +46,12 @@ namespace EffectPipeline.gameObjects
                 }
 
 
-                if (mouseDragLast != null) OnDrag();
+                if (mouseDragStart != null) OnDrag();
 
-                mouseDragLast = mouse.Position;
             }
             else
             {
-                mouseDragLast = null;
+                mouseDragStart = null;
                 wasFocus = false;
             }
 

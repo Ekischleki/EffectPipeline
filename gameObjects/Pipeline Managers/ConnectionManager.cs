@@ -45,8 +45,8 @@ namespace EffectPipeline.gameObjects
 
             if (mouse.MouseEvent.HasFlag(MouseEvent.Right))
             {
-                var n = pipelineManager.AddNewNode(new SplitChannel(), "AAAAAAAAAAAAAAAAAAAAAAa");
-                n.offset = IPositioning.Absolute(mouse.X, mouse.Y);
+                var n = pipelineManager.InstantiateNewNode(new SplitChannel(), "AAAAAAAAAAAAAAAAAAAAAAa");
+                n.offset = mouse.Position;
             }
         }
 
@@ -62,7 +62,9 @@ namespace EffectPipeline.gameObjects
 
         public void RemoveNode(Node node)
         {
+            dependencies.Remove(node);
 
+            foreach(var n in dependencies.Keys) dependencies[n].Remove(node);
         }
     }
 }
