@@ -28,7 +28,7 @@ namespace EffectPipeline.gameObjects
             pipelineManager.InstantiateNewNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
             Node n = pipelineManager.InstantiateNewNode(new ImageOutput(), "Output");
             n.offset = new Vector2(250, 0);
-            AddChildSpawnQueue(cam);
+            AddChildSpawnQueue(camera);
         }
 
         protected override void Update()
