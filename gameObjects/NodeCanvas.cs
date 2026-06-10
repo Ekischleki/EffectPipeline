@@ -21,8 +21,9 @@ namespace EffectPipeline.gameObjects
             var cam = new NodeCanvasCamera().WithChildren([
                 pipelineManager = new()    
             ]);
-            pipelineManager.InstantiateNewNode(new SplitChannel(), "Split channels RGB");
-            pipelineManager.InstantiateNewNode(new MergeChannel(), "Merge rgb channels");
+            pipelineManager.InstantiateNewNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
+            Node n = pipelineManager.InstantiateNewNode(new ImageOutput(), "Output");
+            n.offset = new Vector2(250, 0);
             AddChildSpawnQueue(cam);
         }
 
