@@ -15,7 +15,7 @@ namespace EffectPipeline.gameObjects
 {
     internal class Node : GUIElement
     {
-
+        
         public PipelineManager Manager { get; }
 
         public Node(IEffect effect, string title, PipelineManager _Manager) 
@@ -92,14 +92,15 @@ namespace EffectPipeline.gameObjects
         protected override void OnRelease()
         {
             Size /= 1.02;
-            position += mouse.Position - mouseDragStart!.Value;
+            position += camera.Cam_mouse_pos - mouseDragStart!.Value;
             offset = position;
         }
 
         protected override void OnDrag()
         {
-            Vector2 new_offset = mouse.Position - mouseDragStart!.Value;
+            Vector2 new_offset = camera.Cam_mouse_pos - mouseDragStart!.Value;
             offset = position + new_offset;
+            
         }
 
     }

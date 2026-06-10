@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,15 +15,20 @@ namespace EffectPipeline.gameObjects
 {
     internal class NodeCanvas : GameObject
     {
-        PipelineManager pipelineManager;
+        [DependencyCache(InteractionType.Upload)]
+        PipelineManager pipelineManager = new();
+        [DependencyCache(InteractionType.Upload)]
+        NodeCanvasCamera camera = new();
         public override void Init()
         {
-            var cam = new NodeCanvasCamera().WithChildren([
-                pipelineManager = new()    
+            camera.WithChildren([
+                pipelineManager   
             ]);
             pipelineManager.InstantiateNewNode(new SplitChannel(), "Split channels RGB");
             pipelineManager.InstantiateNewNode(new MergeChannel(), "Merge rgb channels");
-            AddChildSpawnQueue(cam);
+            pipelineManager.InstantiateNewNode(new SplitChannel(), "Split channels RGB");
+            pipelineManager.InstantiateNewNode(new MergeChannel(), "Merge rgb channels");
+            AddChildSpawnQueue(camera);
         }
 
         protected override void Update()
@@ -37,8 +43,12 @@ namespace EffectPipeline.gameObjects
         [GetFrom(Singleton.Mouse)]
         Mouse mouse = null!;
 
+        internal Vector2 Cam_mouse_pos { private set; get; }
+
         Vector2? drag_start = null;
         Vector2 cam_pos = new();
+
+        internal bool IsDragging => drag_start != null;
         public override void Init()
         {
         }
@@ -65,6 +75,7 @@ namespace EffectPipeline.gameObjects
                 }
                 drag_start = null;
             }
+            Cam_mouse_pos = mouse.Position - offset;
         }
     }
 }

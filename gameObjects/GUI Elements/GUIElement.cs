@@ -16,6 +16,10 @@ namespace EffectPipeline.gameObjects
 {
     internal abstract class GUIElement : GameObject
     {
+
+        [DependencyCache(InteractionType.Download)]
+        protected NodeCanvasCamera camera = null!;
+
         [GetFrom(Singleton.Mouse)]
         protected Mouse mouse = null!;
 
@@ -34,7 +38,7 @@ namespace EffectPipeline.gameObjects
         {
             if (IsFocus)
             {
-                mouseDragStart ??= mouse.Position;
+                mouseDragStart ??= camera.Cam_mouse_pos;
                 if (!wasFocus) OnClick();
 
                 wasFocus = true;
