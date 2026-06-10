@@ -14,21 +14,14 @@ namespace EffectPipeline.gameObjects
 {
     internal class NodeCanvas : GameObject
     {
+        PipelineManager pipelineManager;
         public override void Init()
         {
             var cam = new NodeCanvasCamera().WithChildren([
-                new Node(new SplitChannel(), "Split channels RGB")
-                {
-                    anchor = IPositioning.Center,
-                    origin = IPositioning.Center,
-                },
-                new Node(new MergeChannel(), "Merge channels RGB")
-                {
-                    anchor = IPositioning.Center,
-                    offset = new(10, 20),
-                    origin = IPositioning.Center,
-                }
+                pipelineManager = new()    
             ]);
+            pipelineManager.InstantiateNewNode(new SplitChannel(), "Split channels RGB");
+            pipelineManager.InstantiateNewNode(new MergeChannel(), "Merge rgb channels");
             AddChildSpawnQueue(cam);
         }
 
