@@ -15,15 +15,10 @@ namespace EffectPipeline.gameObjects
 {
     internal class Node : GUIElement
     {
-        
-        public PipelineManager Manager { get; }
-
-        public Node(IEffect effect, string title, PipelineManager _Manager) 
+        public Node(IEffect effect, string title) 
         {
             this.effect = effect;
             title_text = title;
-
-            Manager = _Manager;
         }
         const int HEIGHT_PER_PARAM = 20;
         internal string title_text;

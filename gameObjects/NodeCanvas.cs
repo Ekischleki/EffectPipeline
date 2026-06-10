@@ -17,16 +17,16 @@ namespace EffectPipeline.gameObjects
     internal class NodeCanvas : GameObject
     {
         [DependencyCache(InteractionType.Upload)]
-        PipelineManager pipelineManager = new();
+        NodeStateManager manager = new();
         [DependencyCache(InteractionType.Upload)]
         NodeCanvasCamera camera = new();
         public override void Init()
         {
             camera.WithChildren([
-                pipelineManager   
+                manager   
             ]);
-            pipelineManager.InstantiateNewNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
-            Node n = pipelineManager.InstantiateNewNode(new ImageOutput(), "Output");
+            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
+            Node n = manager.CreateNode(new ImageOutput(), "Output");
             n.offset = new Vector2(250, 0);
             AddChildSpawnQueue(camera);
         }

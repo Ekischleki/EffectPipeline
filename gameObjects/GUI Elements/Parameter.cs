@@ -17,6 +17,9 @@ namespace EffectPipeline.GameObjects
 {
     internal class Parameter : GUIElement
     {
+        [DependencyCache(InteractionType.Download)]
+        internal NodeStateManager manager = null!;
+        internal HashSet<Connection> connections = [];
         internal required bool is_input;
         internal required string name;
 
@@ -60,14 +63,14 @@ namespace EffectPipeline.GameObjects
         {
             Size *= 1.02;
 
-            parentNode.Manager.ConnectionManager.StartCreatingConnection(this);
+            manager.StartCreatingConnection(this);
         }
 
         protected override void OnRelease()
         {
             Size /= 1.02;
 
-            parentNode.Manager.ConnectionManager.TryCreateConnection();
+            manager.TryCreateConnection();
         }
 
 

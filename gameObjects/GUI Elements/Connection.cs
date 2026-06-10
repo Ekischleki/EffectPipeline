@@ -15,7 +15,8 @@ namespace EffectPipeline.gameObjects
 {
     internal class Connection : GUIElement
     {
-
+        [DependencyCache(InteractionType.Download)]
+        internal NodeStateManager manager = null!;
         public Parameter input { get; }
         public Parameter output { get; }
 
@@ -38,6 +39,28 @@ namespace EffectPipeline.gameObjects
         {
             beginPos = output.ContainerPosition + new Vector2(5, 5);
             endPos = input.ContainerPosition + new Vector2(5, 5);
+            if(mouse.MouseEvent.HasFlag(MouseEvent.Right))
+            {
+                var line_dir = Vector2.Normalize(endPos - beginPos);
+                var bm = mouse.Position - beginPos;
+                var mouse_project_dist = Vector2.Dot(bm, line_dir);
+                if(mouse_project_dist < 0 || mouse_project_dist > (endPos - beginPos).Length())
+                {
+                    return;
+                }
+                var mouse_foot = beginPos + mouse_project_dist * line_dir;
+                var mouse_dist = (mouse.Position - mouse_foot).Length();
+                defaultLogger.Info(mouse_dist);
+                if (mouse_dist < 5)
+                {
+                    Delete();
+                }
+            }
+        }
+
+        internal void Delete()
+        {
+            manager.DeleteConnection(this);
         }
 
         protected override void Render()
