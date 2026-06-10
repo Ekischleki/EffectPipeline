@@ -17,11 +17,11 @@ namespace EffectPipeline.gameObjects
     {
 
         protected List<Node> nodes = new List<Node>();
-        public Node[] Nodes { get => nodes.ToArray(); }
+        public IReadOnlyCollection<Node> Nodes { get => nodes.AsReadOnly(); }
 
 
         protected List<Connection> connections = new List<Connection>();
-        public Connection[] Connections { get => connections.ToArray(); }
+        public IReadOnlyCollection<Connection> Connections { get => connections.AsReadOnly(); }
 
         public ConnectionManager ConnectionManager { get;  }
 
