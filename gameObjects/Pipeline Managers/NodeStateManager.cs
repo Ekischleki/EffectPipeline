@@ -77,6 +77,20 @@ namespace EffectPipeline.gameObjects
             referenceParameter = par;
         }
 
+        internal void DeleteNode(Node node)
+        {
+            nodes.Remove(node);
+            AddDespawnQueue(node);
+            foreach (var input in node.inputs.SelectMany(n => n.connections))
+            {
+                DeleteConnection(input);
+            }
+            foreach (var output in node.outputs.SelectMany(n => n.connections))
+            {
+                DeleteConnection(output);
+            }
+        }
+
 
         public void TryCreateConnection()
         {
@@ -110,18 +124,6 @@ namespace EffectPipeline.gameObjects
             return false;
         }
 
-        internal void DeleteNode(Node node) {
-            nodes.Remove(node);
-            AddDespawnQueue(node);
-            foreach(var input in node.inputs.SelectMany(n => n.connections))
-            {
-                DeleteConnection(input);
-            }
-            foreach (var output in node.outputs.SelectMany(n => n.connections))
-            {
-                DeleteConnection(output);
-            }
-        }
         bool CouldMakeConnection(Parameter input, Parameter output)
         {
             if(input.type != output.type)
@@ -146,12 +148,10 @@ namespace EffectPipeline.gameObjects
 
             foreach (var n in Nodes)
             {
-
                 //If there exists a path from the connection to the output, we cannot make the output dependent on the connection
-                if (ContainsPathTo(parent, n))
-                {
-                    continue;
-                }
+                if (ContainsPathTo(parent, n)) continue;
+
+
                 foreach (var p in n.outputs)
                 {
                     if (((IContainer)p).InContainer(mouse.Position) && CouldMakeConnection(inputPar, p) )
@@ -177,10 +177,7 @@ namespace EffectPipeline.gameObjects
             foreach (var n in Nodes)
             {
                 //If there exists a path from the connection to the output, we cannot make the output dependent on the connection
-                if (ContainsPathTo(n, parent))
-                {
-                    continue;
-                }
+                if (ContainsPathTo(n, parent)) continue;
 
                 foreach (var p in n.inputs)
                 {

@@ -39,23 +39,35 @@ namespace EffectPipeline.gameObjects
         {
             beginPos = output.ContainerPosition + new Vector2(5, 5);
             endPos = input.ContainerPosition + new Vector2(5, 5);
+
             if(mouse.MouseEvent.HasFlag(MouseEvent.Right))
             {
-                var line_dir = Vector2.Normalize(endPos - beginPos);
-                var bm = mouse.Position - beginPos;
-                var mouse_project_dist = Vector2.Dot(bm, line_dir);
-                if(mouse_project_dist < 0 || mouse_project_dist > (endPos - beginPos).Length())
-                {
-                    return;
-                }
-                var mouse_foot = beginPos + mouse_project_dist * line_dir;
-                var mouse_dist = (mouse.Position - mouse_foot).Length();
-                defaultLogger.Info(mouse_dist);
-                if (mouse_dist < 5)
+                if (PointInsideLine(mouse.Position))
                 {
                     Delete();
                 }
             }
+        }
+
+        internal bool PointInsideLine(Vector2 point)
+        {
+            // quick and dirty check
+            if (point.X < Math.Min(endPos.X, beginPos.X) || point.X > Math.Max(endPos.X, beginPos.X)
+                || point.Y < Math.Min(endPos.Y, beginPos.Y) || point.Y > Math.Max(endPos.Y, beginPos.Y))
+                return false;
+
+            var line_dir = Vector2.Normalize(endPos - beginPos);
+            var bm = point - beginPos;
+            var project_dist = Vector2.Dot(bm, line_dir);
+            if (project_dist < 0 || project_dist > (endPos - beginPos).Length())
+            {
+                return false;
+            }
+            var foot = beginPos + project_dist * line_dir;
+            var dist = (mouse.Position - foot).Length();
+            defaultLogger.Info(dist);
+
+            return dist < 5;
         }
 
         internal void Delete()

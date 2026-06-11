@@ -26,8 +26,16 @@ namespace EffectPipeline.gameObjects
                 manager   
             ]);
             manager.CreateNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
+            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
             Node n = manager.CreateNode(new ImageOutput(), "Output");
             n.offset = new Vector2(250, 0);
+
+            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
+            manager.CreateNode(new MergeChannel(), "Split RGB Channel");
+
+            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
+            manager.CreateNode(new MergeChannel(), "Split RGB Channel");
+
             AddChildSpawnQueue(camera);
         }
 

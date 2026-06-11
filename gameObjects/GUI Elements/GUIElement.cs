@@ -69,5 +69,6 @@ namespace EffectPipeline.gameObjects
 
         protected abstract void OnRelease();
 
+
     }
 }

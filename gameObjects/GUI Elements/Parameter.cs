@@ -63,7 +63,17 @@ namespace EffectPipeline.GameObjects
         {
             Size *= 1.02;
 
-            manager.StartCreatingConnection(this);
+            if (!is_input || connections.Count == 0)
+            {
+                manager.StartCreatingConnection(this);
+                return;
+            }
+
+            foreach (var c in connections)
+            {
+                manager.DeleteConnection(c);
+                manager.StartCreatingConnection(c.output);
+            }
         }
 
         protected override void OnRelease()
