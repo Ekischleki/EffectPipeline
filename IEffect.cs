@@ -11,8 +11,8 @@ namespace EffectPipeline
     {
         public IEnumerable<(string, Type)> Inputs { get; }
         public IEnumerable<(string, Type)> Outputs { get; }
-        public IInstance[] applyEffect(IInstance[] inputs);
-        public IEnumerable<GameObject> Properties { get; }
+        public IInstance[] applyEffect(IInstance?[] inputs, GameObject[] properties);
+        public GameObject[] Properties { get; }
     }
 
     enum Type

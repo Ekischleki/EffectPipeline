@@ -14,7 +14,7 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Source Image", Type.RGBImage)];
 
-        public IEnumerable<GameObject> Properties => [/*Something like string or filepath property*/];
+        public GameObject[] Properties => [/*Something like string or filepath property*/];
 
 
         // Image reference data idek
@@ -26,7 +26,7 @@ namespace EffectPipeline.Effects
         }
 
 
-        public IInstance[] applyEffect(IInstance[] inputs)
+        public IInstance[] applyEffect(IInstance?[] inputs, GameObject[] properties)
         {
             if (inputs.Length != 0)
             {

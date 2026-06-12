@@ -17,14 +17,14 @@ namespace EffectPipeline.gameObjects
     {
         [DependencyCache(InteractionType.Download)]
         internal NodeStateManager manager = null!;
-        public Parameter input { get; }
-        public Parameter output { get; }
+        public Parameter end { get; }
+        public Parameter start { get; }
 
 
-        public Connection(Parameter _input, Parameter _output)
+        public Connection(Parameter start, Parameter end)
         {
-            input = _input;
-            output = _output;
+            this.end = start;
+            this.start = end;
         }
 
         public override void Init()
@@ -37,8 +37,8 @@ namespace EffectPipeline.gameObjects
 
         protected override void Update()
         {
-            beginPos = output.ContainerPosition + new Vector2(5, 5);
-            endPos = input.ContainerPosition + new Vector2(5, 5);
+            beginPos = start.ContainerPosition + new Vector2(5, 5);
+            endPos = end.ContainerPosition + new Vector2(5, 5);
 
             if(mouse.MouseEvent.HasFlag(MouseEvent.Right))
             {

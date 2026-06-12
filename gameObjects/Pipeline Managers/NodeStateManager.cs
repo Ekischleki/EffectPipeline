@@ -19,8 +19,11 @@ namespace EffectPipeline.gameObjects
 {
     internal class NodeStateManager : GameObject
     {
-        protected List<Node> nodes = new List<Node>();
-        public IReadOnlyCollection<Node> Nodes { get => nodes.AsReadOnly(); }
+        internal ManagedTexture? OutputImage { get; private set; }
+
+        protected Dictionary<Node, IInstance[]?> nodes = [];
+        protected Node output_node = null!;
+        public IReadOnlyCollection<Node> Nodes { get => nodes.Keys; }
 
         [GetFrom(Singleton.Mouse)]
         protected Mouse mouse = null!;
@@ -37,9 +40,14 @@ namespace EffectPipeline.gameObjects
 
         internal Node CreateNode(IEffect effect, string title)
         {
+            if(output_node != null && effect is ImageOutput)
+            {
+                throw new ArgumentException("There can only be one start node per canvas");
+            }
             var node = new Node(effect, title);
-            nodes.Add(node);
-            AddChildSpawnQueue(node);
+            nodes.Add(node, null);
+            AddChildSpawnQueue(node, _ => UpdateCacheAt(node));
+            
             return node;
         }
 
@@ -52,7 +60,7 @@ namespace EffectPipeline.gameObjects
 
         public override void Init()
         {
-
+            output_node = CreateNode(new ImageOutput(), "Output");
         }
 
 
@@ -90,7 +98,43 @@ namespace EffectPipeline.gameObjects
                 DeleteConnection(output);
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node">Node whose inputs have changed, meaning we must recompute subsequent nodes</param>
+        public void UpdateCacheAt(Node node)
+        {
+            IInstance?[] inputs = new IInstance?[node.inputs.Count];
+            foreach (var input in node.inputs)
+            {
+                Debug.Assert(input.connections.Count <= 1);
+                if(input.connections.Count == 0)
+                {
+                    continue;
+                }
+                var input_param = input.connections.AsEnumerable().First().start;
+                inputs[input.index] = nodes[input_param.parentNode]![input_param.index];
+            }
+            if(node.effect is ImageOutput)
+            {
+                var image = inputs[0]?.ToImage();
+                if(image == null || image.width == 0 || image.height == 0)
+                {
+                    OutputImage = null;
+                } else
+                {
+                    OutputImage = image.ToTexture(Game.Canvas);
+                }
+            }
+            nodes[node] = node.effect.applyEffect(inputs, []);
+            foreach(var output in node.outputs)
+            {
+                foreach (var con in output.connections)
+                {
+                    UpdateCacheAt(con.end.parentNode);
+                }
+            }
+        }
 
         public void TryCreateConnection()
         {
@@ -116,7 +160,7 @@ namespace EffectPipeline.gameObjects
             }
             foreach(Connection connection in start.inputs.SelectMany(p => p.connections))
             {
-                if (ContainsPathTo(connection.input.parentNode, destination, visited))
+                if (ContainsPathTo(connection.end.parentNode, destination, visited))
                 {
                     return true;
                 }
@@ -148,7 +192,7 @@ namespace EffectPipeline.gameObjects
 
             foreach (var n in Nodes)
             {
-                //If there exists a path from the connection to the output, we cannot make the output dependent on the connection
+                //If there exists a path from the connection to the start, we cannot make the start dependent on the connection
                 if (ContainsPathTo(parent, n)) continue;
 
 
@@ -176,7 +220,7 @@ namespace EffectPipeline.gameObjects
 
             foreach (var n in Nodes)
             {
-                //If there exists a path from the connection to the output, we cannot make the output dependent on the connection
+                //If there exists a path from the connection to the start, we cannot make the start dependent on the connection
                 if (ContainsPathTo(n, parent)) continue;
 
                 foreach (var p in n.inputs)
@@ -188,7 +232,7 @@ namespace EffectPipeline.gameObjects
 
             if (inputPar == null)
             {
-                defaultLogger.Warn("Creation from output failed!");
+                defaultLogger.Warn("Creation from start failed!");
                 return;
             }
 
@@ -211,14 +255,17 @@ namespace EffectPipeline.gameObjects
 
             inputPar.connections.Add(connection);
             outputPar.connections.Add(connection);
+
+            UpdateCacheAt(inputPar.parentNode);
         }
 
 
         public void DeleteConnection(Connection connection)
         {
-            connection.input.connections.Remove(connection);
-            Debug.Assert(connection.input.connections.Count == 0);
-            connection.output.connections.Remove(connection);
+            connection.end.connections.Remove(connection);
+            Debug.Assert(connection.end.connections.Count == 0);
+            connection.start.connections.Remove(connection);
+            UpdateCacheAt(connection.end.parentNode);
             AddDespawnQueue(connection);
         }
 

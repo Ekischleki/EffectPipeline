@@ -25,10 +25,11 @@ namespace EffectPipeline.gameObjects
         [DependencyCache(InteractionType.Upload)]
         protected IContainer clippingContainer;
         [DependencyCache(InteractionType.Upload)]
-        NodeStateManager manager = new();
+        internal NodeStateManager manager = new();
         [DependencyCache(InteractionType.Upload)]
         NodeCanvasCamera camera = new();
         internal Vector2 size = new(500);
+        public override Vector2 ContainerSize { get => size; protected set {} }
         public override void Init()
         {
             RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/gray/{(int)size.X}/{(int)size.Y}");
@@ -42,8 +43,7 @@ namespace EffectPipeline.gameObjects
             ]);
             manager.CreateNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
             manager.CreateNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
-            Node n = manager.CreateNode(new ImageOutput(), "Output");
-            n.offset = new Vector2(250, 0);
+
 
             manager.CreateNode(new SplitChannel(), "Split RGB Channel");
             manager.CreateNode(new MergeChannel(), "Split RGB Channel");
@@ -53,7 +53,6 @@ namespace EffectPipeline.gameObjects
 
             AddChildSpawnQueue(camera);
         }
-        public override Vector2 ContainerSize { get => size; protected set {} }
         //public override Vector2 ContainerPosition { get => position; protected set { } }
         protected override void Update()
         {

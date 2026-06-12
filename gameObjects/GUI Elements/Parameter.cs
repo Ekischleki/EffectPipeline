@@ -24,6 +24,7 @@ namespace EffectPipeline.GameObjects
         internal required string name;
 
         public required Type type;
+        public required int index;
 
         public required Node parentNode;
 
@@ -72,7 +73,7 @@ namespace EffectPipeline.GameObjects
             foreach (var c in connections)
             {
                 manager.DeleteConnection(c);
-                manager.StartCreatingConnection(c.output);
+                manager.StartCreatingConnection(c.start);
             }
         }
 

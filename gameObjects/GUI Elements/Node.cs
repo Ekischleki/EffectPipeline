@@ -50,20 +50,24 @@ namespace EffectPipeline.gameObjects
                 Text = title_text,
             };
             float y = -15;
+            int i = 0;
             foreach (var input in effect.Inputs)
             {
-                Parameter param = new Parameter() { parentNode = this, is_input = true, name = input.Item1, offset = new Vector2(0, y), type = input.Item2 };
+                Parameter param = new () { parentNode = this, is_input = true, name = input.Item1, offset = new Vector2(0, y), type = input.Item2, index = i };
                 y -= HEIGHT_PER_PARAM;
                 inputs.Add(param);
                 AddChildSpawnQueue(param);
+                i++;
             }
             y = -15;
+            i = 0;
             foreach (var output in effect.Outputs)
             {
-                Parameter param = new Parameter() { parentNode = this,  is_input = false, name = output.Item1, offset = new Vector2(0, y), type = output.Item2 };
+                Parameter param = new () { parentNode = this,  is_input = false, name = output.Item1, offset = new Vector2(0, y), type = output.Item2, index = i };
                 y -= HEIGHT_PER_PARAM;
                 outputs.Add(param);
                 AddChildSpawnQueue(param);
+                i++;
             }
             height = Math.Max(inputs.Count, outputs.Count) * HEIGHT_PER_PARAM + 15;
             AddChildSpawnQueue(title);

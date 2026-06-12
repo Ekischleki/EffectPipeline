@@ -19,7 +19,7 @@ namespace EffectPipeline
 
         protected override IEnumerable<GameObject> GetStartingGameObjects()
         {
-            yield return new NodeCanvas() {
+            yield return new NodePipelineEditor() {
                 origin = IPositioning.Center,
                 anchor = IPositioning.Center,
             };
