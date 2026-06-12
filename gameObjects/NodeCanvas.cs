@@ -1,4 +1,5 @@
 ﻿using EffectPipeline.Effects;
+using EffectPipeline.gameObjects.GUI_Elements;
 using EffectPipeline.types;
 using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
@@ -33,7 +34,11 @@ namespace EffectPipeline.gameObjects
             RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/gray/{(int)size.X}/{(int)size.Y}");
             clipBehavior = ClipBehavior.Cut;
             camera.WithChildren([
-                manager   
+                manager   , new DropdownProperty(["RGB", "HSV", "OkLab"], "Color space")
+            {
+                origin = IPositioning.TopLeft,
+                anchor = IPositioning.Center,
+            }
             ]);
             manager.CreateNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
             manager.CreateNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");

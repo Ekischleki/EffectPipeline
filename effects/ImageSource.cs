@@ -1,4 +1,5 @@
 ﻿using EffectPipeline.types;
+using Pandemonium.Engine.GameObjectStuff;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace EffectPipeline.Effects
         public IEnumerable<(string, Type)> Inputs => [];
 
         public IEnumerable<(string, Type)> Outputs => [("Source Image", Type.RGBImage)];
+
+        public IEnumerable<GameObject> Properties => [/*Something like string or filepath property*/];
 
 
         // Image reference data idek

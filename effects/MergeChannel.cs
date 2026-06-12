@@ -1,4 +1,6 @@
-﻿using EffectPipeline.types;
+﻿using EffectPipeline.gameObjects.GUI_Elements;
+using EffectPipeline.types;
+using Pandemonium.Engine.GameObjectStuff;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,8 @@ namespace EffectPipeline.Effects
         public IEnumerable<(string, Type)> Inputs => [("Channel 0", Type.GreyscaleImage), ("Channel 1", Type.GreyscaleImage), ("Channel 2", Type.GreyscaleImage)];
 
         public IEnumerable<(string, Type)> Outputs => [("Image", Type.RGBImage)];
+
+        public IEnumerable<GameObject> Properties => [DropdownProperty.ColorspaceDropdown];
 
         public IInstance[] applyEffect(IInstance[] inputs)
         {

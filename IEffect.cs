@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pandemonium.Engine.GameObjectStuff;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace EffectPipeline
         public IEnumerable<(string, Type)> Inputs { get; }
         public IEnumerable<(string, Type)> Outputs { get; }
         public IInstance[] applyEffect(IInstance[] inputs);
+        public IEnumerable<GameObject> Properties { get; }
     }
 
     enum Type

@@ -14,6 +14,9 @@ namespace EffectPipeline.gameObjects.GUI_Elements
 {
     internal class DropdownProperty : GUIElement
     {
+        public static DropdownProperty ColorspaceDropdown => new DropdownProperty(["RGB", "HSV", "OkLab"], "Color space");
+
+
         public bool open = false;
         public int Selected {  get; set; }
         private string[] properties;

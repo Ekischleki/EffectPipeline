@@ -1,4 +1,5 @@
 ﻿using EffectPipeline.types;
+using Pandemonium.Engine.GameObjectStuff;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [];
 
+        public IEnumerable<GameObject> Properties => [];
 
         public IInstance[] applyEffect(IInstance[] inputs)
         {
