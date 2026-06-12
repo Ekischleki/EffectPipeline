@@ -1,9 +1,11 @@
 ﻿using EffectPipeline.Effects;
 using EffectPipeline.types;
+using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
+using Pupilmonium.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +22,11 @@ namespace EffectPipeline.gameObjects
         NodeStateManager manager = new();
         [DependencyCache(InteractionType.Upload)]
         NodeCanvasCamera camera = new();
+        internal Vector2 size = new(500);
         public override void Init()
         {
+            RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/gray/{(int)size.X}/{(int)size.Y}");
+            clipBehavior = ClipBehavior.Cut;
             camera.WithChildren([
                 manager   
             ]);
@@ -38,7 +43,8 @@ namespace EffectPipeline.gameObjects
 
             AddChildSpawnQueue(camera);
         }
-
+        public override Vector2 ContainerSize { get => size; protected set {} }
+        //public override Vector2 ContainerPosition { get => position; protected set { } }
         protected override void Update()
         {
             
