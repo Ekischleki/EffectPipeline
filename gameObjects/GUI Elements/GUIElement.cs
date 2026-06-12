@@ -38,6 +38,10 @@ namespace EffectPipeline.gameObjects
         {
             if (IsFocus)
             {
+                if(mouseDragStart == null)
+                {
+                    OnClick();
+                }
                 mouseDragStart ??= camera.Cam_mouse_pos;
 
                 if (mouse.ReleasedThisFrame)
@@ -61,7 +65,6 @@ namespace EffectPipeline.gameObjects
             if (mouse.ClickedThisFrame && !keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LALT) && ((IContainer)this).InContainer(mouse.Position) && clippingContainer.InContainer(mouse.Position))
             {
                 GUIElement.Focus = this;
-                OnClick();
             }
         }
 
