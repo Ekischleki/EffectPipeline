@@ -20,6 +20,9 @@ namespace EffectPipeline.gameObjects
         [DependencyCache(InteractionType.Download)]
         protected NodeCanvasCamera camera = null!;
 
+        [DependencyCache(InteractionType.Download)]
+        protected IContainer clippingContainer = null!;
+
         [GetFrom(Singleton.Mouse)]
         protected Mouse mouse = null!;
 
@@ -55,7 +58,7 @@ namespace EffectPipeline.gameObjects
                 mouseDragStart = null;
             }
 
-            if (mouse.ClickedThisFrame && !keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LALT) && ((IContainer)this).InContainer(mouse.Position))
+            if (mouse.ClickedThisFrame && !keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LALT) && ((IContainer)this).InContainer(mouse.Position) && clippingContainer.InContainer(mouse.Position))
             {
                 GUIElement.Focus = this;
                 OnClick();

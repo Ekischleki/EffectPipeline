@@ -18,6 +18,11 @@ namespace EffectPipeline.gameObjects
 {
     internal class NodeCanvas : GameObject
     {
+        internal NodeCanvas() {
+            clippingContainer = this;
+        }
+        [DependencyCache(InteractionType.Upload)]
+        protected IContainer clippingContainer;
         [DependencyCache(InteractionType.Upload)]
         NodeStateManager manager = new();
         [DependencyCache(InteractionType.Upload)]
@@ -54,6 +59,8 @@ namespace EffectPipeline.gameObjects
 
     internal class NodeCanvasCamera : GameObject
     {
+        [DependencyCache(InteractionType.Download)]
+        protected IContainer clippingContainer = null!;
         [GetFrom(Singleton.Mouse)]
         Mouse mouse = null!;
 
@@ -70,11 +77,16 @@ namespace EffectPipeline.gameObjects
         {
         }
 
+        internal bool IsClickingDragButton => mouse.MouseEvent.HasFlag(Pupilmonium.Framework.MouseEvent.Middle) ||
+                (mouse.MouseEvent.HasFlag(Pupilmonium.Framework.MouseEvent.Left) && keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LALT));
+
         protected override void Update()
         {
-            if(mouse.MouseEvent.HasFlag(Pupilmonium.Framework.MouseEvent.Middle) || 
-                (mouse.MouseEvent.HasFlag(Pupilmonium.Framework.MouseEvent.Left) && keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LALT))
-                )
+            if(drag_start == null && IsClickingDragButton && !clippingContainer.InContainer(mouse.Position))
+            {
+                return;
+            }
+            if(IsClickingDragButton)
             {
                 drag_start ??= mouse.Position;
                 var new_offset = mouse.Position - drag_start.Value;
