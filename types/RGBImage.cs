@@ -56,12 +56,11 @@ namespace EffectPipeline.types
             GreyscaleImage white = GreyscaleImage.PureWhite(width, height);
             return new RGBImage([white, white, white]);
         }
-        public ManagedTexture ToTexture(Canvas canvas)
+        internal Color[] ToColors()
         {
-            var image_asset = new ImageAsset(width, height);
             var colors = new Color[width * height];
             int i = 0;
-            foreach(var ((r, g), b) in red.Zip(green).Zip(blue))
+            foreach (var ((r, g), b) in red.Zip(green).Zip(blue))
             {
                 var red = int.Clamp((int)(r * 255.0), 0, 255);
                 var green = int.Clamp((int)(g * 255.0), 0, 255);
@@ -70,6 +69,12 @@ namespace EffectPipeline.types
                 colors[i] = Color.FromArgb(red, green, blue);
                 i++;
             }
+            return colors;
+        }
+        public ManagedTexture ToTexture(Canvas canvas)
+        {
+            var image_asset = new ImageAsset(width, height);
+            var colors = ToColors();
             image_asset.SetPixels(colors);
             return new ManagedTexture(canvas, image_asset, true);
         }

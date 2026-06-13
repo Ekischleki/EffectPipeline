@@ -55,7 +55,7 @@ namespace EffectPipeline.gameObjects
                 anchor = IPositioning.Center,
             }
             ]);
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@"C:\Users\ewolf\Pictures\shrek.png")), "Image Source Spooky");
+            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@"C:\Users\ewolf\Pictures\SpOoKy.png")), "Image Source Spooky");
             manager.CreateNode(new ImageSource(RGBImage.WhiteImage(654, 552)), "Image Source White");
 
 

@@ -14,6 +14,17 @@ namespace EffectPipeline.gameObjects.GUI_Elements
 {
     internal class DropdownProperty : GUIElement
     {
+        [DependencyCache(InteractionType.Download)]
+        internal Node parentNode = null!;
+        [DependencyCache(InteractionType.Download)]
+        internal NodeStateManager manager = null!;
+
+        internal enum Colorspace
+        {
+            Rgb,
+            Hsv,
+            Lab,
+        }
         public static DropdownProperty ColorspaceDropdown => new DropdownProperty(["RGB", "HSV", "OkLab"], "Color space");
 
 
@@ -141,6 +152,7 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                     {
                         Open(false);
                         Selected = i;
+                        manager.UpdateCacheAt(parentNode);
                         SetOpenClosedText();
                         return;
                     }

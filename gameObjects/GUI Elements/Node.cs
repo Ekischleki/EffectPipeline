@@ -1,5 +1,6 @@
 ﻿using EffectPipeline.GameObjects;
 using Pandemonium.Engine;
+using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
@@ -15,10 +16,14 @@ namespace EffectPipeline.gameObjects
 {
     internal class Node : GUIElement
     {
+        [DependencyCache(InteractionType.Upload)]
+        internal Node parentNode;
         public Node(IEffect effect, string title) 
         {
+            parentNode = this;
             this.effect = effect;
             title_text = title;
+            properties = effect.Properties;
         }
         const int HEIGHT_PER_PARAM = 20;
         internal string title_text;
@@ -28,7 +33,7 @@ namespace EffectPipeline.gameObjects
         internal int width;
         internal int height;
         internal TextGameObject title = null!;
-
+        internal readonly GameObject[] properties;
         [GetFrom(StoreType.FontStore, "std:oxanium.ttf@15")]
         internal RenderedFont font = null!;
 
@@ -49,6 +54,17 @@ namespace EffectPipeline.gameObjects
                 Font = font,
                 Text = title_text,
             };
+            float prop_offset = 20.0f;
+            foreach (var property in properties)
+            {
+                property.anchor = IPositioning.TopCenter;
+                property.origin = IPositioning.TopCenter;
+                AddChildSpawnQueue(property, prop => {
+                    height += (int)prop.ContainerSize.Y + 5;
+                    prop.offset = new(0, prop_offset);
+                    prop_offset += (int)prop.ContainerSize.Y + 5;
+                });
+            }
             float y = -15;
             int i = 0;
             foreach (var input in effect.Inputs)
@@ -73,12 +89,12 @@ namespace EffectPipeline.gameObjects
             AddChildSpawnQueue(title);
             width = title.ContentDimensions.w + 30;
             height += title.ContentDimensions.h;
-            RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/white/{width}/{height}");
         }
  
 
         protected override void Update()
         {
+            RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/white/{width}/{height}");
             HandleMouseInteraction();
         }
 

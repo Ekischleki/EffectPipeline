@@ -133,7 +133,7 @@ namespace EffectPipeline.gameObjects
                     OutputImage = image.ToTexture(Game.Canvas);
                 }
             }
-            nodes[node] = node.effect.applyEffect(inputs, []);
+            nodes[node] = node.effect.applyEffect(inputs, node.properties);
             foreach(var output in node.outputs)
             {
                 foreach (var con in output.connections)

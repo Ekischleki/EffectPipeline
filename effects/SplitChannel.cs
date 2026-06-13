@@ -17,12 +17,29 @@ namespace EffectPipeline.Effects
 
         public GameObject[] Properties => [DropdownProperty.ColorspaceDropdown];
 
+
+        
+
+        private float[][] ToColorspace(DropdownProperty.Colorspace colorspace, RGBImage img)
+        {
+            switch (colorspace)
+            {
+                case DropdownProperty.Colorspace.Rgb:
+                    return [img.red, img.green, img.blue];
+                case DropdownProperty.Colorspace.Hsv:
+                    var colors = img.ToColors();
+                    return [colors.AsEnumerable().Select(col => col.GetHue() / 360f).ToArray(), 
+                        colors.AsEnumerable().Select(col => col.GetSaturation()).ToArray(),
+                        colors.AsEnumerable().Select(col => col.GetBrightness()).ToArray()];
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         public IInstance[] applyEffect(IInstance[] inputs, GameObject[] properties)
         {
-            if(inputs.Length != 1)
-            {
-                throw new ArgumentException("Input needs to be length 1");
-            }
+            DropdownProperty colorspaceDropdown = (DropdownProperty)properties[0];
+            var colorspace = (DropdownProperty.Colorspace)colorspaceDropdown.Selected;
             RGBImage? image = (RGBImage)inputs[0];
             if(image == null)
             {
@@ -32,9 +49,10 @@ namespace EffectPipeline.Effects
                     new GreyscaleImage(0, 0, []),
                 ];
             }
-            return [new GreyscaleImage(image.width, image.height, image.red),
-                    new GreyscaleImage(image.width, image.height, image.green),
-                    new GreyscaleImage(image.width, image.height, image.blue),  ];
+            var channels = ToColorspace(colorspace, image);
+            return [new GreyscaleImage(image.width, image.height, channels[0]),
+                    new GreyscaleImage(image.width, image.height, channels[1]),
+                    new GreyscaleImage(image.width, image.height, channels[2]),  ];
         }
     }
 }
