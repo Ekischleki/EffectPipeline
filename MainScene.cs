@@ -24,7 +24,6 @@ namespace EffectPipeline
                 anchor = IPositioning.Center,
             };
         }
-
         protected override bool OnExitRequest()
         {
             return true;

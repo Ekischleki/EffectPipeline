@@ -20,6 +20,7 @@ namespace EffectPipeline
         protected override void Init()
         {
             AddFontUpload("std", new FileDataUpload("./assets/fonts"));
+            AddTextureUpload("std", new FileDataUpload("./assets/textures"));
         }
     }
 }

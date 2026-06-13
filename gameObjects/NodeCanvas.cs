@@ -28,11 +28,25 @@ namespace EffectPipeline.gameObjects
         internal NodeStateManager manager = new();
         [DependencyCache(InteractionType.Upload)]
         NodeCanvasCamera camera = new();
-        internal Vector2 size = new(500);
-        public override Vector2 ContainerSize { get => size; protected set {} }
+        private Vector2 size = new(500);
+        new internal Vector2 Size { 
+            get => size; 
+            set
+            {
+                size = value;
+                InitSized();
+            }
+        }
+
+        private void InitSized()
+        {
+            RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/gray/{(int)Size.X}/{(int)Size.Y}");
+        }
+
+        public override Vector2 ContainerSize { get => Size; protected set {} }
         public override void Init()
         {
-            RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/gray/{(int)size.X}/{(int)size.Y}");
+            InitSized();
             clipBehavior = ClipBehavior.Cut;
             camera.WithChildren([
                 manager   , new DropdownProperty(["RGB", "HSV", "OkLab"], "Color space")
@@ -41,15 +55,12 @@ namespace EffectPipeline.gameObjects
                 anchor = IPositioning.Center,
             }
             ]);
-            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
-            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(256, 256)), "Image Source");
+            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@"C:\Users\ewolf\Pictures\shrek.png")), "Image Source Spooky");
+            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(654, 552)), "Image Source White");
 
 
+            manager.CreateNode(new MergeChannel(), "Merge RGB Channel");
             manager.CreateNode(new SplitChannel(), "Split RGB Channel");
-            manager.CreateNode(new MergeChannel(), "Split RGB Channel");
-
-            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
-            manager.CreateNode(new MergeChannel(), "Split RGB Channel");
 
             AddChildSpawnQueue(camera);
         }
