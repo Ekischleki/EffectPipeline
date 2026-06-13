@@ -49,18 +49,16 @@ namespace EffectPipeline.gameObjects
             InitSized();
             clipBehavior = ClipBehavior.Cut;
             camera.WithChildren([
-                manager   , new DropdownProperty(["RGB", "HSV", "OkLab"], "Color space")
-            {
-                origin = IPositioning.TopLeft,
-                anchor = IPositioning.Center,
-            }
+                manager
             ]);
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@"C:\Users\enpea\Downloads\Krita Documents\itsbwa.jpg")), "Image Source Spacey");
-            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(2314, 2256)), "Image Source White");
+            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\aquarellebg.png")), "Image Source Spacey");
+            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(500, 500)), "Image Source White");
 
 
             manager.CreateNode(new MergeChannel(), "Merge RGB Channel");
             manager.CreateNode(new SplitChannel(), "Split RGB Channel");
+            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
+
 
             AddChildSpawnQueue(camera);
         }
