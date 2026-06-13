@@ -3,6 +3,7 @@ using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,16 @@ namespace EffectPipeline.Effects
         public GameObject[] Properties => [DropdownProperty.ColorspaceDropdown];
 
 
+        public static void ColorToHSV(Color color, out double hue, out double saturation, out double value)
+        {
+            int max = Math.Max(color.R, Math.Max(color.G, color.B));
+            int min = Math.Min(color.R, Math.Min(color.G, color.B));
+
+            hue = color.GetHue();
+            saturation = (max == 0) ? 0 : 1d - (1d * min / max);
+            value = max / 255d;
+        }
+
         private float[][] ToColorChannels(RGBImage image, DropdownProperty.Colorspace colorspace)
         {
             switch (colorspace)
@@ -26,9 +37,22 @@ namespace EffectPipeline.Effects
                     return [image.red, image.green, image.blue];
                 case DropdownProperty.Colorspace.Hsv:
                     var colors = image.ToColors();
-                    return [colors.AsEnumerable().Select(col => col.GetHue() / 360f).ToArray(),
-                        colors.AsEnumerable().Select(col => col.GetSaturation()).ToArray(),
-                        colors.AsEnumerable().Select(col => col.GetBrightness()).ToArray()];
+                    var hsv = colors.Select<Color, float[]>(col => { ColorToHSV(col, out double h, out double s, out double v); return [(float)h / 365f, (float)s, (float)v]; });
+                    var h = new float[colors.Length];
+                    var s = new float[colors.Length];
+                    var v = new float[colors.Length];
+
+                    var i = 0;
+                    foreach (var p in hsv)
+                    {
+                        h[i] = p[0];
+                        s[i] = p[1];
+                        v[i] = p[2];
+
+                        i++;
+                    }
+
+                    return [h, s, v];
                 default:
                     throw new NotImplementedException();
             }
