@@ -42,7 +42,7 @@ namespace EffectPipeline.gameObjects
         {
             if(output_node != null && effect is ImageOutput)
             {
-                throw new ArgumentException("There can only be one start node per canvas");
+                throw new ArgumentException("There can only be one end node per canvas");
             }
             var node = new Node(effect, title);
             nodes.Add(node, null);
@@ -105,6 +105,7 @@ namespace EffectPipeline.gameObjects
         public void UpdateCacheAt(Node node)
         {
             IInstance?[] inputs = new IInstance?[node.inputs.Count];
+            var effect_inputs = node.effect.Inputs.ToArray();
             foreach (var input in node.inputs)
             {
                 Debug.Assert(input.connections.Count <= 1);
@@ -113,7 +114,13 @@ namespace EffectPipeline.gameObjects
                     continue;
                 }
                 var input_param = input.connections.AsEnumerable().First().start;
-                inputs[input.index] = nodes[input_param.parentNode]![input_param.index];
+                var input_value = nodes[input_param.parentNode]![input_param.index];
+                var expected_type = input.type;
+                if (input_value.Type != expected_type)
+                {
+                    input_value = input_value.Into(expected_type);
+                }
+                inputs[input.index] = input_value;
             }
             if(node.effect is ImageOutput)
             {
@@ -168,15 +175,15 @@ namespace EffectPipeline.gameObjects
             return false;
         }
 
-        bool CouldMakeConnection(Parameter input, Parameter output)
+        bool CouldMakeConnection(Parameter end, Parameter start)
         {
-            if(input.type != output.type)
+            if (end.type != start.type && !nodes[start.parentNode]![start.index].SupportInto(end.type))
             {
                 return false;
             }
            
             //This connection is already taken
-            if(input.connections.Count > 0)
+            if(end.connections.Count > 0)
             {
                 return false;
             }
@@ -192,7 +199,7 @@ namespace EffectPipeline.gameObjects
 
             foreach (var n in Nodes)
             {
-                //If there exists a path from the connection to the start, we cannot make the start dependent on the connection
+                //If there exists a path from the connection to the end, we cannot make the end dependent on the connection
                 if (ContainsPathTo(parent, n)) continue;
 
 
@@ -220,7 +227,7 @@ namespace EffectPipeline.gameObjects
 
             foreach (var n in Nodes)
             {
-                //If there exists a path from the connection to the start, we cannot make the start dependent on the connection
+                //If there exists a path from the connection to the end, we cannot make the end dependent on the connection
                 if (ContainsPathTo(n, parent)) continue;
 
                 foreach (var p in n.inputs)
@@ -232,7 +239,7 @@ namespace EffectPipeline.gameObjects
 
             if (inputPar == null)
             {
-                defaultLogger.Warn("Creation from start failed!");
+                defaultLogger.Warn("Creation from end failed!");
                 return;
             }
 

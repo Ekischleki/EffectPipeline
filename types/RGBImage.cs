@@ -37,6 +37,15 @@ namespace EffectPipeline.types
             blue = channels[2].image;
         }
 
+        public RGBImage(int w, int h, float[] r, float[] g, float[] b)
+        {
+            width = w;
+            height = h;
+            red = r;
+            green = g;
+            blue = b;
+        }
+
         public RGBImage? ToImage()
         {
             return this;
@@ -63,6 +72,32 @@ namespace EffectPipeline.types
             }
             image_asset.SetPixels(colors);
             return new ManagedTexture(canvas, image_asset, true);
+        }
+
+        public bool SupportInto(Type type) => type switch {  _ => false };
+
+        public IInstance Into(Type type)
+        {
+            throw new NotImplementedException();
+        }
+        public static RGBImage LoadFrom(string path)
+        {
+            var data = File.ReadAllBytes(path);
+            using var surface = new ImageAsset(data);
+            var pixels = surface.GetPixels();
+            var w = surface.Surface.w; var h = surface.Surface.h;
+            var red = new float[pixels.Length];
+            var green = new float[pixels.Length];
+            var blue = new float[pixels.Length];
+
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                Color pixel = pixels[i];
+                red[i] = pixel.R / 255.0f;
+                green[i] = pixel.G / 255.0f;
+                blue[i] = pixel.B / 255.0f;
+            }
+            return new(w, h, red, green, blue);
         }
     }
 }
