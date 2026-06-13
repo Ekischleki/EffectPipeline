@@ -55,8 +55,8 @@ namespace EffectPipeline.gameObjects
                 anchor = IPositioning.Center,
             }
             ]);
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@"C:\Users\ewolf\Pictures\SpOoKy.png")), "Image Source Spooky");
-            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(654, 552)), "Image Source White");
+            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@"C:\Users\enpea\Downloads\Krita Documents\itsbwa.jpg")), "Image Source Spacey");
+            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(2314, 2256)), "Image Source White");
 
 
             manager.CreateNode(new MergeChannel(), "Merge RGB Channel");

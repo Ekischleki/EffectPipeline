@@ -1,4 +1,5 @@
-﻿using Pupilmonium.Framework;
+﻿using EffectPipeline.gameObjects.GUI_Elements;
+using Pupilmonium.Framework;
 using Pupilmonium.Framework.Assets;
 using System;
 using System.Collections.Generic;
@@ -56,6 +57,7 @@ namespace EffectPipeline.types
             GreyscaleImage white = GreyscaleImage.PureWhite(width, height);
             return new RGBImage([white, white, white]);
         }
+
         internal Color[] ToColors()
         {
             var colors = new Color[width * height];
@@ -71,6 +73,7 @@ namespace EffectPipeline.types
             }
             return colors;
         }
+
         public ManagedTexture ToTexture(Canvas canvas)
         {
             var image_asset = new ImageAsset(width, height);
@@ -104,5 +107,7 @@ namespace EffectPipeline.types
             }
             return new(w, h, red, green, blue);
         }
+
+    
     }
 }

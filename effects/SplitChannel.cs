@@ -18,23 +18,22 @@ namespace EffectPipeline.Effects
         public GameObject[] Properties => [DropdownProperty.ColorspaceDropdown];
 
 
-        
-
-        private float[][] ToColorspace(DropdownProperty.Colorspace colorspace, RGBImage img)
+        private float[][] ToColorChannels(RGBImage image, DropdownProperty.Colorspace colorspace)
         {
             switch (colorspace)
             {
                 case DropdownProperty.Colorspace.Rgb:
-                    return [img.red, img.green, img.blue];
+                    return [image.red, image.green, image.blue];
                 case DropdownProperty.Colorspace.Hsv:
-                    var colors = img.ToColors();
-                    return [colors.AsEnumerable().Select(col => col.GetHue() / 360f).ToArray(), 
+                    var colors = image.ToColors();
+                    return [colors.AsEnumerable().Select(col => col.GetHue() / 360f).ToArray(),
                         colors.AsEnumerable().Select(col => col.GetSaturation()).ToArray(),
                         colors.AsEnumerable().Select(col => col.GetBrightness()).ToArray()];
                 default:
                     throw new NotImplementedException();
             }
         }
+
 
         public IInstance[] applyEffect(IInstance[] inputs, GameObject[] properties)
         {
@@ -49,7 +48,7 @@ namespace EffectPipeline.Effects
                     new GreyscaleImage(0, 0, []),
                 ];
             }
-            var channels = ToColorspace(colorspace, image);
+            var channels = ToColorChannels(image, colorspace);
             return [new GreyscaleImage(image.width, image.height, channels[0]),
                     new GreyscaleImage(image.width, image.height, channels[1]),
                     new GreyscaleImage(image.width, image.height, channels[2]),  ];
