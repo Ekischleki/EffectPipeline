@@ -12,11 +12,10 @@ namespace EffectPipeline
                 game.Start();
             }
         }
-
         protected override GameScene GetStartScene() => new MainScene();
 
         protected override bool WindowResizable => true;
-
+        protected override bool BlurryScaling => true;
         protected override void Init()
         {
             AddFontUpload("std", new FileDataUpload("./assets/fonts"));

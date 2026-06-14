@@ -70,7 +70,7 @@ namespace EffectPipeline.gameObjects
 
             if (isCreatingConnection)
             {
-                Draw.DrawLine(referenceParameter!.ContainerPosition + new Vector2(5, 5), mouse.Position, 7, System.Drawing.Color.White, Game.Canvas);
+                Draw.DrawLine(referenceParameter!.ContainerPosition + new Vector2(5, 5), mouse.Position, (byte)float.Clamp(7 * AbsoluteSize, 0, 255), System.Drawing.Color.White, Game.Canvas);
             }
         }
 

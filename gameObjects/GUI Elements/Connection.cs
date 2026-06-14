@@ -79,7 +79,7 @@ namespace EffectPipeline.gameObjects
         {
             base.Render();
 
-            Draw.DrawLine(beginPos, endPos, 7, System.Drawing.Color.White, Game.Canvas);
+            Draw.DrawLine(beginPos, endPos, (byte)float.Clamp(7 * AbsoluteSize, 0, 255), System.Drawing.Color.White, Game.Canvas);
         }
 
         protected override void OnClick()

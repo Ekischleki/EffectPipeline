@@ -95,6 +95,10 @@ namespace EffectPipeline.gameObjects
 
         protected override void Update()
         {
+            if (clippingContainer.InContainer(mouse.Position))
+            {
+                Size *= float.Pow(1.1f, mouse.MouseWheel);
+            }
             if(drag_start == null && IsClickingDragButton && !clippingContainer.InContainer(mouse.Position))
             {
                 return;
@@ -102,13 +106,13 @@ namespace EffectPipeline.gameObjects
             if(IsClickingDragButton)
             {
                 drag_start ??= mouse.Position;
-                var new_offset = mouse.Position - drag_start.Value;
+                var new_offset = (mouse.Position - drag_start.Value) / AbsoluteSize;
                 offset = cam_pos + new_offset;
             } else
             {
                 if (drag_start != null)
                 {
-                    var new_offset = mouse.Position - drag_start.Value;
+                    var new_offset = (mouse.Position - drag_start.Value) / AbsoluteSize;
                     if (new_offset.Length() < 5)
                     {
                         //This is probably not supposed to be a drag, but a click
@@ -119,7 +123,7 @@ namespace EffectPipeline.gameObjects
                 }
                 drag_start = null;
             }
-            Cam_mouse_pos = mouse.Position - offset;
+            Cam_mouse_pos = (mouse.Position - offset) / AbsoluteSize;
         }
     }
 }
