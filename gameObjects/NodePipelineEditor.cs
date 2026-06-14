@@ -28,7 +28,7 @@ namespace EffectPipeline.gameObjects
 
         protected override void Update()
         {
-            size = screenContainer.ContainerSize;
+            size = screenContainer.AbsoluteContainerSize;
             canvas_width = (int)(size.X * .5);
             node_canvas.Size = new(canvas_width, size.Y);
             display.size = new(size.X - canvas_width, size.Y);

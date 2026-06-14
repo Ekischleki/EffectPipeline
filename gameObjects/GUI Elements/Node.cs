@@ -60,7 +60,7 @@ namespace EffectPipeline.gameObjects
                 property.anchor = IPositioning.TopCenter;
                 property.origin = IPositioning.TopCenter;
                 AddChildSpawnQueue(property, prop => {
-                    height += (int)prop.ContainerSize.Y + 5;
+                    height += (int)((IContainer)prop).ContainerSize.Y + 5;
                     prop.offset = new(0, prop_offset);
                     prop_offset += (int)prop.ContainerSize.Y + 5;
                 });
@@ -103,12 +103,12 @@ namespace EffectPipeline.gameObjects
         {
             position = offset;
 
-            Size *= 1.02;
+            Size *= 1.02f;
         }
 
         protected override void OnRelease()
         {
-            Size /= 1.02;
+            Size /= 1.02f;
             position += camera.Cam_mouse_pos - mouseDragStart!.Value;
             offset = position;
         }

@@ -62,7 +62,7 @@ namespace EffectPipeline.GameObjects
 
         protected override void OnClick()
         {
-            Size *= 1.02;
+            Size *= 1.02f;
 
             if (!is_input || connections.Count == 0)
             {
@@ -79,7 +79,7 @@ namespace EffectPipeline.GameObjects
 
         protected override void OnRelease()
         {
-            Size /= 1.02;
+            Size /= 1.02f;
 
             manager.TryCreateConnection();
         }
