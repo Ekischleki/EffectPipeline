@@ -18,6 +18,7 @@ namespace EffectPipeline
 
     enum Type
     {
+        Mask,
         RGBImage,
         GreyscaleImage,
     }

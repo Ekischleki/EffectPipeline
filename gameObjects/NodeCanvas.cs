@@ -1,4 +1,5 @@
-﻿using EffectPipeline.Effects;
+﻿using EffectPipeline.effects;
+using EffectPipeline.Effects;
 using EffectPipeline.gameObjects.GUI_Elements;
 using EffectPipeline.types;
 using Pandemonium.Engine;
@@ -52,12 +53,14 @@ namespace EffectPipeline.gameObjects
                 manager
             ]);
             manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\aquarellebg.png")), "Image Source Spacey");
-            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(500, 500)), "Image Source White");
+            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\SpOoKy.png")), "Image Source SpOoKy");
+            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\adhd mix.png")), "Image Source ADHD MIX");
 
 
             manager.CreateNode(new MergeChannel(), "Merge RGB Channel");
             manager.CreateNode(new SplitChannel(), "Split RGB Channel");
-            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
+            manager.CreateNode(new TwoSplit(), "Mask pixel values");
+            manager.CreateNode(new Replace(), "Replace");
 
 
             AddChildSpawnQueue(camera);

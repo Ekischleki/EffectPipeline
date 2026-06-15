@@ -60,7 +60,8 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                 origin = IPositioning.TopLeft,
                 anchor = IPositioning.TopLeft,
                 offset = new(5),
-                Show = false
+                Show = false,
+                Color = Color.White
             };
             closed_text = new()
             {
@@ -68,7 +69,8 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                 origin = IPositioning.TopLeft,
                 anchor = IPositioning.TopLeft,
                 offset = new(5),
-                Show = true
+                Show = true,
+                Color = Color.White
             };
             SetOpenClosedText();
             AddChildSpawnQueue([open_text, closed_text]);
@@ -76,7 +78,7 @@ namespace EffectPipeline.gameObjects.GUI_Elements
             {
                 Font = font,
                 Text = prop,
-                Color = Color.Black,
+                Color = Color.White,
                 anchor = IPositioning.TopLeft,
                 origin = IPositioning.TopLeft,
                 Show = false
