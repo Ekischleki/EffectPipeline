@@ -58,9 +58,23 @@ namespace EffectPipeline.gameObjects
 
 
             manager.CreateNode(new MergeChannel(), "Merge RGB Channel");
+            manager.CreateNode(new MergeChannel(), "Merge RGB Channel");
             manager.CreateNode(new SplitChannel(), "Split RGB Channel");
-            manager.CreateNode(new TwoSplit(), "Mask pixel values");
+            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
+            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
+            manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
+            manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
             manager.CreateNode(new Replace(), "Replace");
+            manager.CreateNode(new Replace(), "Replace");
+            manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
+            manager.CreateNode(new ChannelAverage(), "Reverb");
+            manager.CreateNode(new ChannelAverage(), "Reverb");
+            manager.CreateNode(new ChannelAverage(), "Reverb");
+            manager.CreateNode(new FourierTransform(), "FFT");
+            manager.CreateNode(new InverseFourierTransform(), "IFFT");
+
+
+
 
 
             AddChildSpawnQueue(camera);

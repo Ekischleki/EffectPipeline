@@ -31,4 +31,10 @@
 	</ItemGroup>
 
 
+
+	<ItemGroup>
+	  <PackageReference Include="FftFlat" Version="1.0.1" />
+	</ItemGroup>
+
+
 </Project>

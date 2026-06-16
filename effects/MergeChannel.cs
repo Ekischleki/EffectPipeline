@@ -71,7 +71,7 @@ namespace EffectPipeline.Effects
             int height = 0;
             foreach (var input in inputs)
             {
-                if(input is GreyscaleImage img) {
+                if(input is GreyscaleImage img && img.image.Length > 0) {
                     if(set && (width != img.width || height != img.height))
                     {
                         throw new ArgumentException("Channel sizes must match");

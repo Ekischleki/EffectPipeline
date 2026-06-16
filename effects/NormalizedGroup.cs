@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace EffectPipeline.effects
 {
     //Maybe turn this into an "Equal split" which creates an n-Mask where each part of the mask has equal representation
-    internal class TwoSplit : IEffect
+    internal class NormalizedGroup : IEffect
     {
         public IEnumerable<(string, Type)> Inputs => [("Image", Type.GreyscaleImage)];
 
@@ -25,8 +25,9 @@ namespace EffectPipeline.effects
         public IInstance[] applyEffect(IInstance?[] inputs, GameObject[] properties)
         {
             var image = (GreyscaleImage?)inputs[0];
+           
             var split_amount = ((NumberInputProperty)properties[0]).Value;
-            if (image == null)
+            if (image == null || image.image.Length == 0)
             {
                 return [new Mask(1, new int[0], 0, 0)];
             }

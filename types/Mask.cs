@@ -26,7 +26,7 @@ namespace EffectPipeline.types
 
         private GreyscaleImage ToGreyscale()
         {
-            var img = layers.Select(i => (float)i / (float)layer_count).ToArray();
+            var img = layers.Select(i => (float)i / (float)(layer_count -1)).ToArray();
             return new(width, height, img);
         }
 

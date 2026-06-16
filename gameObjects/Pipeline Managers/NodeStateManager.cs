@@ -115,6 +115,10 @@ namespace EffectPipeline.gameObjects
                 }
                 var input_param = input.connections.AsEnumerable().First().start;
                 var input_value = nodes[input_param.parentNode]![input_param.index];
+                if (input_value == null)
+                {
+                    continue;
+                }
                 var expected_type = input.type;
                 if (input_value.Type != expected_type)
                 {
@@ -133,7 +137,14 @@ namespace EffectPipeline.gameObjects
                     OutputImage = image.ToTexture(Game.Canvas);
                 }
             }
-            nodes[node] = node.effect.applyEffect(inputs, node.properties);
+            try
+            {
+                nodes[node] = node.effect.applyEffect(inputs, node.properties);
+
+            } catch (Exception)
+            {
+                nodes[node] = node.effect.Outputs.Select(x => (IInstance?)null).ToArray()!;
+            }
             foreach(var output in node.outputs)
             {
                 foreach (var con in output.connections)
