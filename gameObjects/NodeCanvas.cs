@@ -22,13 +22,24 @@ namespace EffectPipeline.gameObjects
     {
         internal NodeCanvas() {
             clippingContainer = this;
+            canvas = this;
+            node_search = new() { height = 400, width = 300, searchIndex = new(Program.DefaultEffectSearch), Show = false, Pause = true, OnSelect = CreateNode, pauseBehavior = PauseBehavior.Inherit, showBehavior = ShowBehavior.Inherit };
         }
+        [GetFrom(Singleton.Keyboard)]
+        Keyboard keyboard = null!;
+        [GetFrom(Singleton.Mouse)]
+        Mouse mouse = null!;
         [DependencyCache(InteractionType.Upload)]
         protected IContainer clippingContainer;
         [DependencyCache(InteractionType.Upload)]
+        protected NodeCanvas canvas;
+        [DependencyCache(InteractionType.Upload)]
+        protected NodeSearch node_search;
+        
+        [DependencyCache(InteractionType.Upload)]
         internal NodeStateManager manager = new();
         [DependencyCache(InteractionType.Upload)]
-        NodeCanvasCamera camera = new();
+        NodeCanvasCamera camera = new() { pauseBehavior = PauseBehavior.Inherit, showBehavior = ShowBehavior.Inherit };
         private Vector2 size = new(500);
         new internal Vector2 Size { 
             get => size; 
@@ -50,39 +61,50 @@ namespace EffectPipeline.gameObjects
             InitSized();
             clipBehavior = ClipBehavior.Cut;
             camera.WithChildren([
-                manager
+                manager,
             ]);
             manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\aquarellebg.png")), "Image Source Spacey");
             manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\SpOoKy.png")), "Image Source SpOoKy");
             manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\adhd mix.png")), "Image Source ADHD MIX");
 
 
-            manager.CreateNode(new MergeChannel(), "Merge RGB Channel");
-            manager.CreateNode(new MergeChannel(), "Merge RGB Channel");
-            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
-            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
-            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
-            manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
-            manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
-            manager.CreateNode(new Replace(), "Replace");
-            manager.CreateNode(new Replace(), "Replace");
-            manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
-            manager.CreateNode(new ChannelAverage(), "Reverb");
-            manager.CreateNode(new ChannelAverage(), "Reverb");
-            manager.CreateNode(new ChannelAverage(), "Reverb");
-            manager.CreateNode(new FourierTransform(), "FFT");
-            manager.CreateNode(new InverseFourierTransform(), "IFFT");
+            AddChildSpawnQueue([camera, node_search]);
+        }
 
-
-
-
-
-            AddChildSpawnQueue(camera);
+        public void CreateNode(string title, IEffect effect)
+        {
+            HideSearch();
+            var node = manager.CreateNode(effect, title);
+            GUIElement.Focus = node;
+            node.offset = camera.Cam_mouse_pos - new Vector2(30, 5);
+        }
+        internal void ShowSearch()
+        {
+            node_search.offset = mouse.Position - new Vector2(40, 40);
+            node_search.Pause = false;
+            node_search.Show = true;
+            camera.Pause = true;
+        }
+        internal void HideSearch()
+        {
+            node_search.Pause = true;
+            node_search.Show = false;
+            camera.Pause = false;
         }
         //public override Vector2 ContainerPosition { get => position; protected set { } }
         protected override void Update()
         {
-            
+            if(keyboard.ReleasedKey((SDL2.SDL.SDL_Keycode)'a'))
+            {
+                ShowSearch();
+            } else if (keyboard.ClickingKey(SDL2.SDL.SDL_Keycode.SDLK_ESCAPE) || !((IContainer)node_search).InContainer(mouse.Position))
+            {
+                HideSearch();
+            }
+            if(node_search.Pause)
+            {
+                node_search.search_text_elem.text.Text = "";
+            }
         }
     }
 
@@ -93,8 +115,10 @@ namespace EffectPipeline.gameObjects
         protected IContainer clippingContainer = null!;
         [GetFrom(Singleton.Mouse)]
         Mouse mouse = null!;
+        [DependencyCache(InteractionType.Download)]
+        protected NodeCanvas canvas = null!;
 
-        internal Vector2 Cam_mouse_pos { private set; get; }
+        internal Vector2 Cam_mouse_pos => (mouse.Position - offset) / AbsoluteSize;
 
         [GetFrom(Singleton.Keyboard)]
         Keyboard keyboard = null!;
@@ -134,13 +158,13 @@ namespace EffectPipeline.gameObjects
                     {
                         //This is probably not supposed to be a drag, but a click
                         defaultLogger.Log("Center mouse click event");
+                        canvas.ShowSearch();
                     }
                     cam_pos += new_offset;
                     offset = cam_pos;
                 }
                 drag_start = null;
             }
-            Cam_mouse_pos = (mouse.Position - offset) / AbsoluteSize;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using EffectPipeline.GameObjects;
+﻿using EffectPipeline.Effects;
+using EffectPipeline.GameObjects;
 using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
@@ -18,6 +19,8 @@ namespace EffectPipeline.gameObjects
     {
         [DependencyCache(InteractionType.Upload)]
         internal Node parentNode;
+        [DependencyCache(InteractionType.Download)]
+        internal NodeStateManager manager = null!;
         public Node(IEffect effect, string title) 
         {
             parentNode = this;
@@ -117,7 +120,15 @@ namespace EffectPipeline.gameObjects
         {
             Vector2 new_offset = camera.Cam_mouse_pos - mouseDragStart!.Value;
             offset = position + new_offset;
-            
+            if(effect is not ImageOutput && (
+                mouse.MouseEvent.HasFlag(MouseEvent.Right) ||
+                keyboard.ClickingKey(SDL2.SDL.SDL_Keycode.SDLK_BACKSPACE) || 
+                keyboard.ClickingKey(SDL2.SDL.SDL_Keycode.SDLK_ESCAPE) ||
+                keyboard.ClickingKey(SDL2.SDL.SDL_Keycode.SDLK_DELETE)
+                ))
+            {
+                manager.DeleteNode(this);
+            }
         }
 
     }

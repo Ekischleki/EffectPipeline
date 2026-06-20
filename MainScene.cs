@@ -1,4 +1,5 @@
-﻿using EffectPipeline.Effects;
+﻿using EffectPipeline.effects;
+using EffectPipeline.Effects;
 using EffectPipeline.gameObjects;
 using EffectPipeline.gameObjects.GUI_Elements;
 using Pandemonium.Engine.GameObjectStuff;
@@ -63,8 +64,23 @@ namespace EffectPipeline
             }
         }
     }
+
+    internal class TestScene : GameScene
+    {
+        protected override IEnumerable<GameObject> GetStartingGameObjects()
+        {
+            yield break;
+        }
+
+        protected override bool OnExitRequest()
+        {
+            return true;
+        }
+    }
+
     internal class MainScene : GameScene
     {
+
 
         protected override IEnumerable<GameObject> GetStartingGameObjects()
         {
