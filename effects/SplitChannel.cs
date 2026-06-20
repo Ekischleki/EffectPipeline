@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wacton.Unicolour;
 
 namespace EffectPipeline.Effects
 {
@@ -54,6 +55,24 @@ namespace EffectPipeline.Effects
                     }
 
                     return [h, s, v];
+                case DropdownProperty.Colorspace.OkLab:
+                    colors = image.ToColors();
+                    var l = new float[colors.Length];
+                    var a = new float[colors.Length];
+                    var b = new float[colors.Length];
+
+                    i = 0;
+                    foreach (var col in colors)
+                    {
+                        var c = new Unicolour(ColourSpace.Rgb255, col.R, col.G, col.B);
+                        var oklab = c.Oklab;
+                        l[i] = (float)oklab.L;
+                        //Convert to float from 0 to 1
+                        a[i] = float.Clamp((float)((oklab.A + 0.2339) / (0.2762 + 0.2339)), 0, 1);
+                        b[i] = float.Clamp((float)((oklab.B + 0.3115) / (0.1986 + 0.3115)), 0, 1);
+                        i++;
+                    }
+                    return [l, a, b];
                 default:
                     throw new NotImplementedException();
             }
