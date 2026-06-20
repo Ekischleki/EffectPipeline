@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.types
 {
-    internal class RGBImage : IInstance
+    public class RGBImage : IInstance
     {
         public Type Type => Type.RGBImage;
 

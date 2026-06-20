@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.types
 {
-    internal class GreyscaleImage : IInstance
+    public class GreyscaleImage : IInstance
     {
         public Type Type => Type.GreyscaleImage;
         public int width { get; }
