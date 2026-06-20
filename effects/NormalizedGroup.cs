@@ -54,4 +54,13 @@ namespace EffectPipeline.effects
             return [new Mask(split_amount, mask, image.width, image.height)];
         }
     }
+
+    internal class NormalizedGroupSearch : IEffectSearch
+    {
+        public IEnumerable<string> Tags => ["normalized", "group", "mask"];
+
+        public string Title => "Normalized Group";
+
+        public IEffect CreateEffect() => new NormalizedGroup();
+    }
 }

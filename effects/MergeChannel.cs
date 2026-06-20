@@ -1,9 +1,10 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.effects;
+using EffectPipeline.gameObjects.GUI_Elements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,5 +108,14 @@ namespace EffectPipeline.Effects
             
             
         }
+
     }
+        internal class MergeChannelSearch : IEffectSearch
+        {
+            public IEnumerable<string> Tags => ["channel", "merge", "rgb", "hsv", "oklab", "image"];
+
+            public string Title => "Channel Merge";
+
+            public IEffect CreateEffect() => new MergeChannel();
+        }
 }

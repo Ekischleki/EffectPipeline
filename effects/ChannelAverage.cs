@@ -33,4 +33,13 @@ namespace EffectPipeline.effects
             return [new GreyscaleImage(image.width, image.height, res)];
         }
     }
+
+    internal class ChannelAverageSearch : IEffectSearch 
+    {
+        public IEnumerable<string> Tags => ["moving average", "smear", "motion", "blur", "reverb"];
+
+        public string Title => "Moving Average";
+
+        public IEffect CreateEffect() => new ChannelAverage();
+    }
 }

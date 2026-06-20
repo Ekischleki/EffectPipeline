@@ -1,4 +1,5 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.effects;
+using EffectPipeline.gameObjects.GUI_Elements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
@@ -77,5 +78,14 @@ namespace EffectPipeline.Effects
                     new GreyscaleImage(image.width, image.height, channels[1]),
                     new GreyscaleImage(image.width, image.height, channels[2]),  ];
         }
+    }
+
+    internal class SplitChannelSearch : IEffectSearch
+    {
+        public IEnumerable<string> Tags => ["channel", "split", "rgb", "hsv", "oklab", "image", "channels"];
+
+        public string Title => "Channel Split";
+
+        public IEffect CreateEffect() => new SplitChannel();
     }
 }

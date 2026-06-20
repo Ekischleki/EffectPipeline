@@ -46,4 +46,12 @@ namespace EffectPipeline.effects
             return [new RGBImage(imageA.width, imageA.height, r, g, b)];
         }
     }
+    internal class ReplaceSearch : IEffectSearch
+    {
+        public IEnumerable<string> Tags => ["replace", "fuse", "merge", "image", "mask"];
+
+        public string Title => "Replace";
+
+        public IEffect CreateEffect() => new Replace();
+    }
 }

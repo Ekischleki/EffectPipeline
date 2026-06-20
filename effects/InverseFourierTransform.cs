@@ -32,4 +32,13 @@ namespace EffectPipeline.effects
 
         }
     }
+
+    internal class InverseFourierTransformSearch : IEffectSearch
+    {
+        public IEnumerable<string> Tags => ["inverse", "complex", "fourier transform", "fft", "frequency", "frequencies"];
+
+        public string Title => "Inverse Fourier Transform";
+
+        public IEffect CreateEffect() => new InverseFourierTransform();
+    }
 }
