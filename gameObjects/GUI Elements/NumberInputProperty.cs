@@ -19,16 +19,26 @@ namespace EffectPipeline.gameObjects.GUI_Elements
         internal Node parentNode = null!;
         [DependencyCache(InteractionType.Download)]
         internal NodeStateManager manager = null!;
+
         static char[] digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
         TextGameObject display = null!;
         [GetFrom(StoreType.FontStore, "std:oxanium.ttf@10")]
         internal RenderedFont font = null!;
-        [GetFrom(Singleton.Keyboard)]
-        Keyboard keyboard = null!;
+
+        private string title;
+
         bool focus = false;
         public int Value { get; set; }
         public int Max { get; init; }
         public int Min { get; init; }
+
+
+        public NumberInputProperty(string title, int defaultValue = 0)
+        {
+            this.title = title;
+            Value = defaultValue;
+        }
 
         public override void Init()
         {

@@ -52,23 +52,24 @@ namespace EffectPipeline.gameObjects
             camera.WithChildren([
                 manager
             ]);
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\aquarellebg.png")), "Image Source Spacey");
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\SpOoKy.png")), "Image Source SpOoKy");
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\adhd mix.png")), "Image Source ADHD MIX");
+            //manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\aquarellebg.png")), "Image Source Spacey");
+            //manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\SpOoKy.png")), "Image Source SpOoKy");
+            //manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\adhd mix.png")), "Image Source ADHD MIX");
+            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\sheets.png")), "Image Source sheets");
 
 
+            //manager.CreateNode(new MergeChannel(), "Merge RGB Channel");
             manager.CreateNode(new MergeChannel(), "Merge RGB Channel");
-            manager.CreateNode(new MergeChannel(), "Merge RGB Channel");
+            //manager.CreateNode(new SplitChannel(), "Split RGB Channel");
+            //manager.CreateNode(new SplitChannel(), "Split RGB Channel");
             manager.CreateNode(new SplitChannel(), "Split RGB Channel");
-            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
-            manager.CreateNode(new SplitChannel(), "Split RGB Channel");
-            manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
-            manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
-            manager.CreateNode(new Replace(), "Replace");
-            manager.CreateNode(new Replace(), "Replace");
-            manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
-            manager.CreateNode(new ChannelAverage(), "Reverb");
-            manager.CreateNode(new ChannelAverage(), "Reverb");
+            //manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
+            //manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
+           // manager.CreateNode(new Replace(), "Replace");
+            //manager.CreateNode(new Replace(), "Replace");
+            //manager.CreateNode(new NormalizedGroup(), "Mask pixel values");
+            //manager.CreateNode(new ChannelAverage(), "Reverb");
+            //manager.CreateNode(new ChannelAverage(), "Reverb");
             manager.CreateNode(new ChannelAverage(), "Reverb");
             manager.CreateNode(new FourierTransform(), "FFT");
             manager.CreateNode(new InverseFourierTransform(), "IFFT");
