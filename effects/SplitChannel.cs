@@ -31,6 +31,39 @@ namespace EffectPipeline.Effects
             value = max / 255d;
         }
 
+        private float[] ConvertColorToColorspaceChannels(ColourSpace colorSpace, Unicolour color)
+        {
+            switch (colorSpace)
+            {
+                case ColourSpace.Hsb:
+                    var hsb = color.Hsb;
+                    return [(float)hsb.H, (float)hsb.S, (float)hsb.B];
+                case ColourSpace.Oklab:
+                    var oklab = color.Oklab;
+                    return [(float)oklab.L, (float)oklab.A, (float)oklab.B];
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        private float[][] ToColorspace(ColourSpace colorSpace, int width, int height, float[][] channels, float channelZeroMin, float channelZeroMax, float channelOneMin, float channelOneMax, float channelTwoMin, float channelTwoMax)
+        {
+            var c0 = new float[width* height];
+            var c1 = new float[width * height];
+            var c2 = new float[width * height];
+
+            for (int i = 0; i < width * height; i++)
+            {
+                var color = new Unicolour(ColourSpace.Rgb, channels[0][i], channels[1][i], channels[2][i]);
+                var convertedChannels = ConvertColorToColorspaceChannels(colorSpace, color);
+
+                c0[i] = (convertedChannels[0] - channelZeroMin) / (channelZeroMax - channelZeroMin);
+                c1[i] = (convertedChannels[1] - channelOneMin) / (channelOneMax - channelOneMin);
+                c2[i] = (convertedChannels[2] - channelTwoMin) / (channelTwoMax - channelTwoMin);
+            }
+            return [c0, c1, c2];
+        }
+
         private float[][] ToColorChannels(RGBImage image, DropdownProperty.Colorspace colorspace)
         {
             switch (colorspace)
@@ -38,41 +71,9 @@ namespace EffectPipeline.Effects
                 case DropdownProperty.Colorspace.Rgb:
                     return [image.red, image.green, image.blue];
                 case DropdownProperty.Colorspace.Hsv:
-                    var colors = image.ToColors();
-                    var hsv = colors.Select<Color, float[]>(col => { ColorToHSV(col, out double h, out double s, out double v); return [(float)h / 365f, (float)s, (float)v]; });
-                    var h = new float[colors.Length];
-                    var s = new float[colors.Length];
-                    var v = new float[colors.Length];
-
-                    var i = 0;
-                    foreach (var p in hsv)
-                    {
-                        h[i] = p[0];
-                        s[i] = p[1];
-                        v[i] = p[2];
-
-                        i++;
-                    }
-
-                    return [h, s, v];
+                    return ToColorspace(ColourSpace.Hsb, image.width, image.height, [image.red, image.green, image.blue], 0, 360, 0, 1, 0, 1);
                 case DropdownProperty.Colorspace.OkLab:
-                    colors = image.ToColors();
-                    var l = new float[colors.Length];
-                    var a = new float[colors.Length];
-                    var b = new float[colors.Length];
-
-                    i = 0;
-                    foreach (var col in colors)
-                    {
-                        var c = new Unicolour(ColourSpace.Rgb255, col.R, col.G, col.B);
-                        var oklab = c.Oklab;
-                        l[i] = (float)oklab.L;
-                        //Convert to float from 0 to 1
-                        a[i] = float.Clamp((float)((oklab.A + 0.2339) / (0.2762 + 0.2339)), 0, 1);
-                        b[i] = float.Clamp((float)((oklab.B + 0.3115) / (0.1986 + 0.3115)), 0, 1);
-                        i++;
-                    }
-                    return [l, a, b];
+                    return ToColorspace(ColourSpace.Oklab, image.width, image.height, [image.red, image.green, image.blue], 0, 1, -0.2339f, 0.2762f, -0.3115f, 0.1986f);
                 default:
                     throw new NotImplementedException();
             }
@@ -95,13 +96,13 @@ namespace EffectPipeline.Effects
             var channels = ToColorChannels(image, colorspace);
             return [new GreyscaleImage(image.width, image.height, channels[0]),
                     new GreyscaleImage(image.width, image.height, channels[1]),
-                    new GreyscaleImage(image.width, image.height, channels[2]),  ];
+                    new GreyscaleImage(image.width, image.height, channels[2]),];
         }
     }
 
     internal class SplitChannelSearch : IEffectSearch
     {
-        public IEnumerable<string> Tags => ["channel", "split", "rgb", "hsv", "oklab", "image", "channels"];
+        public IEnumerable<string> Tags => ["channel", "split", "converted", "hsv", "oklab", "image", "channels"];
 
         public string Title => "Channel Split";
 
