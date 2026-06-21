@@ -75,7 +75,8 @@ namespace EffectPipeline.Effects
                     return FromColorspace(ColourSpace.Hsb, width, height, channels, 0, 360, 0, 1, 0, 1);
                 case DropdownProperty.Colorspace.OkLab:
                     return FromColorspace(ColourSpace.Oklab, width, height, channels, 0, 1, -0.2339f, 0.2762f, -0.3115f, 0.1986f);
-                    
+                case DropdownProperty.Colorspace.OkLch:
+                    return FromColorspace(ColourSpace.Oklch, width, height, channels, 0, 1, 0, 0.5002f, 0, 360);
                 default:
                     throw new NotImplementedException();
             }

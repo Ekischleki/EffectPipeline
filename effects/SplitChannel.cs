@@ -41,6 +41,9 @@ namespace EffectPipeline.Effects
                 case ColourSpace.Oklab:
                     var oklab = color.Oklab;
                     return [(float)oklab.L, (float)oklab.A, (float)oklab.B];
+                case ColourSpace.Oklch:
+                    var oklch = color.Oklch;
+                    return [(float)oklch.L, (float)oklch.C, (float)oklch.H];
                 default:
                     throw new NotImplementedException();
             }
@@ -74,6 +77,9 @@ namespace EffectPipeline.Effects
                     return ToColorspace(ColourSpace.Hsb, image.width, image.height, [image.red, image.green, image.blue], 0, 360, 0, 1, 0, 1);
                 case DropdownProperty.Colorspace.OkLab:
                     return ToColorspace(ColourSpace.Oklab, image.width, image.height, [image.red, image.green, image.blue], 0, 1, -0.2339f, 0.2762f, -0.3115f, 0.1986f);
+                case DropdownProperty.Colorspace.OkLch:
+                    return ToColorspace(ColourSpace.Oklch, image.width, image.height, [image.red, image.green, image.blue], 0, 1, 0, 0.5002f, 0, 360);
+
                 default:
                     throw new NotImplementedException();
             }
