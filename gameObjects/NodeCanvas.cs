@@ -159,7 +159,9 @@ namespace EffectPipeline.gameObjects
                     {
                         //This is probably not supposed to be a drag, but a click
                         defaultLogger.Log("Center mouse click event");
-                        canvas.ShowSearch();
+
+                        if(canvas != null)
+                            canvas.ShowSearch();
                     }
                     cam_pos += new_offset;
                     offset = cam_pos;

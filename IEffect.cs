@@ -21,5 +21,6 @@ namespace EffectPipeline
         Mask,
         RGBImage,
         GreyscaleImage,
+        MonoAudio,
     }
 }

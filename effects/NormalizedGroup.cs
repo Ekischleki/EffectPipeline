@@ -16,7 +16,7 @@ namespace EffectPipeline.effects
 
         public IEnumerable<(string, Type)> Outputs => [("Mask", Type.Mask)];
 
-        public GameObject[] Properties => [new NumberInputProperty() {
+        public GameObject[] Properties => [new NumberInputProperty("Bands") {
             Value = 2,
             Min = 2,
             Max = 100,

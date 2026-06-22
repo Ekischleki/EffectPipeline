@@ -34,15 +34,16 @@ namespace EffectPipeline.gameObjects.GUI_Elements
         public int Min { get; init; }
 
 
-        public NumberInputProperty(string title, int defaultValue = 0)
+        public NumberInputProperty(string title)
         {
             this.title = title;
-            Value = defaultValue;
         }
 
         public override void Init()
         {
-            
+            if (Value < Min)
+                Value = Min;
+
             AddChildSpawnQueue(display = new() {
                 Font = font, 
                 Color = Color.White, 

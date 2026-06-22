@@ -15,12 +15,14 @@ namespace EffectPipeline.effects
 
         public IEnumerable<(string, Type)> Outputs => [("Resized Image", Type.RGBImage)];
 
-        public GameObject[] Properties => [new NumberInputProperty("Width", 512), new NumberInputProperty("Height", 512)];
+        public GameObject[] Properties => [new NumberInputProperty("Width") { Value = 512, Min = 1, Max = Int32.MaxValue}, new NumberInputProperty("Height") { Value = 512, Min = 1, Max = Int32.MaxValue }];
 
 
         public IInstance[] applyEffect(IInstance[] inputs, GameObject[] properties)
         {
             RGBImage inputImage = (RGBImage)inputs[0];
+            if (inputImage == null)
+                return [new RGBImage(0, 0, [], [], [])];
 
             int oldWidth = inputImage.width;
             int oldHeight = inputImage.height;
@@ -39,13 +41,24 @@ namespace EffectPipeline.effects
                     int oldI = (int)Math.Floor(((double)i / (double)newWidth) * (double)oldWidth);
                     int oldJ = (int)Math.Floor(((double)j / (double)newHeight) * (double)oldHeight);
 
-                    redArray[i * newHeight + j] = inputImage.red[oldI * oldHeight + oldJ];
-                    greenArray[i * newHeight + j] = inputImage.green[oldI * oldHeight + oldJ];
-                    blueArray[i * newHeight + j] = inputImage.blue[oldI * oldHeight + oldJ];
+                    redArray[j * newWidth + i] = inputImage.red[oldJ * oldWidth + oldI];
+                    greenArray[j * newWidth + i] = inputImage.green[oldJ * oldWidth + oldI];
+                    blueArray[j * newWidth + i] = inputImage.blue[oldJ * oldWidth + oldI];
                 }
             }
 
             return [new RGBImage(newWidth, newHeight, redArray, greenArray, blueArray)];
         }
     }
+
+
+    internal class ResizeSearch : IEffectSearch
+    {
+        public IEnumerable<string> Tags => ["resize", "rescale", "size", "scale", "aspect ratio"];
+
+        public string Title => "Rescale Image";
+
+        public IEffect CreateEffect() => new Resize();
+    }
+
 }
