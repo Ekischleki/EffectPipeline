@@ -46,6 +46,25 @@ namespace EffectPipeline.Effects
                 return [v, p, q];
         }
 
+
+        private RGBImage FromColorspace(ColourSpace colorSpace, int width, int height, float[][] channels, float channelZeroMin, float channelZeroMax, float channelOneMin, float channelOneMax, float channelTwoMin, float channelTwoMax)
+        {
+            var rgb = new float[width * height][];
+            for (int i = 0; i < width * height; i++)
+            {
+                var first = channels[0][i] * (channelZeroMax - channelZeroMin) + channelZeroMin;
+                var second = channels[1][i] * (channelOneMax - channelOneMin) + channelOneMin;
+                var third = channels[2][i] * (channelTwoMax - channelTwoMin) + channelTwoMin;
+                var color = new Unicolour(colorSpace, (first, second, third));
+                 var rgb_col = color.Rgb.Clipped;
+                rgb[i] = [(float)rgb_col.R, (float)rgb_col.G, (float)rgb_col.B];
+            }
+            var redChannel = rgb.Select((color) => color[0]).ToArray();
+            var greenChannel = rgb.Select((color) => color[1]).ToArray();
+            var blueChannel = rgb.Select((color) => color[2]).ToArray();
+            return new RGBImage(width, height, redChannel, greenChannel, blueChannel);
+        }
+
         private RGBImage FromColorChannels(int width, int height, float[][] channels, DropdownProperty.Colorspace colorspace)
         {
             switch (colorspace)
@@ -53,26 +72,11 @@ namespace EffectPipeline.Effects
                 case DropdownProperty.Colorspace.Rgb: 
                     return new RGBImage(width, height, channels[0], channels[1], channels[2]);
                 case DropdownProperty.Colorspace.Hsv:
-                    float[][] rgb = new float[width * height][];
-                    for (int i = 0; i < width * height; i++)
-                        rgb[i] = RGBFromHSV(channels[0][i], channels[1][i], channels[2][i]);
-
-                    float[] redChannel = rgb.Select((color) => color[0]).ToArray();
-                    float[] greenChannel = rgb.Select((color) => color[1]).ToArray();
-                    float[] blueChannel = rgb.Select((color) => color[2]).ToArray();
-                    return new RGBImage(width, height, redChannel, greenChannel, blueChannel);
+                    return FromColorspace(ColourSpace.Hsb, width, height, channels, 0, 360, 0, 1, 0, 1);
                 case DropdownProperty.Colorspace.OkLab:
-                    rgb = new float[width * height][];
-                    for (int i = 0; i < width * height; i++)
-                    {
-                        var color = new Unicolour(ColourSpace.Oklab, (channels[0][i], channels[1][i] * (0.2762f + 0.2339f) - 0.2339, channels[2][i] * (0.1986f + 0.3115f) - 0.3115));
-                        var rgb_col = color.Rgb.Clipped;
-                        rgb[i] = [(float)rgb_col.R, (float)rgb_col.G, (float)rgb_col.B];
-                    }
-                    redChannel = rgb.Select((color) => color[0]).ToArray();
-                    greenChannel = rgb.Select((color) => color[1]).ToArray();
-                    blueChannel = rgb.Select((color) => color[2]).ToArray();
-                    return new RGBImage(width, height, redChannel, greenChannel, blueChannel);
+                    return FromColorspace(ColourSpace.Oklab, width, height, channels, 0, 1, -0.2339f, 0.2762f, -0.3115f, 0.1986f);
+                case DropdownProperty.Colorspace.OkLch:
+                    return FromColorspace(ColourSpace.Oklch, width, height, channels, 0, 1, 0, 0.5002f, 0, 360);
                 default:
                     throw new NotImplementedException();
             }
