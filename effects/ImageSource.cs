@@ -1,4 +1,5 @@
-﻿using EffectPipeline.types;
+﻿using EffectPipeline.effects;
+using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
 using System.Collections.Generic;
@@ -35,5 +36,15 @@ namespace EffectPipeline.Effects
 
             return [imageData];
         }
+    }
+
+    internal class ImageSourceSearch : IEffectSearch
+    {
+        public IEnumerable<string> Tags => ["image", "source", "load", "file", "input"];
+
+        public string Title => "Image Source";
+
+        //Temporary
+        public IEffect CreateEffect() => new ImageSource(RGBImage.LoadFrom("./assets/textures/aquarellebg.png"));
     }
 }

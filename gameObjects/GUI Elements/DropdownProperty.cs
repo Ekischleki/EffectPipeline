@@ -23,7 +23,7 @@ namespace EffectPipeline.gameObjects.GUI_Elements
         {
             Rgb,
             Hsv,
-            Lab,
+            OkLab,
         }
         public static DropdownProperty ColorspaceDropdown => new DropdownProperty(["RGB", "HSV", "OkLab"], "Color space");
 

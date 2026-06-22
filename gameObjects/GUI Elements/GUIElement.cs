@@ -31,7 +31,7 @@ namespace EffectPipeline.gameObjects
 
         protected Vector2? mouseDragStart = null;
 
-        static protected GUIElement Focus = null!;
+        public static GUIElement Focus = null!;
         public bool IsFocus { get => Focus == this; }
         
         protected void HandleMouseInteraction()
@@ -62,11 +62,13 @@ namespace EffectPipeline.gameObjects
                 mouseDragStart = null;
             }
 
-            if (mouse.ClickedThisFrame && !keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LALT) && ((IContainer)this).InContainer(mouse.Position) && clippingContainer.InContainer(mouse.Position))
+            if (mouse.ClickedThisFrame && !keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LALT) && MouseHovering)
             {
                 GUIElement.Focus = this;
             }
         }
+
+        public bool MouseHovering => ((IContainer)this).InContainer(mouse.Position) && clippingContainer.InContainer(mouse.Position);
 
 
         protected abstract void OnClick();

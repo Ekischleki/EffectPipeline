@@ -34,6 +34,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="FftFlat" Version="1.0.1" />
+	  <PackageReference Include="Wacton.Unicolour" Version="7.0.0" />
 	</ItemGroup>
 
 

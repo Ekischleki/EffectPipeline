@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline
 {
-    internal interface IEffect
+    public interface IEffect
     {
         public IEnumerable<(string, Type)> Inputs { get; }
 
@@ -16,7 +16,7 @@ namespace EffectPipeline
         public GameObject[] Properties { get; }
     }
 
-    enum Type
+    public enum Type
     {
         Mask,
         RGBImage,

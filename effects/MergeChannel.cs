@@ -1,12 +1,14 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.effects;
+using EffectPipeline.gameObjects.GUI_Elements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wacton.Unicolour;
 
 namespace EffectPipeline.Effects
 {
@@ -59,6 +61,18 @@ namespace EffectPipeline.Effects
                     float[] greenChannel = rgb.Select((color) => color[1]).ToArray();
                     float[] blueChannel = rgb.Select((color) => color[2]).ToArray();
                     return new RGBImage(width, height, redChannel, greenChannel, blueChannel);
+                case DropdownProperty.Colorspace.OkLab:
+                    rgb = new float[width * height][];
+                    for (int i = 0; i < width * height; i++)
+                    {
+                        var color = new Unicolour(ColourSpace.Oklab, (channels[0][i], channels[1][i] * (0.2762f + 0.2339f) - 0.2339, channels[2][i] * (0.1986f + 0.3115f) - 0.3115));
+                        var rgb_col = color.Rgb.Clipped;
+                        rgb[i] = [(float)rgb_col.R, (float)rgb_col.G, (float)rgb_col.B];
+                    }
+                    redChannel = rgb.Select((color) => color[0]).ToArray();
+                    greenChannel = rgb.Select((color) => color[1]).ToArray();
+                    blueChannel = rgb.Select((color) => color[2]).ToArray();
+                    return new RGBImage(width, height, redChannel, greenChannel, blueChannel);
                 default:
                     throw new NotImplementedException();
             }
@@ -107,5 +121,14 @@ namespace EffectPipeline.Effects
             
             
         }
+
     }
+        internal class MergeChannelSearch : IEffectSearch
+        {
+            public IEnumerable<string> Tags => ["channel", "merge", "rgb", "hsv", "oklab", "image"];
+
+            public string Title => "Channel Merge";
+
+            public IEffect CreateEffect() => new MergeChannel();
+        }
 }

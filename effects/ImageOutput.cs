@@ -26,4 +26,6 @@ namespace EffectPipeline.Effects
             return [];
         }
     }
+
+    //There is no search for image output because there always only exists one
 }

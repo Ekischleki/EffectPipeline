@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.types
 {
-    internal class Mask : IInstance
+    public class Mask : IInstance
     {
         internal readonly int width;
         internal readonly int height;

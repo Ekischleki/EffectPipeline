@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline
 {
-    internal interface IInstance
+    public interface IInstance
     {
         public Type Type { get; }
         public bool SupportInto(Type type);
