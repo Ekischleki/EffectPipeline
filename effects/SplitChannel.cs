@@ -1,5 +1,4 @@
-﻿using EffectPipeline.effects;
-using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.gameObjects.GUI_Elements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;

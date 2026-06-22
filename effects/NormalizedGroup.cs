@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.effects
+namespace EffectPipeline.Effects
 {
     //Maybe turn this into an "Equal split" which creates an n-Mask where each part of the mask has equal representation
     internal class NormalizedGroup : IEffect

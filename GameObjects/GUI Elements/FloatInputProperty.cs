@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.gameObjects.GUI_Elements
 {
-    internal class NumberInputProperty : GUIElement
+    internal class FloatInputProperty : GUIElement
     {
         [DependencyCache(InteractionType.Download)]
         internal Node parentNode = null!;
@@ -29,12 +29,12 @@ namespace EffectPipeline.gameObjects.GUI_Elements
         private string title;
 
         bool focus = false;
-        public int Value { get; set; }
-        public int Max { get; init; }
-        public int Min { get; init; }
+        public float Value { get; set; }
+        public float Max { get; init; }
+        public float Min { get; init; }
 
 
-        public NumberInputProperty(string title)
+        public FloatInputProperty(string title)
         {
             this.title = title;
         }
@@ -73,9 +73,9 @@ namespace EffectPipeline.gameObjects.GUI_Elements
         {
             try
             {
-                int inputtedNumber = int.Parse(typingText);
+                float inputtedNumber = float.Parse(typingText);
 
-                Value = int.Clamp(inputtedNumber, Min, Max);
+                Value = float.Clamp(inputtedNumber, Min, Max);
                 display.Text = Value.ToString();
                 manager.UpdateCacheAt(parentNode);
             }
@@ -84,6 +84,7 @@ namespace EffectPipeline.gameObjects.GUI_Elements
 
             }
         }
+
         protected override void Update()
         {
             HandleMouseInteraction();
@@ -106,8 +107,13 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                         Console.WriteLine(typingText);
                     }
                 }
-                if (typingText != "" && keyboard.ClickingKey(SDL.SDL_Keycode.SDLK_BACKSPACE))
+                if (keyboard.ClickingKey(SDL.SDL_Keycode.SDLK_PERIOD))
                 {
+                    typingText += ".";
+                    display.Text = typingText;
+                }
+                if (typingText != "" && keyboard.ClickingKey(SDL.SDL_Keycode.SDLK_BACKSPACE))
+                { 
                     typingText.Remove(typingText.Length - 1);
                     display.Text = typingText;
                 }

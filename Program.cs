@@ -1,5 +1,4 @@
-﻿using EffectPipeline.effects;
-using EffectPipeline.Effects;
+﻿using EffectPipeline.Effects;
 using Pandemonium.Engine;
 using Pandemonium.Engine.GameSceneStuff;
 using System.Collections.Immutable;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EffectPipeline.types;
+using Pandemonium.Engine.GameObjectStuff;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,27 +20,17 @@ namespace EffectPipeline.types
             this.samples = _samples;
         }
 
-
-        public GreyscaleImage ToGreyscale()
-        {
-            return new GreyscaleImage(samples.Length, 1, samples);
-        }
-
         public RGBImage? ToImage()
         {
-            return ToGreyscale().ToImage();
+            return RGBImage.WhiteImage(1, 1);
         }
 
-        public bool SupportInto(Type type) => type switch { Type.RGBImage => true, Type.GreyscaleImage => true, _ => false };
+        public bool SupportInto(Type type) => type switch { _ => false };
 
         public IInstance Into(Type type)
         {
             switch (type)
             {
-                case Type.GreyscaleImage:
-                    return this.ToGreyscale();
-                case Type.RGBImage:
-                    return this.ToImage()!;
                 default:
                     throw new NotImplementedException();
             }

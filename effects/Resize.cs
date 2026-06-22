@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.effects
+namespace EffectPipeline.Effects
 {
     internal class Resize : IEffect
     {
@@ -34,11 +34,12 @@ namespace EffectPipeline.effects
             float[] greenArray = new float[newWidth * newHeight];
             float[] blueArray = new float[newWidth * newHeight];
 
-            for (int i = 0; i < newWidth; i++) 
+            for (int i = 0; i < newWidth; i++)
             {
+                int oldI = (int)Math.Floor(((double)i / (double)newWidth) * (double)oldWidth);
+
                 for (int j = 0; j < newHeight; j++)
                 {
-                    int oldI = (int)Math.Floor(((double)i / (double)newWidth) * (double)oldWidth);
                     int oldJ = (int)Math.Floor(((double)j / (double)newHeight) * (double)oldHeight);
 
                     redArray[j * newWidth + i] = inputImage.red[oldJ * oldWidth + oldI];
