@@ -14,9 +14,9 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Real", Type.GreyscaleImage), ("Imag", Type.GreyscaleImage)];
 
-        public GameObject[] Properties => [];
+        public Property[] Properties => [];
 
-        public IInstance[] applyEffect(IInstance?[] inputs, GameObject[] properties)
+        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
         {
             var real = (GreyscaleImage?)inputs[0];
             var imag = (GreyscaleImage?)inputs[1];

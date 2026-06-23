@@ -36,7 +36,7 @@ namespace EffectPipeline.gameObjects
         internal int width;
         internal int height;
         internal TextGameObject title = null!;
-        internal readonly GameObject[] properties;
+        internal readonly Property[] properties;
         [GetFrom(StoreType.FontStore, "std:oxanium.ttf@15")]
         internal RenderedFont font = null!;
 

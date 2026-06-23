@@ -16,13 +16,13 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Mask", Type.Mask)];
 
-        public GameObject[] Properties => [new NumberInputProperty("Bands") {
+        public Property[] Properties => [new NumberInputProperty("Bands") {
             Value = 2,
             Min = 2,
             Max = 100,
         }];
 
-        public IInstance[] applyEffect(IInstance?[] inputs, GameObject[] properties)
+        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
         {
             var image = (GreyscaleImage?)inputs[0];
            

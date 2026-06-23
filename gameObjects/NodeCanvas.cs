@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.gameObjects
 {
-    internal class NodeCanvas : GameObject
+    public class NodeCanvas : GameObject
     {
         internal NodeCanvas() {
             clippingContainer = this;
@@ -33,7 +33,7 @@ namespace EffectPipeline.gameObjects
         [DependencyCache(InteractionType.Upload)]
         protected NodeCanvas canvas;
         [DependencyCache(InteractionType.Upload)]
-        protected NodeSearch node_search;
+        NodeSearch node_search;
         
         [DependencyCache(InteractionType.Upload)]
         internal NodeStateManager manager = new();
@@ -110,7 +110,7 @@ namespace EffectPipeline.gameObjects
     }
 
 
-    internal class NodeCanvasCamera : GameObject
+    public class NodeCanvasCamera : GameObject
     {
         [DependencyCache(InteractionType.Download)]
         protected IContainer clippingContainer = null!;

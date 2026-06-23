@@ -1,4 +1,5 @@
-﻿using Pandemonium.Engine;
+﻿using EffectPipeline.project;
+using Pandemonium.Engine;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.gameObjects.GUI_Elements
 {
-    internal class NumberInputProperty : GUIElement
+    internal class NumberInputProperty : Property
     {
         [DependencyCache(InteractionType.Download)]
         internal Node parentNode = null!;
@@ -112,6 +113,29 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                     display.Text = typingText;
                 }
             }
+        }
+        public override IPropertySave Save()
+        {
+            return new NumberInputPropertySave()
+            {
+                value = Value
+            };
+        }
+
+        public override bool TryLoad(IPropertySave val)
+        {
+            if (val is NumberInputPropertySave save)
+            {
+                Value = save.value;
+                display.Text = Value.ToString();
+                return true;
+            }
+            return false;
+        }
+
+        class NumberInputPropertySave : IPropertySave
+        {
+            internal int value;
         }
     }
 }

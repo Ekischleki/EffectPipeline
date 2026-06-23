@@ -17,7 +17,7 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Channel 0", Type.GreyscaleImage), ("Channel 1", Type.GreyscaleImage), ("Channel 2", Type.GreyscaleImage)];
 
-        public GameObject[] Properties => [DropdownProperty.ColorspaceDropdown];
+        public Property[] Properties => [DropdownProperty.ColorspaceDropdown];
 
 
         public static void ColorToHSV(Color color, out double hue, out double saturation, out double value)
@@ -85,7 +85,7 @@ namespace EffectPipeline.Effects
         }
 
 
-        public IInstance[] applyEffect(IInstance[] inputs, GameObject[] properties)
+        public IInstance[] applyEffect(IInstance[] inputs, Property[] properties)
         {
             DropdownProperty colorspaceDropdown = (DropdownProperty)properties[0];
             var colorspace = (DropdownProperty.Colorspace)colorspaceDropdown.Selected;

@@ -15,9 +15,9 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Audio Output", Type.MonoAudio)];
 
-        public GameObject[] Properties => [new NumberInputProperty("Sample Rate") { Value = 44100, Min = 1, Max = Int32.MaxValue }];
+        public Property[] Properties => [new NumberInputProperty("Sample Rate") { Value = 44100, Min = 1, Max = Int32.MaxValue }];
 
-        public IInstance[] applyEffect(IInstance?[] inputs, GameObject[] properties)
+        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
         {
             if (inputs[0] == null)
             {

@@ -14,9 +14,9 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [];
 
-        public GameObject[] Properties => [];
+        public Property[] Properties => [];
 
-        public IInstance[] applyEffect(IInstance[] inputs, GameObject[] properties)
+        public IInstance[] applyEffect(IInstance[] inputs, Property[] properties)
         {
             if (inputs.Length != 1)
             {

@@ -1,4 +1,5 @@
-﻿using Pandemonium.Engine;
+﻿using EffectPipeline.project;
+using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.gameObjects.GUI_Elements
 {
-    internal class DropdownProperty : GUIElement
+    internal class DropdownProperty : Property
     {
         [DependencyCache(InteractionType.Download)]
         internal Node parentNode = null!;
@@ -175,6 +176,26 @@ namespace EffectPipeline.gameObjects.GUI_Elements
         protected override void OnRelease()
         {
             
+        }
+
+        public override IPropertySave Save()
+        {
+            return new DropdownPropertySave() { selected = this.Selected };
+        }
+
+        public override bool TryLoad(IPropertySave val)
+        {
+            if(val is  DropdownPropertySave save)
+            {
+                Selected = save.selected;
+                return true;
+            }
+            return false;
+        }
+
+        internal class DropdownPropertySave : IPropertySave
+        {
+            public int selected;
         }
     }
 }

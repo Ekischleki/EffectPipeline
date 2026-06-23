@@ -18,6 +18,10 @@ using System.Diagnostics;
 
 namespace EffectPipeline.gameObjects
 {
+
+
+
+
     internal class NodeStateManager : GameObject
     {
         internal ManagedTexture? OutputImage { get; private set; }

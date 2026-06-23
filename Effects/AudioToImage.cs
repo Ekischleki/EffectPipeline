@@ -16,10 +16,10 @@ namespace EffectPipeline.Effects
         public IEnumerable<(string, Type)> Outputs => [("Output Image", Type.GreyscaleImage)];
 
 
-        public GameObject[] Properties => [new NumberInputProperty("Width") { Value = 256, Min = 1, Max = Int32.MaxValue }, new NumberInputProperty("Height") { Value = 256, Min = 1, Max = Int32.MaxValue }];
+        public Property[] Properties => [new NumberInputProperty("Width") { Value = 256, Min = 1, Max = Int32.MaxValue }, new NumberInputProperty("Height") { Value = 256, Min = 1, Max = Int32.MaxValue }];
 
 
-        public IInstance[] applyEffect(IInstance?[] inputs, GameObject[] properties)
+        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
         {
             if (inputs[0] == null)
             {
@@ -48,7 +48,7 @@ namespace EffectPipeline.Effects
 
     internal class AudioToImageSearch : IEffectSearch
     {
-        public IEnumerable<string> Tags => ["to image", "to greyscale", "from audio", "audio to image"];
+        public IEnumerable<string> Tags => ["image", "greyscale", "audio", "convert", "from"];
 
         public string Title => "Mono Audio To Image";
 

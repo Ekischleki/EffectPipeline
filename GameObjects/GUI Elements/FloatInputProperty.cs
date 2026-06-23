@@ -1,4 +1,5 @@
-﻿using Pandemonium.Engine;
+﻿using EffectPipeline.project;
+using Pandemonium.Engine;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
@@ -10,10 +11,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static EffectPipeline.gameObjects.GUI_Elements.DropdownProperty;
 
 namespace EffectPipeline.gameObjects.GUI_Elements
 {
-    internal class FloatInputProperty : GUIElement
+    internal class FloatInputProperty : Property
     {
         [DependencyCache(InteractionType.Download)]
         internal Node parentNode = null!;
@@ -118,6 +120,30 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                     display.Text = typingText;
                 }
             }
+        }
+
+        public override IPropertySave Save()
+        {
+            return new FloatInputPropertySave()
+            {
+                value = Value
+            };
+        }
+
+        public override bool TryLoad(IPropertySave val)
+        {
+            if (val is FloatInputPropertySave save)
+            {
+                Value = save.value;
+                display.Text = Value.ToString();
+                return true;
+            }
+            return false;
+        }
+
+        class FloatInputPropertySave : IPropertySave
+        {
+            internal float value;
         }
     }
 }

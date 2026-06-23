@@ -15,10 +15,10 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Output Audio", Type.MonoAudio)];
 
-        public GameObject[] Properties => [new FloatInputProperty("Time") { Value = .25f, Min = 0.0001f, Max = float.MaxValue }, new FloatInputProperty("Decay") { Value = .75f, Min = 0, Max = float.MaxValue }];
+        public Property[] Properties => [new FloatInputProperty("Time") { Value = .25f, Min = 0.0001f, Max = float.MaxValue }, new FloatInputProperty("Decay") { Value = .75f, Min = 0, Max = float.MaxValue }];
 
 
-        public IInstance?[] applyEffect(IInstance?[] inputs, GameObject[] properties)
+        public IInstance?[] applyEffect(IInstance?[] inputs, Property[] properties)
         {
             if (inputs[0] == null)
             {

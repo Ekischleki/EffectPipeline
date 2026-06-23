@@ -17,7 +17,7 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Image", Type.RGBImage)];
 
-        public GameObject[] Properties => [DropdownProperty.ColorspaceDropdown];
+        public Property[] Properties => [DropdownProperty.ColorspaceDropdown];
 
 
         private float[] RGBFromHSV(float hue, float saturation, float brightness)
@@ -81,7 +81,7 @@ namespace EffectPipeline.Effects
             }
         }
 
-        public IInstance[] applyEffect(IInstance[] inputs, GameObject[] properties)
+        public IInstance[] applyEffect(IInstance[] inputs, Property[] properties)
         {
             bool set = false;
             int width = 0;

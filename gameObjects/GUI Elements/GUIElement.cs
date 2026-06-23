@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.gameObjects
 {
-    internal abstract class GUIElement : GameObject
+    public abstract class GUIElement : GameObject
     {
 
         [DependencyCache(InteractionType.Download)]

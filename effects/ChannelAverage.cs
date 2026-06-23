@@ -14,9 +14,9 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Image", Type.GreyscaleImage)];
 
-        public GameObject[] Properties => [];
+        public Property[] Properties => [];
 
-        public IInstance[] applyEffect(IInstance?[] inputs, GameObject[] properties)
+        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
         {
             var image = (GreyscaleImage?)inputs[0];
             if(image == null || image.image.Length == 0)
@@ -36,7 +36,7 @@ namespace EffectPipeline.Effects
 
     internal class ChannelAverageSearch : IEffectSearch 
     {
-        public IEnumerable<string> Tags => ["moving average", "smear", "motion", "blur", "reverb"];
+        public IEnumerable<string> Tags => ["average", "distort", "greyscale", "smear", "motion", "blur", "reverb"];
 
         public string Title => "Moving Average";
 

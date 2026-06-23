@@ -14,9 +14,9 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Merged image", Type.RGBImage)];
 
-        public GameObject[] Properties => [];
+        public Property[] Properties => [];
 
-        public IInstance[] applyEffect(IInstance?[] inputs, GameObject[] properties)
+        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
         {
             var imageA = (RGBImage?)inputs[0];
             var imageB = (RGBImage?)inputs[1];

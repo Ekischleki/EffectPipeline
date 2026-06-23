@@ -15,10 +15,10 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Resized Image", Type.RGBImage)];
 
-        public GameObject[] Properties => [new NumberInputProperty("Width") { Value = 512, Min = 1, Max = Int32.MaxValue}, new NumberInputProperty("Height") { Value = 512, Min = 1, Max = Int32.MaxValue }];
+        public Property[] Properties => [new NumberInputProperty("Width") { Value = 512, Min = 1, Max = Int32.MaxValue}, new NumberInputProperty("Height") { Value = 512, Min = 1, Max = Int32.MaxValue }];
 
 
-        public IInstance[] applyEffect(IInstance[] inputs, GameObject[] properties)
+        public IInstance[] applyEffect(IInstance[] inputs, Property[] properties)
         {
             RGBImage inputImage = (RGBImage)inputs[0];
             if (inputImage == null)
