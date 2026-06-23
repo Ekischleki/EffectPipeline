@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.effects
+namespace EffectPipeline.Effects
 {
     internal class ChannelAverage : IEffect
     {

@@ -1,5 +1,4 @@
-﻿using EffectPipeline.effects;
-using EffectPipeline.Effects;
+﻿using EffectPipeline.Effects;
 using EffectPipeline.gameObjects.GUI_Elements;
 using EffectPipeline.types;
 using Pandemonium.Engine;
@@ -63,9 +62,10 @@ namespace EffectPipeline.gameObjects
             camera.WithChildren([
                 manager,
             ]);
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\aquarellebg.png")), "Image Source Spacey");
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\SpOoKy.png")), "Image Source SpOoKy");
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\adhd mix.png")), "Image Source ADHD MIX");
+            //manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\aquarellebg.png")), "Image Source Spacey");
+            //manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\SpOoKy.png")), "Image Source SpOoKy");
+            //manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\adhd mix.png")), "Image Source ADHD MIX");
+            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\sheets.png")), "Image Source sheets");
 
             manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\tree.png")), "Image Source Tree");
 
@@ -159,7 +159,9 @@ namespace EffectPipeline.gameObjects
                     {
                         //This is probably not supposed to be a drag, but a click
                         defaultLogger.Log("Center mouse click event");
-                        canvas.ShowSearch();
+
+                        if(canvas != null)
+                            canvas.ShowSearch();
                     }
                     cam_pos += new_offset;
                     offset = cam_pos;

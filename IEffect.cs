@@ -1,4 +1,5 @@
 ﻿using Pandemonium.Engine.GameObjectStuff;
+using EffectPipeline.types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,5 +22,6 @@ namespace EffectPipeline
         Mask,
         RGBImage,
         GreyscaleImage,
+        MonoAudio,
     }
 }

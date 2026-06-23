@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.effects
+namespace EffectPipeline.Effects
 {
     //Maybe turn this into an "Equal split" which creates an n-Mask where each part of the mask has equal representation
     internal class NormalizedGroup : IEffect
@@ -16,7 +16,7 @@ namespace EffectPipeline.effects
 
         public IEnumerable<(string, Type)> Outputs => [("Mask", Type.Mask)];
 
-        public GameObject[] Properties => [new NumberInputProperty() {
+        public GameObject[] Properties => [new NumberInputProperty("Bands") {
             Value = 2,
             Min = 2,
             Max = 100,
