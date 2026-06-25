@@ -26,7 +26,7 @@ namespace EffectPipeline.Effects
                 return [new GreyscaleImage(0, 0, []), new GreyscaleImage(0, 0, [])];
             }
             var fft = new FftFlat.FastFourierTransform(real.image.Length);
-            var res = real.image.Zip(imag.image).Select(x => new System.Numerics.Complex(x.First, x.Second)).ToArray();
+            var res = real.image.Zip(imag.image).Select(x => new System.Numerics.Complex(x.First * real.image.Length, x.Second * real.image.Length)).ToArray();
             fft.Inverse(res.AsSpan());
             return [new GreyscaleImage(real.width, real.height, res.Select(x => (float)x.Real).ToArray()), new GreyscaleImage(real.width, real.height, res.Select(x => (float)x.Imaginary).ToArray())];
 
