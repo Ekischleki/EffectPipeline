@@ -11,7 +11,7 @@ namespace EffectPipeline
 {
     public abstract class Property : GUIElement
     {
-        public abstract IPropertySave Save();
-        public abstract bool TryLoad(IPropertySave val);
+        public abstract string Save();
+        public abstract bool TryLoad(string val);
     }
 }

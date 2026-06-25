@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.types
 {
-    internal class MonoAudio : IInstance
+    public class MonoAudio : IInstance
     {
         public Type Type => Type.MonoAudio;
         public int sampleRate { get; }

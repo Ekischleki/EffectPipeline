@@ -114,28 +114,25 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                 }
             }
         }
-        public override IPropertySave Save()
+        public override string Save()
         {
-            return new NumberInputPropertySave()
-            {
-                value = Value
-            };
+            return Value.ToString();
         }
 
-        public override bool TryLoad(IPropertySave val)
+        public override bool TryLoad(string val)
         {
-            if (val is NumberInputPropertySave save)
-            {
-                Value = save.value;
+            if (int.TryParse(val, out var parsed))
+            { 
+                if (parsed < Min || parsed > Max)
+                {
+                    return false;
+                }
+                Value = parsed;
                 display.Text = Value.ToString();
                 return true;
             }
             return false;
         }
 
-        class NumberInputPropertySave : IPropertySave
-        {
-            internal int value;
-        }
     }
 }

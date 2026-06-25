@@ -10,10 +10,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Wacton.Unicolour.RgbModels;
 
 namespace EffectPipeline.gameObjects.GUI_Elements
 {
-    internal class DropdownProperty : Property
+    public class DropdownProperty : Property
     {
         [DependencyCache(InteractionType.Download)]
         internal Node parentNode = null!;
@@ -178,24 +179,24 @@ namespace EffectPipeline.gameObjects.GUI_Elements
             
         }
 
-        public override IPropertySave Save()
+        public override string Save()
         {
-            return new DropdownPropertySave() { selected = this.Selected };
+            return Selected.ToString();
         }
 
-        public override bool TryLoad(IPropertySave val)
+        public override bool TryLoad(string val)
         {
-            if(val is  DropdownPropertySave save)
+            if (int.TryParse(val, out var parsed))
             {
-                Selected = save.selected;
+                if (parsed < 0 || parsed > properties.Length)
+                {
+                    return false;
+                }
+                Selected = parsed;
+                SetOpenClosedText();
                 return true;
             }
             return false;
-        }
-
-        internal class DropdownPropertySave : IPropertySave
-        {
-            public int selected;
         }
     }
 }

@@ -122,28 +122,28 @@ namespace EffectPipeline.gameObjects.GUI_Elements
             }
         }
 
-        public override IPropertySave Save()
+        public override string Save()
         {
-            return new FloatInputPropertySave()
-            {
-                value = Value
-            };
+            return Value.ToString();
         }
 
-        public override bool TryLoad(IPropertySave val)
+        public override bool TryLoad(string val)
         {
-            if (val is FloatInputPropertySave save)
+            if (float.TryParse(val, out var parsed))
             {
-                Value = save.value;
+                if(!float.IsFinite(parsed))
+                {
+                    return false;
+                }
+                if (parsed < Min || parsed > Max)
+                {
+                    return false;
+                }
+                Value = parsed;
                 display.Text = Value.ToString();
                 return true;
             }
             return false;
-        }
-
-        class FloatInputPropertySave : IPropertySave
-        {
-            internal float value;
         }
     }
 }
