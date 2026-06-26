@@ -8,6 +8,7 @@ using SDL2;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -75,7 +76,8 @@ namespace EffectPipeline.gameObjects.GUI_Elements
         {
             try
             {
-                float inputtedNumber = float.Parse(typingText);
+                //Implicit Culture shit sucks so much because it turns 0.5 into 5 tspmo
+                float inputtedNumber = float.Parse(typingText, CultureInfo.InvariantCulture);
 
                 Value = float.Clamp(inputtedNumber, Min, Max);
                 display.Text = Value.ToString();
