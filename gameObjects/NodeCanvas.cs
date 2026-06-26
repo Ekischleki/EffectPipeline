@@ -62,14 +62,6 @@ namespace EffectPipeline.gameObjects
             camera.WithChildren([
                 manager,
             ]);
-            //manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\aquarellebg.png")), "Image Source Spacey");
-            //manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\SpOoKy.png")), "Image Source SpOoKy");
-            //manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\adhd mix.png")), "Image Source ADHD MIX");
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\sheets.png")), "Image Source sheets");
-            manager.CreateNode(new ImageSource(RGBImage.WhiteImage(512, 512)), "Image Source White");
-
-            manager.CreateNode(new ImageSource(RGBImage.LoadFrom(@".\assets\textures\tree.png")), "Image Source Tree");
-
             AddChildSpawnQueue([camera, node_search]);
         }
 

@@ -1,4 +1,5 @@
-﻿using EffectPipeline.types;
+﻿using EffectPipeline.gameObjects.GUI_Elements;
+using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,23 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Source Image", Type.RGBImage)];
 
-        public Property[] Properties => [/*Something like string or filepath property*/];
+        public Property[] Properties => [new DropdownProperty(["Adhd mix", "Aquarelle", "Consider", "Sheets", "Spooky", "Tree", "Color theory", "Quantized Roses", "Gay test", "Fireworks"], "Image")];
 
+
+        public string SelectedToName(int selected) => selected switch
+        {
+            0 => "adhd mix.png",
+            1 => "aquarellebg.png",
+            2 => "Consider.png",
+            3 => "sheets.png",
+            4 => "SpOoKy.png",
+            5 => "tree.png",
+            6 => "color theory all.png",
+            7 => "Roses.png",
+            8 => "Gay Test.png",
+            9 => "Fireworks.png",
+            _ => "Consider.png"
+        };
 
         // Image reference data idek
         RGBImage imageData;
@@ -28,11 +44,8 @@ namespace EffectPipeline.Effects
 
         public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
         {
-            if (inputs.Length != 0)
-            {
-                throw new ArgumentException("Input needs to be length 0");
-            }
-
+            var selected = ((DropdownProperty)properties[0]).Selected;
+            imageData = RGBImage.LoadFrom($"./assets/textures/{SelectedToName(selected)}");
             return [imageData];
         }
     }
