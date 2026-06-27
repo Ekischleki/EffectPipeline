@@ -146,9 +146,10 @@ namespace EffectPipeline.gameObjects
             {
                 nodes[node] = node.effect.applyEffect(inputs, node.properties);
 
-            } catch (Exception)
+            } catch (Exception ex)
             {
                 nodes[node] = node.effect.Outputs.Select(x => (IInstance?)null).ToArray()!;
+                defaultLogger.Error($"Exception happened in {node.GetType().Name}: {ex}");
             }
             foreach(var output in node.outputs)
             {
