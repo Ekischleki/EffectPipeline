@@ -12,8 +12,6 @@ namespace EffectPipeline.types
 {
     public class RGBImage : IInstance
     {
-        public Type Type => Type.RGBImage;
-
         public int width { get; }
         public int height { get; }
 
@@ -82,12 +80,7 @@ namespace EffectPipeline.types
             return new ManagedTexture(canvas, image_asset, true);
         }
 
-        public bool SupportInto(Type type) => type switch {  _ => false };
-
-        public IInstance Into(Type type)
-        {
-            throw new NotImplementedException();
-        }
+       
         public static RGBImage LoadFrom(string path)
         {
             var data = File.ReadAllBytes(path);

@@ -13,9 +13,9 @@ namespace EffectPipeline.Effects
 {
     internal class MergeChannel : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Channel 0", Type.GreyscaleImage), ("Channel 1", Type.GreyscaleImage), ("Channel 2", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Inputs => [("Channel 0", typeof(GreyscaleImage)), ("Channel 1", typeof(GreyscaleImage)), ("Channel 2", typeof(GreyscaleImage))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Image", Type.RGBImage)];
+        public IEnumerable<(string, Type)> Outputs => [("Image", typeof(RGBImage))];
 
         public Property[] Properties => [DropdownProperty.ColorspaceDropdown];
 
@@ -81,7 +81,7 @@ namespace EffectPipeline.Effects
             }
         }
 
-        public IInstance[] applyEffect(IInstance[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance[] inputs, IPropertyState[] properties)
         {
             bool set = false;
             int width = 0;
@@ -116,7 +116,7 @@ namespace EffectPipeline.Effects
                 channelArray[i] = ((GreyscaleImage)inputs[i]).image;
             }
 
-            DropdownProperty colorspaceDropdown = (DropdownProperty)properties[0];
+            DropdownPropertyState colorspaceDropdown = (DropdownPropertyState)properties[0];
             var colorspace = (DropdownProperty.Colorspace)colorspaceDropdown.Selected;
 
             RGBImage image = FromColorChannels(width, height, channelArray, colorspace);

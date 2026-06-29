@@ -1,5 +1,4 @@
-﻿using EffectPipeline.project;
-using Pandemonium.Engine;
+﻿using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
@@ -157,7 +156,7 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                     {
                         Open(false);
                         Selected = i;
-                        manager.UpdateCacheAt(parentNode);
+                        manager.UpdatePropertyState(parentNode, this, GetPropertyState());
                         SetOpenClosedText();
                         return;
                     }
@@ -197,6 +196,20 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                 return true;
             }
             return false;
+        }
+
+        public override IPropertyState GetPropertyState() => new DropdownPropertyState(this.Selected, this.properties[this.Selected]);
+    }
+
+    public class DropdownPropertyState : IPropertyState
+    {
+        public readonly int Selected;
+        public readonly string Title;
+
+        public DropdownPropertyState(int selected, string title)
+        {
+            Selected = selected;
+            Title = title;
         }
     }
 }

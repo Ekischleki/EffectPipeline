@@ -1,5 +1,4 @@
-﻿using EffectPipeline.project;
-using Pandemonium.Engine;
+﻿using Pandemonium.Engine;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
@@ -81,7 +80,7 @@ namespace EffectPipeline.gameObjects.GUI_Elements
 
                 Value = float.Clamp(inputtedNumber, Min, Max);
                 display.Text = Value.ToString();
-                manager.UpdateCacheAt(parentNode);
+                manager.UpdatePropertyState(parentNode, this, GetPropertyState());
             }
             catch (FormatException)
             {
@@ -147,5 +146,11 @@ namespace EffectPipeline.gameObjects.GUI_Elements
             }
             return false;
         }
+
+        public override IPropertyState GetPropertyState() => new FloatInputPropertyState(Value);
+    }
+    public class FloatInputPropertyState(float value) : IPropertyState
+    {
+        public float Value = value;
     }
 }

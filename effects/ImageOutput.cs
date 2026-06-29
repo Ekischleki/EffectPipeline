@@ -10,20 +10,15 @@ namespace EffectPipeline.Effects
 {
     internal class ImageOutput : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Output Image", Type.RGBImage)];
+        public IEnumerable<(string, Type)> Inputs => [("Output Image", typeof(RGBImage))];
 
         public IEnumerable<(string, Type)> Outputs => [];
 
         public Property[] Properties => [];
 
-        public IInstance[] applyEffect(IInstance[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance[] inputs, IPropertyState[] properties)
         {
-            if (inputs.Length != 1)
-            {
-                throw new ArgumentException("Input needs to be length 1");
-            }
-
-            return [];
+            throw new NotImplementedException("Image output effect is hardcoded");
         }
     }
 

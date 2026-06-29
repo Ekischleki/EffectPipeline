@@ -2,6 +2,8 @@
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
+using Pandemonium.Engine.Stores;
+using Pupilmonium.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +27,7 @@ namespace EffectPipeline.gameObjects
         public override void Init()
         {
             clipBehavior = ClipBehavior.Cut;
-            AddChildSpawnQueue(new NodeCanvasCamera().WithChildren([new ImageDisplay()]));
+            AddChildSpawnQueue(new NodeCanvasCamera().WithChildren([new ImageDisplay() { anchor = IPositioning.Center, origin = IPositioning.Center}]));
         }
 
         protected override void Update()
@@ -38,7 +40,10 @@ namespace EffectPipeline.gameObjects
         [DependencyCache(InteractionType.Download)]
         internal NodeCanvas node_canvas = null!;
 
-       
+        [GetFrom(StoreType.TextureStore, "std:loading.png")]
+        ManagedTexture loading = null!;
+        [GetFrom(Singleton.DeltaTime)]
+        protected DeltaTime dt = null!;
         public override void Init()
         {
             
@@ -46,7 +51,19 @@ namespace EffectPipeline.gameObjects
 
         protected override void Update()
         {
-            RenderTexture = node_canvas.manager.OutputImage;
+            var output_node_state = node_canvas.manager.OutputNodeState;
+            lock (output_node_state)
+            {
+                if(!output_node_state.assigned_task?.IsCompleted ?? false)
+                {
+                    RenderTexture = loading;
+                    Rotation += dt.Multiplier * 10;
+                } else
+                {
+                    Rotation = 0;
+                    RenderTexture = node_canvas.manager.OutputImage;
+                }
+            }
         }
     }
 }

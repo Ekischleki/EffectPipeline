@@ -11,14 +11,14 @@ namespace EffectPipeline.Effects
 {
     internal class Resize : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Input Image", Type.RGBImage)];
+        public IEnumerable<(string, Type)> Inputs => [("Input Image", typeof(RGBImage))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Resized Image", Type.RGBImage)];
+        public IEnumerable<(string, Type)> Outputs => [("Resized Image", typeof(RGBImage))];
 
         public Property[] Properties => [new NumberInputProperty("Width") { Value = 512, Min = 1, Max = Int32.MaxValue}, new NumberInputProperty("Height") { Value = 512, Min = 1, Max = Int32.MaxValue }];
 
 
-        public IInstance[] applyEffect(IInstance[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance[] inputs, IPropertyState[] properties)
         {
             RGBImage inputImage = (RGBImage)inputs[0];
             if (inputImage == null)
@@ -27,8 +27,8 @@ namespace EffectPipeline.Effects
             int oldWidth = inputImage.width;
             int oldHeight = inputImage.height;
 
-            int newWidth = ((NumberInputProperty)properties[0]).Value;
-            int newHeight = ((NumberInputProperty)properties[1]).Value;
+            int newWidth = ((NumberInputPropertyState)properties[0]).Value;
+            int newHeight = ((NumberInputPropertyState)properties[1]).Value;
 
             float[] redArray = new float[newWidth * newHeight];
             float[] greenArray = new float[newWidth * newHeight];

@@ -11,14 +11,14 @@ namespace EffectPipeline.Effects
 {
     internal class AudioDelay : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Input Audio", Type.MonoAudio)];
+        public IEnumerable<(string, Type)> Inputs => [("Input Audio", typeof(MonoAudio))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Output Audio", Type.MonoAudio)];
+        public IEnumerable<(string, Type)> Outputs => [("Output Audio", typeof(MonoAudio))];
 
         public Property[] Properties => [new FloatInputProperty("Time") { Value = .25f, Min = 0.0001f, Max = float.MaxValue }, new FloatInputProperty("Decay") { Value = .75f, Min = 0, Max = float.MaxValue }];
 
 
-        public IInstance?[] applyEffect(IInstance?[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties)
         {
             if (inputs[0] == null)
             {
@@ -27,10 +27,10 @@ namespace EffectPipeline.Effects
 
             MonoAudio audioSample = (MonoAudio)inputs[0]!;
 
-            float delayTime = ((FloatInputProperty)properties[0]).Value;
+            float delayTime = ((FloatInputPropertyState)properties[0]).Value;
             int numberOfSamples = (int)Math.Floor(audioSample.sampleRate * delayTime);
 
-            float decay = ((FloatInputProperty)properties[1]).Value;
+            float decay = ((FloatInputPropertyState)properties[1]).Value;
 
             float[] newSamples = new float[audioSample.samples.Length];
 

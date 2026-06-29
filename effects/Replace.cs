@@ -10,13 +10,13 @@ namespace EffectPipeline.Effects
 {
     internal class Replace : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Image a", Type.RGBImage), ("Image b", Type.RGBImage), ("Mask", Type.Mask)];
+        public IEnumerable<(string, Type)> Inputs => [("Image a", typeof(RGBImage)), ("Image b", typeof(RGBImage)), ("Mask", typeof(Mask))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Merged image", Type.RGBImage)];
+        public IEnumerable<(string, Type)> Outputs => [("Merged image", typeof(RGBImage))];
 
         public Property[] Properties => [];
 
-        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties)
         {
             var imageA = (RGBImage?)inputs[0];
             var imageB = (RGBImage?)inputs[1];

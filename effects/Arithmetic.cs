@@ -11,15 +11,15 @@ namespace EffectPipeline.effects
 {
     internal class Arithmetic : IEffect
     {
-        public required Func<float, float, float> Operation;
-        public IEnumerable<(string, Type)> Inputs => [("A", Type.GreyscaleImage), ("B", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Inputs => [("A", typeof(GreyscaleImage)), ("B", typeof(GreyscaleImage))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Sum", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Outputs => [("Res", typeof(GreyscaleImage))];
 
-        public Property[] Properties => [];
+        public Property[] Properties => [new DropdownProperty(["Add", "Sub", "Mul"], "Operation")];
 
-        public IInstance[] applyEffect(IInstance[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance[] inputs, IPropertyState[] properties)
         {
+            var operation = ((DropdownPropertyState)properties[0]).Selected;
             var a = (GreyscaleImage?)inputs[0] ?? throw new ArgumentNullException();
             var b = (GreyscaleImage?)inputs[1] ?? throw new ArgumentNullException();
 
@@ -27,7 +27,19 @@ namespace EffectPipeline.effects
             var res = new float[a.image.Length];
             for (int i = 0; i < a.image.Length; i++)
             {
-                res[i] = Operation(a.image[i], b.image[i]);
+                switch (operation)
+                {
+                    case 0:
+                        res[i] = a.image[i] + b.image[i];
+                        break;
+                    case 1:
+                        res[i] = a.image[i] - b.image[i];
+                        break;
+                    case 2:
+                        res[i] = a.image[i] * b.image[i];
+                        break;
+                    default: throw new NotImplementedException();
+                }
             }
 
             return [new GreyscaleImage(a.width, a.height, res)];
@@ -36,26 +48,11 @@ namespace EffectPipeline.effects
     }
     internal class AdditionSearch : IEffectSearch
     {
-        public IEnumerable<string> Tags => ["image", "addition", "arithmetic", "operator"];
+        public IEnumerable<string> Tags => ["image", "operator", "addition", "add", "arithmetic", "sub", "subtraction", "mul", "multiplication"];
 
-        public string Title => "Add";
+        public string Title => "Arithmetic";
 
-        public IEffect CreateEffect() => new Arithmetic() { Operation = (a, b) => a + b };
+        public IEffect CreateEffect() => new Arithmetic();
     }
-    internal class SubtractionSearch : IEffectSearch
-    {
-        public IEnumerable<string> Tags => ["image", "subtract", "arithmetic", "operator"];
 
-        public string Title => "Sub";
-
-        public IEffect CreateEffect() => new Arithmetic() { Operation = (a, b) => a - b };
-    }
-    internal class MultiplicationSearch : IEffectSearch
-    {
-        public IEnumerable<string> Tags => ["image", "multiply", "arithmetic", "operator"];
-
-        public string Title => "Mul";
-
-        public IEffect CreateEffect() => new Arithmetic() { Operation = (a, b) => a * b };
-    }
 }

@@ -15,13 +15,12 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.GameObjects
 {
-    internal class Parameter : GUIElement
+    public class Parameter : GUIElement
     {
         [DependencyCache(InteractionType.Download)]
         internal NodeStateManager manager = null!;
-        internal HashSet<Connection> connections = [];
-        internal required bool is_input;
-        internal required string name;
+        public required bool is_input;
+        public required string name;
 
         public required Type type;
         public required int index;
@@ -64,17 +63,7 @@ namespace EffectPipeline.GameObjects
         {
             Size *= 1.02f;
 
-            if (!is_input || connections.Count == 0)
-            {
-                manager.StartCreatingConnection(this);
-                return;
-            }
-
-            foreach (var c in connections)
-            {
-                manager.DeleteConnection(c);
-                manager.StartCreatingConnection(c.start);
-            }
+            manager.StartCreatingConnection(this);
         }
 
         protected override void OnRelease()

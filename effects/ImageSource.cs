@@ -13,7 +13,7 @@ namespace EffectPipeline.Effects
     {
         public IEnumerable<(string, Type)> Inputs => [];
 
-        public IEnumerable<(string, Type)> Outputs => [("Source Image", Type.RGBImage)];
+        public IEnumerable<(string, Type)> Outputs => [("Source Image", typeof(RGBImage))];
 
         public Property[] Properties => [new DropdownProperty(["Adhd mix", "Aquarelle", "Consider", "Sheets", "Spooky", "Tree", "Color theory", "Quantized Roses", "Gay test", "Fireworks"], "Image")];
 
@@ -42,9 +42,9 @@ namespace EffectPipeline.Effects
         }
 
 
-        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties)
         {
-            var selected = ((DropdownProperty)properties[0]).Selected;
+            var selected = ((DropdownPropertyState)properties[0]).Selected;
             imageData = RGBImage.LoadFrom($"./assets/textures/{SelectedToName(selected)}");
             return [imageData];
         }

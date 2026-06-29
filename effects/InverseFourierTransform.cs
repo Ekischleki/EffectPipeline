@@ -10,13 +10,13 @@ namespace EffectPipeline.Effects
 {
     internal class InverseFourierTransform : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Real", Type.GreyscaleImage), ("Imag", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Inputs => [("Real", typeof(GreyscaleImage)), ("Imag", typeof(GreyscaleImage))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Real", Type.GreyscaleImage), ("Imag", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Outputs => [("Real", typeof(GreyscaleImage)), ("Imag", typeof(GreyscaleImage))];
 
         public Property[] Properties => [];
 
-        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties)
         {
             var real = (GreyscaleImage?)inputs[0];
             var imag = (GreyscaleImage?)inputs[1];

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.gameObjects
 {
-    internal class Node : GUIElement
+    public class Node : GUIElement
     {
         [DependencyCache(InteractionType.Upload)]
         internal Node parentNode;
@@ -73,8 +73,8 @@ namespace EffectPipeline.gameObjects
             foreach (var input in effect.Inputs)
             {
                 Parameter param = new () { parentNode = this, is_input = true, name = input.Item1, offset = new Vector2(0, y), type = input.Item2, index = i };
-                y -= HEIGHT_PER_PARAM;
                 inputs.Add(param);
+                y -= HEIGHT_PER_PARAM;
                 AddChildSpawnQueue(param);
                 i++;
             }
@@ -83,8 +83,8 @@ namespace EffectPipeline.gameObjects
             foreach (var output in effect.Outputs)
             {
                 Parameter param = new () { parentNode = this,  is_input = false, name = output.Item1, offset = new Vector2(0, y), type = output.Item2, index = i };
-                y -= HEIGHT_PER_PARAM;
                 outputs.Add(param);
+                y -= HEIGHT_PER_PARAM;
                 AddChildSpawnQueue(param);
                 i++;
             }

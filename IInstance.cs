@@ -9,9 +9,6 @@ namespace EffectPipeline.types
 {
     public interface IInstance
     {
-        public Type Type { get; }
-        public bool SupportInto(Type type);
-        public IInstance Into(Type type);
         public RGBImage? ToImage();
     }
 }

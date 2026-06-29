@@ -1,5 +1,4 @@
 ﻿using EffectPipeline.gameObjects;
-using EffectPipeline.project;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
 using System.Collections.Generic;
@@ -13,5 +12,9 @@ namespace EffectPipeline
     {
         public abstract string Save();
         public abstract bool TryLoad(string val);
+
+        public abstract IPropertyState GetPropertyState();
     }
+    public interface IPropertyState { }
+
 }

@@ -11,20 +11,20 @@ namespace EffectPipeline.Effects
 {
     internal class ToAudio : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Image Input", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Inputs => [("Image Input", typeof(GreyscaleImage))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Audio Output", Type.MonoAudio)];
+        public IEnumerable<(string, Type)> Outputs => [("Audio Output", typeof(MonoAudio))];
 
         public Property[] Properties => [new NumberInputProperty("Sample Rate") { Value = 44100, Min = 1, Max = Int32.MaxValue }];
 
-        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties)
         {
             if (inputs[0] == null)
             {
                 return [new MonoAudio(1, [])];
             }
 
-            int samplerate = ((NumberInputProperty)properties[0]).Value;
+            int samplerate = ((NumberInputPropertyState)properties[0]).Value;
             float[] samples = ((GreyscaleImage)inputs[0]!).image;
 
             return [new MonoAudio(samplerate, samples)];

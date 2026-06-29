@@ -11,23 +11,23 @@ namespace EffectPipeline.Effects
 {
     internal class AudioToImage : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Input Audio", Type.MonoAudio)];
+        public IEnumerable<(string, Type)> Inputs => [("Input Audio", typeof(MonoAudio))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Output Image", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Outputs => [("Output Image", typeof(GreyscaleImage))];
 
 
         public Property[] Properties => [new NumberInputProperty("Width") { Value = 256, Min = 1, Max = Int32.MaxValue }, new NumberInputProperty("Height") { Value = 256, Min = 1, Max = Int32.MaxValue }];
 
 
-        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties)
         {
             if (inputs[0] == null)
             {
                 return [GreyscaleImage.PureWhite(1, 1)];
             }
 
-            int width = ((NumberInputProperty)properties[0]).Value;
-            int height = ((NumberInputProperty)properties[1]).Value;
+            int width = ((NumberInputPropertyState)properties[0]).Value;
+            int height = ((NumberInputPropertyState)properties[1]).Value;
 
             float[] values = ((MonoAudio)inputs[0]!).samples;
             float[] paddedValues = new float[width * height];

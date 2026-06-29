@@ -10,13 +10,13 @@ namespace EffectPipeline.Effects
 {
     internal class ChannelAverage : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Image", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Inputs => [("Image", typeof(GreyscaleImage))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Image", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Outputs => [("Image", typeof(GreyscaleImage))];
 
         public Property[] Properties => [];
 
-        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties)
         {
             var image = (GreyscaleImage?)inputs[0];
             if(image == null || image.image.Length == 0)

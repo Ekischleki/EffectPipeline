@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EffectPipeline.gameObjects
 {
-    internal class Connection : GUIElement
+    public class Connection : GUIElement
     {
         [DependencyCache(InteractionType.Download)]
         internal NodeStateManager manager = null!;

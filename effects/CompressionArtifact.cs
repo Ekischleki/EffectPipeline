@@ -13,9 +13,9 @@ namespace EffectPipeline.effects
 {
     internal class CompressionArtifact : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Image", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Inputs => [("Image", typeof(GreyscaleImage))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Image", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Outputs => [("Image", typeof(GreyscaleImage))];
 
         public Property[] Properties => [new DropdownProperty(["Preserve Pixel Position", "Shift Pixels"], ""), new FloatInputProperty("Glitch Probability") { Min = 0, Max = 1, Value = 0.05f }, new NumberInputProperty("Seed") { Min = 0, Max = int.MaxValue }];
 
@@ -127,11 +127,13 @@ namespace EffectPipeline.effects
 
             }
         }
-        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties)
+
+        
+        public async Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties)
         {
-            var preserve_length = ((DropdownProperty)properties[0]).Selected == 0;
-            var glitch_prob = ((FloatInputProperty)properties[1]).Value;
-            var seed = ((NumberInputProperty)properties[2]).Value;
+            var preserve_length = ((DropdownPropertyState)properties[0]).Selected == 0;
+            var glitch_prob = ((FloatInputPropertyState)properties[1]).Value;
+            var seed = ((NumberInputPropertyState)properties[2]).Value;
             var rand = new Random(seed);
             var image = (GreyscaleImage?)inputs[0] ?? throw new ArgumentNullException();
             var (encoded, lengths) = EncodeLzw(image.image.Select(v => (byte)float.Round(float.Clamp(v, 0, 1) * byte.MaxValue)));

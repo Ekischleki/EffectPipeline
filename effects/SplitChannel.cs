@@ -13,9 +13,9 @@ namespace EffectPipeline.Effects
 {
     internal class SplitChannel : IEffect
     {
-        public IEnumerable<(string, Type)> Inputs => [("Image", Type.RGBImage)];
+        public IEnumerable<(string, Type)> Inputs => [("Image", typeof(RGBImage))];
 
-        public IEnumerable<(string, Type)> Outputs => [("Channel 0", Type.GreyscaleImage), ("Channel 1", Type.GreyscaleImage), ("Channel 2", Type.GreyscaleImage)];
+        public IEnumerable<(string, Type)> Outputs => [("Channel 0", typeof(GreyscaleImage)), ("Channel 1", typeof(GreyscaleImage)), ("Channel 2", typeof(GreyscaleImage))];
 
         public Property[] Properties => [DropdownProperty.ColorspaceDropdown];
 
@@ -85,9 +85,9 @@ namespace EffectPipeline.Effects
         }
 
 
-        public IInstance[] applyEffect(IInstance[] inputs, Property[] properties)
+        public async Task<IInstance[]> applyEffect(IInstance[] inputs, IPropertyState[] properties)
         {
-            DropdownProperty colorspaceDropdown = (DropdownProperty)properties[0];
+            DropdownPropertyState colorspaceDropdown = (DropdownPropertyState)properties[0];
             var colorspace = (DropdownProperty.Colorspace)colorspaceDropdown.Selected;
             RGBImage? image = (RGBImage)inputs[0];
             if(image == null)

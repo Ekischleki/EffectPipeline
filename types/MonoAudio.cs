@@ -10,7 +10,6 @@ namespace EffectPipeline.types
 {
     public class MonoAudio : IInstance
     {
-        public Type Type => Type.MonoAudio;
         public int sampleRate { get; }
         public float[] samples { get; }
 
@@ -25,16 +24,7 @@ namespace EffectPipeline.types
             return RGBImage.WhiteImage(1, 1);
         }
 
-        public bool SupportInto(Type type) => type switch { _ => false };
-
-        public IInstance Into(Type type)
-        {
-            switch (type)
-            {
-                default:
-                    throw new NotImplementedException();
-            }
-        }
+       
 
     }
 }

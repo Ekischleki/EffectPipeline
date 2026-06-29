@@ -13,15 +13,7 @@ namespace EffectPipeline
         public IEnumerable<(string, Type)> Inputs { get; }
 
         public IEnumerable<(string, Type)> Outputs { get; }
-        public IInstance[] applyEffect(IInstance?[] inputs, Property[] properties);
+        public Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties);
         public Property[] Properties { get; }
-    }
-
-    public enum Type
-    {
-        Mask,
-        RGBImage,
-        GreyscaleImage,
-        MonoAudio,
     }
 }
