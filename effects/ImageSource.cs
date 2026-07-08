@@ -15,7 +15,7 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Source Image", typeof(RGBImage))];
 
-        public Property[] Properties => [new DropdownProperty(["Adhd mix", "Aquarelle", "Consider", "Sheets", "Spooky", "Tree", "Color theory", "Quantized Roses", "Gay test", "Fireworks"], "Image")];
+        public Property[] Properties => [new DropdownProperty(["Adhd mix", "Aquarelle", "Consider", "Sheets", "Spooky", "Tree", "Color theory", "Quantized Roses", "Gay test", "Fireworks", "Covverrr", "Covverrrflipped", "Mask"], "Image")];
 
 
         public string SelectedToName(int selected) => selected switch
@@ -30,6 +30,9 @@ namespace EffectPipeline.Effects
             7 => "Roses.png",
             8 => "Gay Test.png",
             9 => "Fireworks.png",
+            10 => "covverrr.png",
+            11 => "covverrrflipped.png",
+            12 => "mask.png",
             _ => "Consider.png"
         };
 
