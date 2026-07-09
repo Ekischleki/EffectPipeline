@@ -7,6 +7,7 @@ using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
 using Pupilmonium.Framework;
+using SixLabors.ImageSharp.Formats.Png;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace EffectPipeline.gameObjects
 {
@@ -88,7 +90,16 @@ namespace EffectPipeline.gameObjects
         //public override Vector2 ContainerPosition { get => position; protected set { } }
         protected override void Update()
         {
-            if(keyboard.ReleasedKey((SDL2.SDL.SDL_Keycode)'a'))
+            if (keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LCTRL) && keyboard.ClickingKey((SDL2.SDL.SDL_Keycode)'s'))
+            {
+                var dateTime = DateTime.Now;
+                var location = $"./exported/{dateTime.Year:0000}{dateTime.Month:00}{dateTime.Day:00}{dateTime.Hour:00}{dateTime.Minute:00}{dateTime.Second:00}{dateTime.Millisecond:000}{dateTime.Nanosecond:000}.png";
+                if (!TrySaveOutput(location))
+                {
+                    defaultLogger.Error("Couldn't save output image");
+                }
+            }
+            if (keyboard.ReleasedKey((SDL2.SDL.SDL_Keycode)'a'))
             {
                 ShowSearch();
             } else if (keyboard.ClickingKey(SDL2.SDL.SDL_Keycode.SDLK_ESCAPE) || !((IContainer)node_search).InContainer(mouse.Position))
@@ -99,6 +110,57 @@ namespace EffectPipeline.gameObjects
             {
                 node_search.search_text_elem.text.Text = "";
             }
+        }
+        private bool TrySaveOutput(string location)
+        {
+            if (!Directory.Exists(location)) {
+                try
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(location)));
+                } catch (Exception ex)
+                {
+                    defaultLogger.Warn($"Couldn't create path: {ex}");
+                    return false;
+                }
+            }
+            var outputImage = manager.OutputImage;
+            if (outputImage == null)
+            {
+                defaultLogger.Warn($"Output image doesn't exist right now");
+                return false;
+            }
+
+            var image = new SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgb24>(outputImage.width, outputImage.height);
+            for (int x = 0; x < outputImage.width; x++)
+            {
+                for (int y = 0; y < outputImage.height; y++)
+                {
+                    var i = y * outputImage.width + x;
+                    byte r = (byte)float.Clamp(outputImage.red[i] * 255, 0f, 255f);
+                    byte g = (byte)float.Clamp(outputImage.green[i] * 255, 0f, 255f);
+                    byte b = (byte)float.Clamp(outputImage.blue[i] * 255, 0f, 255f);
+
+
+                    image[x, y] = new(r, g, b);
+                }
+            }
+
+            FileStream file;
+
+            try
+            {
+                file = new FileStream(location, FileMode.CreateNew);
+            }
+            catch (Exception ex)
+            {
+                defaultLogger.Warn($"Couldn't create file: {ex}");
+                return false;
+            }
+
+
+            image.Save(file, new PngEncoder());
+
+            return true;
         }
     }
 

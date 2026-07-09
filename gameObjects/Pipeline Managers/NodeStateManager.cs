@@ -45,7 +45,10 @@ namespace EffectPipeline.gameObjects
     public class NodeStateManager : GameObject
     {
         internal NodeState OutputNodeState { get; private set; }
-        internal ManagedTexture? OutputImage { get; private set; }
+
+        private RGBImage? outputImage;
+        internal RGBImage? OutputImage { get => this.outputImage; private set { outputImage = value; OutputImageTexture = outputImage?.ToTexture(Game.Canvas); } }
+        internal ManagedTexture? OutputImageTexture { get; private set; }
 
         protected Dictionary<Node, NodeState> nodes = [];
         protected Node output_node = null!;
@@ -247,7 +250,7 @@ namespace EffectPipeline.gameObjects
                 }
                 else
                 {
-                    OutputImage = image.ToTexture(Game.Canvas);
+                    OutputImage = image;
                 }
                 return [];
             }

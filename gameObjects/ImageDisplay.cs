@@ -61,7 +61,7 @@ namespace EffectPipeline.gameObjects
                 } else
                 {
                     Rotation = 0;
-                    RenderTexture = node_canvas.manager.OutputImage;
+                    RenderTexture = node_canvas.manager.OutputImageTexture;
                 }
             }
         }
