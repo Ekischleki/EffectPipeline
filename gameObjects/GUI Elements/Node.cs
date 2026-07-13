@@ -106,12 +106,10 @@ namespace EffectPipeline.gameObjects
         {
             position = offset;
 
-            Size *= 1.02f;
         }
 
         protected override void OnRelease()
         {
-            Size /= 1.02f;
             position += camera.Cam_mouse_pos - mouseDragStart!.Value;
             offset = position;
         }
