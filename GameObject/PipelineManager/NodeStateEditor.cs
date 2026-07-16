@@ -74,7 +74,7 @@ namespace EffectPipeline.GameObjects.PipelineManagers
             foreach (var n in Nodes)
             {
                 //If there exists a path from the connection to the end, we cannot make the end dependent on the connection
-                if (manager.ContainsPathTo(nodeState, n.state)) continue;
+                //if (manager.ContainsPathTo(nodeState, n.state)) continue;
 
 
                 foreach (var guiP in n.outputs)
@@ -106,7 +106,7 @@ namespace EffectPipeline.GameObjects.PipelineManagers
             foreach (var n in Nodes)
             {
                 //If there exists a path from the connection to the end, we cannot make the end dependent on the connection
-                if (manager.ContainsPathTo(nodeState, n.state)) continue;
+                //if (manager.ContainsPathTo(nodeState, n.state)) continue; //Currently broken
 
 
                 foreach (var guiP in n.inputs)

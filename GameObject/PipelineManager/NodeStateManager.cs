@@ -356,15 +356,8 @@ namespace EffectPipeline.GameObjects.PipelineManagers
                     return false;
                 }
 
-                int i = -1;
-                foreach(var _ in start.effect.Inputs)
+                foreach(var connection in getIncomingConnections(start))
                 {
-                    i++;
-                    if(!connection_ends.TryGetValue(new Parameter(start, i), out Connection? connection))
-                    {
-                        continue;
-                    }
-
                     if (ContainsPathTo(connection.end.Node, destination, visited))
                     {
                         return true;
