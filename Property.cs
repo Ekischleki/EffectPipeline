@@ -1,5 +1,6 @@
 ﻿using EffectPipeline.gameObjects;
 using Pandemonium.Engine.GameObjectStuff;
+using SimpleBinaryFormat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,10 @@ namespace EffectPipeline
 {
     public abstract class Property : GUIElement
     {
-        public abstract string Save();
-        public abstract bool TryLoad(string val);
+        public abstract bool TryLoad(IPropertyState val);
 
         public abstract IPropertyState GetPropertyState();
     }
-    public interface IPropertyState { }
+    public interface IPropertyState : ISerializable { }
 
 }

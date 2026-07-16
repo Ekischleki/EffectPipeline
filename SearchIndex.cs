@@ -11,7 +11,7 @@ namespace EffectPipeline
         IEnumerable<IEffectSearch> effects;
         internal SearchIndex(IEnumerable<IEffectSearch> effects) { this.effects = effects; }
 
-        public IEnumerable<(string, IEffect)> Search(string query)
+        public IEnumerable<(string, IEffect, IEffectSearch)> Search(string query)
         {
             query = query.Trim();
             var elements = query.Split(' ');
@@ -42,10 +42,10 @@ namespace EffectPipeline
                             score += 4;
                         }
                     }
-                    return (score, effectSearch.Title, effectSearch.CreateEffect());
+                    return (score, effectSearch.Title, effectSearch.CreateEffect(), effectSearch);
                 }).ToList();
             searched_effects.Sort((a, b) => b.score.CompareTo(a.score));
-            return searched_effects.Select(x => (x.Title, x.Item3));
+            return searched_effects.Select(x => (x.Title, x.Item3, x.effectSearch));
         }
     }
 
