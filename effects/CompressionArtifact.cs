@@ -1,4 +1,4 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using System;
 using System.Collections;
@@ -9,10 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace EffectPipeline.effects
+namespace EffectPipeline.Effects
 {
     internal class CompressionArtifact : IEffect
     {
+        public string Title => "LZW Glitches";
         public IEnumerable<(string, Type)> Inputs => [("Image", typeof(GreyscaleImage))];
 
         public IEnumerable<(string, Type)> Outputs => [("Image", typeof(GreyscaleImage))];
@@ -226,10 +227,7 @@ namespace EffectPipeline.effects
 
     internal class CompressionArtifactSearch : IEffectSearch
     {
-        public string Title => "LZW Glitches";
-
         public IEnumerable<string> Tags => ["compression", "glitch"];
-
         public IEffect CreateEffect() => new CompressionArtifact();
     }
 }

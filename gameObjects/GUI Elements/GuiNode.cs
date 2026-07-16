@@ -1,6 +1,7 @@
 ﻿using EffectPipeline.Effects;
-using EffectPipeline.gameObjects.GUI_Elements;
+using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.GameObjects;
+using EffectPipeline.GameObjects.PipelineManagers;
 using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
@@ -14,28 +15,26 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.gameObjects
+namespace EffectPipeline.GameObjects.GUIElements
 {
-    public class Node : GUIElement
+    public class GuiNode : GUIElement
     {
         [DependencyCache(InteractionType.Upload)]
-        internal Node parentNode;
+        internal GuiNode parentNode;
         [DependencyCache(InteractionType.Download)]
-        internal NodeStateManager manager = null!;
-        public Node(IEffect effect, string title, IEffectSearch? origin) 
+        internal NodeStateEditor editor = null!;
+        public GuiNode(NodeState state) 
         {
-            originSearch = origin?.GetType();
             parentNode = this;
-            this.effect = effect;
-            title_text = title;
-            properties = effect.Properties;
+            this.state = state;
+            title_text = state.effect.Title;
+            properties = state.effect.Properties;
         }
         const int HEIGHT_PER_PARAM = 20;
         internal string title_text;
-        internal IEffect effect;
-        internal Type? originSearch;
-        internal List<Parameter> inputs = [];
-        internal List<Parameter> outputs = [];
+        internal readonly NodeState state;
+        internal List<GuiParameter> inputs = [];
+        internal List<GuiParameter> outputs = [];
         internal int width;
         internal int height;
         internal TextGameObject title = null!;
@@ -61,21 +60,24 @@ namespace EffectPipeline.gameObjects
                 Text = title_text,
             };
             float prop_offset = 20.0f;
-            foreach (var property in properties)
+            for (int j = 0; j < state.property_state.Length; j++)
             {
+                var propertyState = state.property_state[j];
+                var property = properties[j];
                 property.anchor = IPositioning.TopCenter;
                 property.origin = IPositioning.TopCenter;
                 AddChildSpawnQueue(property, prop => {
                     height += (int)((IContainer)prop).ContainerSize.Y + 5;
                     prop.offset = new(0, prop_offset);
                     prop_offset += (int)prop.ContainerSize.Y + 5;
+                    property.TryLoad(propertyState);
                 });
             }
             float y = -15;
             int i = 0;
-            foreach (var input in effect.Inputs)
+            foreach (var input in state.effect.Inputs)
             {
-                Parameter param = new () { parentNode = this, is_input = true, name = input.Item1, offset = new Vector2(0, y), type = input.Item2, index = i };
+                GuiParameter param = new () { parentNode = this, is_input = true, name = input.Item1, offset = new Vector2(0, y), type = input.Item2, index = i };
                 inputs.Add(param);
                 y -= HEIGHT_PER_PARAM;
                 AddChildSpawnQueue(param);
@@ -83,9 +85,9 @@ namespace EffectPipeline.gameObjects
             }
             y = -15;
             i = 0;
-            foreach (var output in effect.Outputs)
+            foreach (var output in state.effect.Outputs)
             {
-                Parameter param = new () { parentNode = this,  is_input = false, name = output.Item1, offset = new Vector2(0, y), type = output.Item2, index = i };
+                GuiParameter param = new () { parentNode = this,  is_input = false, name = output.Item1, offset = new Vector2(0, y), type = output.Item2, index = i };
                 outputs.Add(param);
                 y -= HEIGHT_PER_PARAM;
                 AddChildSpawnQueue(param);
@@ -121,14 +123,14 @@ namespace EffectPipeline.gameObjects
         {
             Vector2 new_offset = camera.Cam_mouse_pos - mouseDragStart!.Value;
             offset = position + new_offset;
-            if(effect is not ImageOutput && (
+            if(state.effect is not ImageOutput && (
                 mouse.MouseEvent.HasFlag(MouseEvent.Right) ||
                 keyboard.ClickingKey(SDL2.SDL.SDL_Keycode.SDLK_BACKSPACE) || 
                 keyboard.ClickingKey(SDL2.SDL.SDL_Keycode.SDLK_ESCAPE) ||
                 keyboard.ClickingKey(SDL2.SDL.SDL_Keycode.SDLK_DELETE)
                 ))
             {
-                manager.DeleteNode(this);
+                editor.DeleteNode(this);
             }
         }
 

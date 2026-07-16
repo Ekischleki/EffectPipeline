@@ -10,6 +10,8 @@ namespace EffectPipeline.Effects
 {
     internal class Replace : IEffect
     {
+        public string Title => "Replace";
+
         public IEnumerable<(string, Type)> Inputs => [("Image a", typeof(RGBImage)), ("Image b", typeof(RGBImage)), ("Mask", typeof(Mask))];
 
         public IEnumerable<(string, Type)> Outputs => [("Merged image", typeof(RGBImage))];
@@ -49,9 +51,6 @@ namespace EffectPipeline.Effects
     internal class ReplaceSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["replace", "fuse", "merge", "image", "mask"];
-
-        public string Title => "Replace";
-
         public IEffect CreateEffect() => new Replace();
     }
 }

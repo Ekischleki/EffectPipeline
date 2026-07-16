@@ -11,12 +11,13 @@ namespace EffectPipeline
         IEnumerable<IEffectSearch> effects;
         internal SearchIndex(IEnumerable<IEffectSearch> effects) { this.effects = effects; }
 
-        public IEnumerable<(string, IEffect, IEffectSearch)> Search(string query)
+        public IEnumerable<IEffect> Search(string query)
         {
             query = query.Trim();
             var elements = query.Split(' ');
             var searched_effects = effects.Select(effectSearch =>
                 {
+                    var effect = effectSearch.CreateEffect();
                     int score = 0;
                     foreach (var element in elements)
                     {
@@ -32,9 +33,9 @@ namespace EffectPipeline
                             score--;
                         }
                     }
-                    if (elements.Any(element => effectSearch.Title.Contains(element, StringComparison.InvariantCultureIgnoreCase)))
+                    if (elements.Any(element => effect.Title.Contains(element, StringComparison.InvariantCultureIgnoreCase)))
                     {
-                        if(elements.Any(element => element.Equals(effectSearch.Title, StringComparison.InvariantCultureIgnoreCase)) || query.Trim().Equals(effectSearch.Title, StringComparison.InvariantCultureIgnoreCase))
+                        if(elements.Any(element => element.Equals(effect.Title, StringComparison.InvariantCultureIgnoreCase)) || query.Trim().Equals(effect.Title, StringComparison.InvariantCultureIgnoreCase))
                         {
                             score += 10;
                         } else
@@ -42,16 +43,15 @@ namespace EffectPipeline
                             score += 4;
                         }
                     }
-                    return (score, effectSearch.Title, effectSearch.CreateEffect(), effectSearch);
+                    return (score, effect);
                 }).ToList();
             searched_effects.Sort((a, b) => b.score.CompareTo(a.score));
-            return searched_effects.Select(x => (x.Title, x.Item3, x.effectSearch));
+            return searched_effects.Select(x => x.effect);
         }
     }
 
     public interface IEffectSearch
     {
-        public string Title { get; }
         public IEnumerable<string> Tags { get; }
         public IEffect CreateEffect();
     }

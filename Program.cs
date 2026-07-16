@@ -8,6 +8,7 @@ namespace EffectPipeline
     internal class Program : Game
     {
         public static IReadOnlyList<IEffectSearch> DefaultEffectSearch { get; private set; } = null!;
+        public static IReadOnlyDictionary<Type, IEffect> AllEffects { get; private set; } = null!;
 
         static void Main(string[] args)
         {
@@ -23,6 +24,16 @@ namespace EffectPipeline
         protected override void Init()
         {
             DefaultEffectSearch = PluginLoad.LoadEffectSearches(defaultLogger).ToImmutableList();
+
+            Dictionary<Type, IEffect> allEffects = [];
+            foreach(var effectStearch in DefaultEffectSearch)
+            {
+                var effect = effectStearch.CreateEffect();
+                if(!allEffects.TryAdd(effect.GetType(), effect))
+                {
+                    throw new Exception($"Effect {effect.GetType().Name} has multiple effect search instances which return the same type.");
+                }
+            }
 
             AddFontUpload("std", new FileDataUpload("./assets/fonts"));
             AddTextureUpload("std", new FileDataUpload("./assets/textures"));

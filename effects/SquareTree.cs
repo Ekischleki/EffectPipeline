@@ -1,5 +1,5 @@
 ﻿using EffectPipeline.Effects;
-using EffectPipeline.gameObjects.GUI_Elements;
+using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using System;
 using System.Collections.Generic;
@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.effects
+namespace EffectPipeline.Effects
 {
     internal class SquareTree : IEffect
     {
+        public string Title => "Square Tree";
         private class Tree
         {
             const int MIN_EDGE_LEN = 1;
@@ -135,9 +136,6 @@ namespace EffectPipeline.effects
     internal class SquareTreeSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["Quantize", "cube"];
-
-        public string Title => "Square Tree";
-
         public IEffect CreateEffect() => new SquareTree();
     }
 }

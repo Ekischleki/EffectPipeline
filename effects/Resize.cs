@@ -1,4 +1,4 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
@@ -11,6 +11,8 @@ namespace EffectPipeline.Effects
 {
     internal class Resize : IEffect
     {
+        public string Title => "Rescale Image";
+
         public IEnumerable<(string, Type)> Inputs => [("Input Image", typeof(RGBImage))];
 
         public IEnumerable<(string, Type)> Outputs => [("Resized Image", typeof(RGBImage))];
@@ -24,12 +26,19 @@ namespace EffectPipeline.Effects
             if (inputImage == null)
                 return [new RGBImage(0, 0, [], [], [])];
 
-            int oldWidth = inputImage.width;
-            int oldHeight = inputImage.height;
+            
 
             int newWidth = ((NumberInputPropertyState)properties[0]).Value;
             int newHeight = ((NumberInputPropertyState)properties[1]).Value;
 
+            
+
+            return [ResizeImage(inputImage, newWidth, newHeight)];
+        }
+        public static RGBImage ResizeImage(RGBImage input, int newWidth, int newHeight)
+        {
+            int oldWidth = input.width;
+            int oldHeight = input.height;
             float[] redArray = new float[newWidth * newHeight];
             float[] greenArray = new float[newWidth * newHeight];
             float[] blueArray = new float[newWidth * newHeight];
@@ -42,23 +51,21 @@ namespace EffectPipeline.Effects
                 {
                     int oldJ = (int)Math.Floor(((double)j / (double)newHeight) * (double)oldHeight);
 
-                    redArray[j * newWidth + i] = inputImage.red[oldJ * oldWidth + oldI];
-                    greenArray[j * newWidth + i] = inputImage.green[oldJ * oldWidth + oldI];
-                    blueArray[j * newWidth + i] = inputImage.blue[oldJ * oldWidth + oldI];
+                    redArray[j * newWidth + i] = input.red[oldJ * oldWidth + oldI];
+                    greenArray[j * newWidth + i] = input.green[oldJ * oldWidth + oldI];
+                    blueArray[j * newWidth + i] = input.blue[oldJ * oldWidth + oldI];
                 }
             }
 
-            return [new RGBImage(newWidth, newHeight, redArray, greenArray, blueArray)];
+            return new RGBImage(newWidth, newHeight, redArray, greenArray, blueArray);
         }
     }
+
 
 
     internal class ResizeSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["resize", "rescale", "size", "scale", "aspect ratio"];
-
-        public string Title => "Rescale Image";
-
         public IEffect CreateEffect() => new Resize();
     }
 

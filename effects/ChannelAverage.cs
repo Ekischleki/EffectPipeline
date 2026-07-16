@@ -10,6 +10,8 @@ namespace EffectPipeline.Effects
 {
     internal class ChannelAverage : IEffect
     {
+        public string Title => "Moving Average";
+
         public IEnumerable<(string, Type)> Inputs => [("Image", typeof(GreyscaleImage))];
 
         public IEnumerable<(string, Type)> Outputs => [("Image", typeof(GreyscaleImage))];
@@ -37,9 +39,6 @@ namespace EffectPipeline.Effects
     internal class ChannelAverageSearch : IEffectSearch 
     {
         public IEnumerable<string> Tags => ["average", "distort", "greyscale", "smear", "motion", "blur", "reverb"];
-
-        public string Title => "Moving Average";
-
         public IEffect CreateEffect() => new ChannelAverage();
     }
 }

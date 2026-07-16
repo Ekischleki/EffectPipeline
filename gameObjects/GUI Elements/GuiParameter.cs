@@ -1,4 +1,5 @@
-﻿using EffectPipeline.gameObjects;
+﻿using EffectPipeline.GameObjects;
+using EffectPipeline.GameObjects.PipelineManagers;
 using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
@@ -13,19 +14,19 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.GameObjects
+namespace EffectPipeline.GameObjects.GUIElements
 {
-    public class Parameter : GUIElement
+    public class GuiParameter : GUIElement
     {
         [DependencyCache(InteractionType.Download)]
-        internal NodeStateManager manager = null!;
+        internal NodeStateEditor editor = null!;
         public required bool is_input;
         public required string name;
 
         public required Type type;
         public required int index;
 
-        public required Node parentNode;
+        public required GuiNode parentNode;
 
         [GetFrom(StoreType.PlaceholderTextureStore, "generated/box/red/10/10")]
         internal ManagedTexture texture = null!;
@@ -63,14 +64,14 @@ namespace EffectPipeline.GameObjects
         {
             Size *= 1.02f;
 
-            manager.StartCreatingConnection(this);
+            editor.StartCreatingConnection(this);
         }
 
         protected override void OnRelease()
         {
             Size /= 1.02f;
 
-            manager.TryCreateConnection();
+            editor.TryCreateConnection();
         }
 
 

@@ -11,7 +11,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.gameObjects
+namespace EffectPipeline.GameObjects
 {
     internal class ImageDisplayContainer : GameObject
     {
@@ -42,11 +42,15 @@ namespace EffectPipeline.gameObjects
 
         [GetFrom(StoreType.TextureStore, "std:loading.png")]
         ManagedTexture loading = null!;
+        ManagedTexture? known_texture = null!;
         [GetFrom(Singleton.DeltaTime)]
         protected DeltaTime dt = null!;
         public override void Init()
         {
-            
+            node_canvas.manager.OutputImageChanged += (image) =>
+            {
+                known_texture = image?.ToTexture(Game.Canvas);
+            };
         }
 
         protected override void Update()
@@ -61,7 +65,7 @@ namespace EffectPipeline.gameObjects
                 } else
                 {
                     Rotation = 0;
-                    RenderTexture = node_canvas.manager.OutputImageTexture;
+                    RenderTexture = known_texture;
                 }
             }
         }

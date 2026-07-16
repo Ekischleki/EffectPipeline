@@ -1,5 +1,6 @@
 ﻿using EffectPipeline.Effects;
-using EffectPipeline.gameObjects.GUI_Elements;
+using EffectPipeline.GameObjects.GUIElements;
+using EffectPipeline.GameObjects.PipelineManagers;
 using EffectPipeline.persist;
 using EffectPipeline.types;
 using Pandemonium.Engine;
@@ -18,7 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace EffectPipeline.gameObjects
+namespace EffectPipeline.GameObjects
 {
     public class NodeCanvas : GameObject
     {
@@ -26,6 +27,7 @@ namespace EffectPipeline.gameObjects
             clippingContainer = this;
             canvas = this;
             node_search = new() { height = 400, width = 300, searchIndex = new(Program.DefaultEffectSearch), Show = false, Pause = true, OnSelect = CreateNode, pauseBehavior = PauseBehavior.Inherit, showBehavior = ShowBehavior.Inherit };
+            editor = new(manager);
         }
         [GetFrom(Singleton.Keyboard)]
         Keyboard keyboard = null!;
@@ -40,6 +42,8 @@ namespace EffectPipeline.gameObjects
         
         [DependencyCache(InteractionType.Upload)]
         internal NodeStateManager manager = new();
+        [DependencyCache(InteractionType.Upload)]
+        internal NodeStateEditor editor;
         [DependencyCache(InteractionType.Upload)]
         NodeCanvasCamera camera = new() { pauseBehavior = PauseBehavior.Inherit, showBehavior = ShowBehavior.Inherit };
         private Vector2 size = new(500);
@@ -63,15 +67,15 @@ namespace EffectPipeline.gameObjects
             InitSized();
             clipBehavior = ClipBehavior.Cut;
             camera.WithChildren([
-                manager,
+                editor,
             ]);
             AddChildSpawnQueue([camera, node_search]);
         }
 
-        public void CreateNode(string title, IEffect effect, IEffectSearch origin)
+        public void CreateNode(IEffect effect)
         {
             HideSearch();
-            var node = manager.CreateNode(effect, title, origin);
+            var node = editor.CreateNode(effect);
             GUIElement.Focus = node;
             node.offset = camera.Cam_mouse_pos - new Vector2(30, 5);
         }
@@ -91,6 +95,7 @@ namespace EffectPipeline.gameObjects
         //public override Vector2 ContainerPosition { get => position; protected set { } }
         protected override void Update()
         {
+            /*
             if (keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LCTRL) && keyboard.ClickingKey((SDL2.SDL.SDL_Keycode)'s'))
             {
                 var dateTime = DateTime.Now;
@@ -102,11 +107,11 @@ namespace EffectPipeline.gameObjects
                 var file_location = $"./exported/{dateTime.Year:0000}{dateTime.Month:00}{dateTime.Day:00}{dateTime.Hour:00}{dateTime.Minute:00}{dateTime.Second:00}{dateTime.Millisecond:000}{dateTime.Nanosecond:000}.ep";
                 var stream = new FileStream(file_location, FileMode.CreateNew);
                 Task.Run(() => Project.SaveTo(stream, this.manager));
-            }
+            }*/
             if (keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LCTRL) && keyboard.ClickingKey((SDL2.SDL.SDL_Keycode)'l'))
             {
-                var stream = new FileStream("C:\\Users\\ewolf\\repos\\EffectPipeline\\bin\\Debug\\net8.0\\exported\\20260715012459076900.ep", FileMode.Open);
-                Task.Run(() => Project.LoadFrom(stream, this.manager));
+                //var stream = new FileStream("C:\\Users\\ewolf\\repos\\EffectPipeline\\bin\\Debug\\net8.0\\exported\\20260715012459076900.ep", FileMode.Open);
+                //Task.Run(() => Project.LoadFrom(stream, this.manager));
 
             }
             if (keyboard.ReleasedKey((SDL2.SDL.SDL_Keycode)'a'))
@@ -121,7 +126,7 @@ namespace EffectPipeline.gameObjects
                 node_search.search_text_elem.text.Text = "";
             }
         }
-        private bool TrySaveOutput(string location)
+        private async Task<bool> TrySaveOutput(string location)
         {
             if (!Directory.Exists(location)) {
                 try
@@ -140,20 +145,7 @@ namespace EffectPipeline.gameObjects
                 return false;
             }
 
-            var image = new SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgb24>(outputImage.width, outputImage.height);
-            for (int x = 0; x < outputImage.width; x++)
-            {
-                for (int y = 0; y < outputImage.height; y++)
-                {
-                    var i = y * outputImage.width + x;
-                    byte r = (byte)float.Clamp(outputImage.red[i] * 255, 0f, 255f);
-                    byte g = (byte)float.Clamp(outputImage.green[i] * 255, 0f, 255f);
-                    byte b = (byte)float.Clamp(outputImage.blue[i] * 255, 0f, 255f);
-
-
-                    image[x, y] = new(r, g, b);
-                }
-            }
+            
 
             FileStream file;
 
@@ -168,7 +160,9 @@ namespace EffectPipeline.gameObjects
             }
 
 
-            image.Save(file, new PngEncoder());
+            await outputImage.SaveTo(file);
+
+            file.Dispose();
 
             return true;
         }

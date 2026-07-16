@@ -1,4 +1,5 @@
-﻿using Pandemonium.Engine;
+﻿using EffectPipeline.GameObjects.PipelineManagers;
+using Pandemonium.Engine;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
@@ -12,16 +13,15 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static EffectPipeline.gameObjects.GUI_Elements.DropdownProperty;
 
-namespace EffectPipeline.gameObjects.GUI_Elements
+namespace EffectPipeline.GameObjects.GUIElements
 {
     internal class FloatInputProperty : Property
     {
         [DependencyCache(InteractionType.Download)]
-        internal Node parentNode = null!;
+        internal GuiNode parentNode = null!;
         [DependencyCache(InteractionType.Download)]
-        internal NodeStateManager manager = null!;
+        internal NodeStateEditor editor = null!;
 
         static char[] digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
@@ -81,7 +81,7 @@ namespace EffectPipeline.gameObjects.GUI_Elements
 
                 Value = float.Clamp(inputtedNumber, Min, Max);
                 display.Text = Value.ToString();
-                manager.UpdatePropertyState(parentNode, this, GetPropertyState());
+                editor.UpdatePropertyState(parentNode, this, GetPropertyState());
             }
             catch (FormatException)
             {

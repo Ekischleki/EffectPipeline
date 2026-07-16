@@ -1,4 +1,4 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
@@ -13,6 +13,8 @@ namespace EffectPipeline.Effects
 {
     internal class MergeChannel : IEffect
     {
+        public string Title => "Channel Merge";
+
         public IEnumerable<(string, Type)> Inputs => [("Channel 0", typeof(GreyscaleImage)), ("Channel 1", typeof(GreyscaleImage)), ("Channel 2", typeof(GreyscaleImage))];
 
         public IEnumerable<(string, Type)> Outputs => [("Image", typeof(RGBImage))];
@@ -129,9 +131,6 @@ namespace EffectPipeline.Effects
         internal class MergeChannelSearch : IEffectSearch
         {
             public IEnumerable<string> Tags => ["channel", "merge", "rgb", "hsv", "oklab", "image"];
-
-            public string Title => "Channel Merge";
-
             public IEffect CreateEffect() => new MergeChannel();
         }
 }

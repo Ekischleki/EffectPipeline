@@ -1,5 +1,5 @@
 ﻿using EffectPipeline.Effects;
-using EffectPipeline.gameObjects.GUI_Elements;
+using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using System;
 using System.Collections.Generic;
@@ -7,10 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.effects
+namespace EffectPipeline.Effects
 {
     internal class WhiteNoise : IEffect
     {
+        public string Title => "White Noise";
+
         public IEnumerable<(string, Type)> Inputs => [];
 
         public IEnumerable<(string, Type)> Outputs => [("Noise", typeof(GreyscaleImage))];
@@ -46,9 +48,6 @@ namespace EffectPipeline.effects
     internal class WhiteNoiseSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["noise", "white", "random", "static"];
-
-        public string Title => "White Noise";
-
         public IEffect CreateEffect() => new WhiteNoise();
     }
 }

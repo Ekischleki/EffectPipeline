@@ -1,4 +1,4 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
@@ -13,6 +13,8 @@ namespace EffectPipeline.Effects
 {
     internal class SplitChannel : IEffect
     {
+        public string Title => "Channel Split";
+
         public IEnumerable<(string, Type)> Inputs => [("Image", typeof(RGBImage))];
 
         public IEnumerable<(string, Type)> Outputs => [("Channel 0", typeof(GreyscaleImage)), ("Channel 1", typeof(GreyscaleImage)), ("Channel 2", typeof(GreyscaleImage))];
@@ -108,9 +110,6 @@ namespace EffectPipeline.Effects
     internal class SplitChannelSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["channel", "split", "converted", "hsv", "oklab", "image", "channels"];
-
-        public string Title => "Channel Split";
-
         public IEffect CreateEffect() => new SplitChannel();
     }
 }

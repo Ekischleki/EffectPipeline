@@ -1,6 +1,6 @@
 ﻿using EffectPipeline.Effects;
-using EffectPipeline.gameObjects;
-using EffectPipeline.gameObjects.GUI_Elements;
+using EffectPipeline.GameObjects;
+using EffectPipeline.GameObjects.GUIElements;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.GameSceneStuff;
 using Pandemonium.Engine.Positioning;

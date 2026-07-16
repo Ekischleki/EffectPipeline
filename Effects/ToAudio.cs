@@ -1,4 +1,4 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
@@ -11,6 +11,8 @@ namespace EffectPipeline.Effects
 {
     internal class ToAudio : IEffect
     {
+        public string Title => "Image To Mono Audio";
+
         public IEnumerable<(string, Type)> Inputs => [("Image Input", typeof(GreyscaleImage))];
 
         public IEnumerable<(string, Type)> Outputs => [("Audio Output", typeof(MonoAudio))];
@@ -35,9 +37,6 @@ namespace EffectPipeline.Effects
     internal class ToAudioSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["audio", "mono", "to audio", "sample", "linearize"];
-
-        public string Title => "Image To Mono Audio";
-
         public IEffect CreateEffect() => new ToAudio();
     }
 

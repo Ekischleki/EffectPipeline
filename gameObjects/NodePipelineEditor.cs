@@ -9,7 +9,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.gameObjects
+namespace EffectPipeline.GameObjects
 {
     internal class NodePipelineEditor : GameObject
     {

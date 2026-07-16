@@ -1,4 +1,5 @@
-﻿using Pandemonium.Engine;
+﻿using EffectPipeline.GameObjects.PipelineManagers;
+using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
@@ -13,14 +14,14 @@ using System.Text;
 using System.Threading.Tasks;
 using static Wacton.Unicolour.RgbModels;
 
-namespace EffectPipeline.gameObjects.GUI_Elements
+namespace EffectPipeline.GameObjects.GUIElements
 {
     public class DropdownProperty : Property
     {
         [DependencyCache(InteractionType.Download)]
-        internal Node parentNode = null!;
+        internal GuiNode parentNode = null!;
         [DependencyCache(InteractionType.Download)]
-        internal NodeStateManager manager = null!;
+        internal NodeStateEditor editor = null!;
 
         internal enum Colorspace
         {
@@ -158,7 +159,7 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                     {
                         Open(false);
                         Selected = i;
-                        manager.UpdatePropertyState(parentNode, this, GetPropertyState());
+                        editor.UpdatePropertyState(parentNode, this, GetPropertyState());
                         SetOpenClosedText();
                         return;
                     }

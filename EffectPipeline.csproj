@@ -44,4 +44,10 @@
 	</ItemGroup>
 
 
+
+	<ItemGroup>
+	  <Folder Include="plugins\" />
+	</ItemGroup>
+
+
 </Project>

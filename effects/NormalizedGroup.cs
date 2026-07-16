@@ -1,4 +1,4 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
@@ -12,6 +12,8 @@ namespace EffectPipeline.Effects
     //Maybe turn this into an "Equal split" which creates an n-Mask where each part of the mask has equal representation
     internal class NormalizedGroup : IEffect
     {
+        public string Title => "Normalized Group";
+
         public IEnumerable<(string, Type)> Inputs => [("Image", typeof(GreyscaleImage))];
 
         public IEnumerable<(string, Type)> Outputs => [("Mask", typeof(Mask))];
@@ -58,9 +60,6 @@ namespace EffectPipeline.Effects
     internal class NormalizedGroupSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["normalized", "group", "mask"];
-
-        public string Title => "Normalized Group";
-
         public IEffect CreateEffect() => new NormalizedGroup();
     }
 }

@@ -1,4 +1,4 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
@@ -16,6 +16,7 @@ namespace EffectPipeline.Effects
         public IEnumerable<(string, Type)> Outputs => [("Output Audio", typeof(MonoAudio))];
 
         public Property[] Properties => [new FloatInputProperty("Time") { Value = .25f, Min = 0.0001f, Max = float.MaxValue }, new FloatInputProperty("Decay") { Value = .75f, Min = 0, Max = float.MaxValue }];
+        public string Title => "Audio Delay";
 
 
         public async Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties)
@@ -57,9 +58,6 @@ namespace EffectPipeline.Effects
     internal class AudioDelaySearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["delay", "audio", "echo", "audio delay", "repeat"];
-
-        public string Title => "Audio Delay";
-
         public IEffect CreateEffect() => new AudioDelay();
     }
 }

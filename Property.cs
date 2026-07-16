@@ -1,4 +1,5 @@
-﻿using EffectPipeline.gameObjects;
+﻿using EffectPipeline.GameObjects;
+using EffectPipeline.GameObjects.GUIElements;
 using Pandemonium.Engine.GameObjectStuff;
 using SimpleBinaryFormat;
 using System;

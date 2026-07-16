@@ -1,4 +1,5 @@
-﻿using Pandemonium.Engine;
+﻿using EffectPipeline.GameObjects.PipelineManagers;
+using Pandemonium.Engine;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
@@ -12,14 +13,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.gameObjects.GUI_Elements
+namespace EffectPipeline.GameObjects.GUIElements
 {
     internal class NumberInputProperty : Property
     {
         [DependencyCache(InteractionType.Download)]
-        internal Node parentNode = null!;
+        internal GuiNode parentNode = null!;
         [DependencyCache(InteractionType.Download)]
-        internal NodeStateManager manager = null!;
+        internal NodeStateEditor manager = null!;
 
         static char[] digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 

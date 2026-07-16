@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.gameObjects.GUI_Elements
+namespace EffectPipeline.GameObjects.GUIElements
 {
     internal class NodeSearch : GameObject
     {
@@ -22,7 +22,7 @@ namespace EffectPipeline.gameObjects.GUI_Elements
         [DependencyCache(InteractionType.Upload)]
         NodeSearch clippingContainer;
         [DependencyCache(InteractionType.Upload)]
-        internal required Action<string, IEffect, IEffectSearch> OnSelect;
+        internal required Action<IEffect> OnSelect;
         internal SearchTextElement search_text_elem = null!;
         List<SearchElement> searchElements = [];
         internal NodeSearch()
@@ -48,12 +48,12 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                 }
                 searchElements.Clear();
                 int y = 30;
-                foreach (var (title, effect, origin) in searchIndex.Search(text))
+                foreach (var effect in searchIndex.Search(text))
                 {
                     SearchElement elem;
-                    searchElements.Add(elem = new() { Title = title, OnClicked = () => {
-                        defaultLogger.Info($"Clicked {title}: {effect}");
-                        OnSelect(title, effect, origin);
+                    searchElements.Add(elem = new() { Title = effect.Title, OnClicked = () => {
+                        defaultLogger.Info($"Clicked {effect.Title}: {effect}");
+                        OnSelect(effect);
                     },
                     anchor = IPositioning.TopCenter,
                     origin = IPositioning.TopCenter,

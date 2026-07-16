@@ -1,4 +1,5 @@
 ﻿using EffectPipeline.GameObjects;
+using EffectPipeline.GameObjects;
 using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
@@ -12,7 +13,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EffectPipeline.gameObjects
+namespace EffectPipeline.GameObjects.GUIElements
 {
     public abstract class GUIElement : GameObject
     {

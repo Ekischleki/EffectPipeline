@@ -1,185 +1,234 @@
 ﻿using EffectPipeline.Effects;
-using EffectPipeline.types;
 using EffectPipeline.GameObjects;
+using EffectPipeline.types;
 using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
-using System.Numerics;
 using Pupilmonium.Framework;
+using SimpleBinaryFormat;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Diagnostics;
 
-namespace EffectPipeline.gameObjects
+namespace EffectPipeline.GameObjects.PipelineManagers
 {
 
-    public class NodeState
+    public class NodeState : ISerializable
     {
-        public NodeState(Node node)
+        public NodeState()
         {
-            incoming_connections = new Connection[node.effect.Inputs.Count()];
-            outgoing_connections = new HashSet<Connection>[node.effect.Outputs.Count()];
-            for(int i = 0; i < outgoing_connections.Length; i++)
-            {
-                outgoing_connections[i] = [];
-            }
-            property_state = node.properties.ToDictionary(x => x, x => x.GetPropertyState());
+            effect = null!;
+            property_state = null!;
             cancellationTokenSource = new();
         }
-        public Connection?[] incoming_connections;
-        public HashSet<Connection>[] outgoing_connections;
-        public Dictionary<Property, IPropertyState> property_state;
+        public NodeState(IEffect effect)
+        {
+            this.effect = effect;
+            property_state = effect.Properties.Select(x => x.GetPropertyState()).ToArray();
+            cancellationTokenSource = new();
+        }
+        public IEffect effect;
+        public IPropertyState[] property_state;
+        public Vector2 position;
+        //The version of the assigned task or of the data the assigned task produced.
+
+
         public IInstance[]? cached_data = null;
         public Exception? last_exception = null;
-        //The version of the assigned task or of the data the assigned task produced.
         public CancellationTokenSource cancellationTokenSource;
-        public Task<IInstance[]?>? assigned_task = null!;
-    }
+        public Task<IInstance[]?>? assigned_task = null;
 
-    public class NodeStateManager : GameObject
-    {
-        internal NodeState OutputNodeState { get; private set; }
-
-        private RGBImage? outputImage;
-        internal RGBImage? OutputImage { get => this.outputImage; private set { outputImage = value; OutputImageTexture = outputImage?.ToTexture(Game.Canvas); } }
-        internal ManagedTexture? OutputImageTexture { get; private set; }
-
-        protected Dictionary<Node, NodeState> nodes = [];
-        protected Node output_node = null!;
-        public IReadOnlyCollection<Node> Nodes { get => nodes.Keys; }
-
-        [GetFrom(Singleton.Mouse)]
-        protected Mouse mouse = null!;
-
-        internal Parameter? ClosestDragging = null;
-        internal float ClosestDist = float.PositiveInfinity;
-
-
-        public NodeStateManager()
+        public async Task WriteToWriter(Writer writer)
         {
-            
+            await writer.WriteString("Effect", effect.GetType().FullName!);
+            await writer.WriteArray("PropertyState", property_state);
+            await writer.WriteFloat("X", position.X);
+            await writer.WriteFloat("Y", position.Y);
         }
 
-        public void UpdatePropertyState(Node parent_node, Property property, IPropertyState new_state)
+        public void FromReader(Region reader)
         {
-            NodeState nodeState;
-            lock(nodes)
+            var effectName = reader.ReadString("Effect");
+            var effect = Program.AllEffects.FirstOrDefault(x => x.Key.FullName == effectName).Value;
+            if (effect == null)
             {
-                nodeState = nodes[parent_node];
+                //All effect information like property state, connections and original effect type will be dropped.
+                this.effect = new EffectOffline();
+            } else
+            {
+                this.effect = effect;
             }
-            lock(nodeState)
+            try
             {
-                nodeState.property_state[property] = new_state;
+                this.property_state = Array.ConvertAll(reader.ReadObjectArr("PropertyState", this.effect.Properties.Select(prop => prop.GetPropertyState().GetType()).ToArray()), x => (IPropertyState)x);
+            }
+            catch (Exception)
+            {
+                //This happens when there's a mismatch between expected amount of property states vs parsed amount of property states, i.e. on Effect change. 
+                //In this case we revert all properties to their default value.
+                property_state = this.effect.Properties.Select(prop => prop.GetPropertyState()).ToArray();
+            }
+            float x = reader.ReadFloat("X");
+            float y = reader.ReadFloat("Y");
+            position = new(x, y);
+        }
+    }
+
+    public record Parameter : ISerializable
+    {
+        public NodeState Node;
+        public int Idx;
+
+        public Type Type(bool isOutput)
+        {
+            var typeEnum = isOutput ? Node.effect.Outputs : Node.effect.Inputs;
+            //I dont care
+            return typeEnum.ToArray()[Idx].Item2;
+        }
+        public Parameter()
+        {
+            Node = null!;
+            Idx = 0;
+        }
+
+        public Parameter(NodeState node, int parameterIdx)
+        {
+            Node = node;
+            Idx = parameterIdx;
+        }
+
+        public void FromReader(Region reader)
+        {
+            Node = reader.ReadObject<NodeState>("Node");
+            Idx = reader.ReadInt("Idx");
+        }
+
+        public async Task WriteToWriter(Writer writer)
+        {
+            await writer.WriteObject("Node", Node);
+            await writer.WriteInt("Idx", Idx);
+        }
+    }
+    public class Connection : ISerializable
+    {
+        public Parameter start;
+        public Parameter end;
+
+        public Connection(Parameter start, Parameter end)
+        {
+            this.start = start;
+            this.end = end;
+        }
+
+        public Connection(NodeState start, int startIdx, NodeState end,  int endIdx) 
+            : this(new Parameter(start, startIdx), new Parameter(end, endIdx))
+        {}
+
+        public Connection()
+        {
+            start = null!;
+            end = null!;
+        }
+
+        public void FromReader(Region reader)
+        {
+            start = reader.ReadObject<Parameter>("Start");
+            end = reader.ReadObject<Parameter>("End");
+        }
+
+        public async Task WriteToWriter(Writer writer)
+        {
+            await writer.WriteObject("Start", start);
+            await writer.WriteObject("End", end);
+        }
+    }
+
+    public class NodeStateManager : ISerializable
+    {
+        private List<NodeState> Nodes = [];
+
+        internal IReadOnlyList<NodeState> NodeStates => Nodes.AsReadOnly();
+        //Maps an input parameter to the connection it is connected to. This is useful because every input Parameter can only have one connection associated with it.
+        private Dictionary<Parameter, Connection> connection_ends = [];
+        private RGBImage? outputImage;
+
+        public IEnumerable<Connection> connections => connection_ends.Values;
+
+        internal NodeState OutputNodeState { get; private set; }
+
+        internal RGBImage? OutputImage
+        {
+            get => outputImage; 
+            private set
+            {
+                outputImage = value;
+                OutputImageChanged?.Invoke(value);
+            }
+        }
+
+        public event Action<RGBImage?>? OutputImageChanged;
+        public NodeStateManager()
+        {
+            OutputNodeState = CreateNode(new ImageOutput());
+        }
+
+        public void UpdatePropertyState(NodeState parent_node, int property, IPropertyState new_state)
+        {
+            lock(parent_node)
+            {
+                parent_node.property_state[property] = new_state;
             }
             StartUpdateCacheAt(parent_node);
         }
-        internal Node CreateNode(IEffect effect, string title, IEffectSearch? origin, Action<Node>? callback = null)
+        internal NodeState CreateNode(IEffect effect)
         {
-            if(OutputNode != null && effect is ImageOutput)
-            {
-                throw new ArgumentException("There can only be one end node per canvas");
-            }
-            var node = new Node(effect, title, origin);
-            nodes.Add(node, new(node));
-            AddChildSpawnQueue(node, _ => {
-                StartUpdateCacheAt(node);
-                callback?.Invoke(node);
-            });
+            var node = new NodeState(effect);
+            Nodes.Add(node);
+            StartUpdateCacheAt(node);
             return node;
         }
 
-
-        protected override void Update()
+        internal void DeleteNode(NodeState node)
         {
-            ClosestDragging = null;
-            ClosestDist = float.PositiveInfinity;
-        }
+            lock(Nodes)
+            {       
+                
 
-        public override void Init()
-        {
-            OutputNode = CreateNode(new ImageOutput(), "Output", null);
-            OutputNodeState = nodes[OutputNode];
-        }
-
-
-        protected override void Render()
-        {
-            base.Render();
-
-            if (isCreatingConnection)
-            {
-                Draw.DrawLine(referenceParameter!.ContainerPosition + new Vector2(5, 5), mouse.Position, (byte)float.Clamp(7 * AbsoluteSize, 0, 255), System.Drawing.Color.White, Game.Canvas);
+                Nodes.Remove(node);
             }
         }
 
 
-
-        bool isCreatingConnection = false;
-        Parameter? referenceParameter = null;
-        
-        public void StartCreatingConnection(Parameter par)
+        private void StartUpdateCacheAt(NodeState node, HashSet<NodeState>? visited = null)
         {
-            isCreatingConnection = true;
-            referenceParameter = par;
-        }
-
-        internal void DeleteNode(Node node)
-        {
-            NodeState state;
-            lock(nodes)
+            visited ??= [];
+            if (visited.Contains(node))
             {
-                state = nodes[node];
-            
-                AddDespawnQueue(node);
-                lock(state)
-                {
-                    foreach (var output in state.outgoing_connections.SelectMany(n => n))
-                    {
-                        //This doesnt create a deadlock since this thread is allowed to lock the state as often as it needs
-                        DeleteConnection(output);
-                    }
-                    foreach (var input in state.incoming_connections.Where(input => input != null))
-                    {                
-                        DeleteConnection(input!);
-                    }
-                }
-
-                nodes.Remove(node);
+                return;
             }
-        }
-
-
-        private void StartUpdateCacheAt(Node node, HashSet<Node>? visited = null)
-        {
+            visited.Add(node);
             //Only one update cache cycle may be started at a time.
-            lock(this) lock (nodes)
+            lock(this)
             {
-                visited ??= [];
-                if (visited.Contains(node))
+                lock (node)
                 {
-                    return;
-                }
-                visited.Add(node);
-                NodeState nodeState = nodes[node];
-                lock (nodeState)
-                {
-                    nodeState.cancellationTokenSource.Cancel();
-                    nodeState.cancellationTokenSource = new();
-                    var token = nodeState.cancellationTokenSource.Token;
+                    node.cancellationTokenSource.Cancel();
+                    node.cancellationTokenSource = new();
+                    var token = node.cancellationTokenSource.Token;
                     var task = Task.Run(() => UpdateCacheAt(node, token), token);
-                    nodeState.assigned_task = task;
-                    foreach (var output in nodeState.outgoing_connections)
+                    node.assigned_task = task;
+                    foreach (var con in getOutgoingConnections(node))
                     {
-                        foreach (var con in output)
-                        {
-                            StartUpdateCacheAt(con.end.parentNode);
-                        }
+                        StartUpdateCacheAt(con.end.Node);
                     }
                 }
             }
@@ -190,56 +239,43 @@ namespace EffectPipeline.gameObjects
         /// 
         /// </summary>
         /// <param name="node">Node whose inputs have changed</param>
-        internal async Task<IInstance[]?> UpdateCacheAt(Node node, CancellationToken token)
+        internal async Task<IInstance[]?> UpdateCacheAt(NodeState node, CancellationToken token)
         {
-            NodeState state;
             IInstance?[] inputs;
             Task?[] dependencies;
             IPropertyState[] properties;
-            lock (nodes)
+            Connection[] incomingConnections;
+            lock (node)
             {
-                state = nodes[node];
-                lock (state)
+                properties = (IPropertyState[])node.property_state.Clone();
+
+                incomingConnections = getIncomingConnections(node).ToArray();
+
+                dependencies = new Task[incomingConnections.Length];
+                inputs = new IInstance?[node.effect.Inputs.Count()];
+            }
+
+            foreach (var input in incomingConnections)
+            {
+                var input_parameter = input.end;
+                var originating_param = input.start;
+                //We depend on this node
+                var dependent_node_state = originating_param.Node;
+                lock (dependent_node_state)
                 {
-                    properties = new IPropertyState[node.properties.Length];
-                    //Fetch properties
-                    int i = 0;
-                    foreach (var property in node.properties)
+                    var dependent_task = dependent_node_state.assigned_task;
+                    if (dependent_task is null)
                     {
-                        properties[i] = state.property_state[property];
-                        i++;
+                        continue;
                     }
-
-                    dependencies = new Task[state.incoming_connections.Length];
-                    inputs = new IInstance?[state.incoming_connections.Length];
-
-                    var effect_inputs = node.effect.Inputs.ToArray();
-
-                    foreach (var input in state.incoming_connections)
+                    dependencies[input_parameter.Idx] = Task.Run(async () =>
                     {
-                        if (input is null)
-                        {
-                            continue;
-                        }
-                        var input_parameter = input.end;
-                        var originating_param = input.start;
-                        //We depend on this node
-                        var dependent_node_state = nodes[originating_param.parentNode];
-                        lock (dependent_node_state)
-                        {
-                            var dependent_task = dependent_node_state.assigned_task;
-                            if (dependent_task is null)
-                            {
-                                continue;
-                            }
-                            dependencies[input_parameter.index] = Task.Run(async () =>
-                            {
-                                inputs[input_parameter.index] = (await dependent_task)?[originating_param.index];
-                            }, token);
-                        }
-                    }
+                        inputs[input_parameter.Idx] = (await dependent_task)?[originating_param.Idx];
+                    }, token);
                 }
             }
+                
+            
             foreach (var dependency in dependencies.Where(d => d is not null))
             {
                 await dependency!;
@@ -265,37 +301,50 @@ namespace EffectPipeline.gameObjects
             }
             catch (Exception ex)
             {
-                defaultLogger.Error($"Exception happened in {node.GetType().Name}: {ex}");
                 last_exception = ex;
             }
-            lock(state)
+            lock(node)
             {
                 token.ThrowIfCancellationRequested();
-                state.cached_data = node_outputs;
-                state.last_exception = last_exception;
+                node.cached_data = node_outputs;
+                node.last_exception = last_exception;
             }
             return node_outputs;
         }
 
-        public void TryCreateConnection()
+        IEnumerable<Connection> getIncomingConnections(NodeState state)
         {
-            if (referenceParameter == null) return;
-
-            if (referenceParameter.is_input) TryCreateConnectionFromInput(referenceParameter);
-            else TryCreateConnectionFromOutput(referenceParameter);
-
-            isCreatingConnection = false;
-            referenceParameter = null;
+            lock(connection_ends)
+            {
+                int i = 0;
+                foreach (var _ in state.effect.Inputs)
+                {
+                    if (connection_ends.TryGetValue(new Parameter(state, i), out Connection? connection))
+                    {
+                        yield return connection;
+                    }
+                    i++;
+                }
+            }
         }
 
-        bool ContainsPathTo(Node start, Node destination, HashSet<Node>? visited = null)
+        IEnumerable<Connection> getOutgoingConnections(NodeState state)
         {
-            NodeState state;
-            lock(nodes)
+            lock (connection_ends)
             {
-                state = nodes[start];
+                foreach (var connection in connection_ends.Values)
+                {
+                    if (connection.start.Node == state)
+                    {
+                        yield return connection;
+                    }
+                }
             }
-            lock(state)
+        }
+
+        public bool ContainsPathTo(NodeState start, NodeState destination, HashSet<NodeState>? visited = null)
+        {
+            lock(start) lock(connection_ends)
             {
                 visited ??= [];
                 if (start == destination)
@@ -306,9 +355,17 @@ namespace EffectPipeline.gameObjects
                 {
                     return false;
                 }
-                foreach(Connection connection in state.outgoing_connections.SelectMany(p => p))
+
+                int i = -1;
+                foreach(var _ in start.effect.Inputs)
                 {
-                    if (ContainsPathTo(connection.end.parentNode, destination, visited))
+                    i++;
+                    if(!connection_ends.TryGetValue(new Parameter(start, i), out Connection? connection))
+                    {
+                        continue;
+                    }
+
+                    if (ContainsPathTo(connection.end.Node, destination, visited))
                     {
                         return true;
                     }
@@ -317,9 +374,11 @@ namespace EffectPipeline.gameObjects
             }
         }
 
-        bool CouldMakeConnection(Parameter end, Parameter start)
+
+
+        public bool CouldMakeConnection(Parameter end, Parameter start)
         {
-            if (!start.type.IsAssignableTo(end.type))
+            if (!start.Type(true).IsAssignableTo(end.Type(false)))
             {
                 return false;
             }
@@ -327,110 +386,35 @@ namespace EffectPipeline.gameObjects
             return true;
         }
 
-        void TryCreateConnectionFromInput(Parameter inputPar)
-        {
-            Node parent = inputPar.parentNode;
-
-            lock(nodes)
-            {
-                var state = nodes[parent];
-                
-                Parameter? outputPar = null;
-
-                foreach (var n in Nodes)
-                {
-                    //If there exists a path from the connection to the end, we cannot make the end dependent on the connection
-                    if (ContainsPathTo(parent, n)) continue;
-
-
-                    foreach (var p in parent.outputs)
-                    {
-                        if (((IContainer)p).InContainer(mouse.Position) && CouldMakeConnection(inputPar, p) )
-                            outputPar = p;
-                    }
-                }
-
-                if (outputPar == null)
-                {
-                    defaultLogger.Warn("Creation from connection failed!");
-                    return;
-                }
-
-                CreateConnection(inputPar, outputPar);
-            }
-
-        }
-
-        void TryCreateConnectionFromOutput(Parameter outputPar)
-        {
-            Node parent = outputPar.parentNode;
-
-            Parameter? inputPar = null;
-
-            foreach (var n in Nodes)
-            {
-                //If there exists a path from the connection to the end, we cannot make the end dependent on the connection
-                if (ContainsPathTo(n, parent)) continue;
-
-                foreach (var p in n.inputs)
-                {
-                    if (((IContainer)p).InContainer(mouse.Position) && CouldMakeConnection(p, outputPar))
-                        inputPar = p;
-                }
-            }
-
-            if (inputPar == null)
-            {
-                defaultLogger.Warn("Creation from end failed!");
-                return;
-            }
-
-            CreateConnection(inputPar, outputPar);
-        }
-
-
         public void CreateConnection(Parameter end, Parameter start)
         {
-            lock(nodes)
+            var source_state = start.Node;
+            var dest_state = end.Node;
+            lock (source_state) lock (dest_state) lock(connection_ends)
             {
-                var source_state = nodes[start.parentNode];
-                var dest_state = nodes[end.parentNode];
-                lock (source_state) lock (dest_state)
-                {
-                    var connection = new Connection(end, start);
-                    AddChildSpawnQueue(connection);
-                    if (connection == null)
-                    {
-                        defaultLogger.Warn("Creation failed!");
-                        return;
-                    }
-
-                    source_state.outgoing_connections[start.index].Add(connection);
-                    dest_state.incoming_connections[end.index] = connection;
-
-                    StartUpdateCacheAt(end.parentNode);
-                }
+                var connection = new Connection(start, end);
+                connection_ends[end] = connection;
             }
+            StartUpdateCacheAt(end.Node);
         }
-
-
         public void DeleteConnection(Connection connection)
         {
-            NodeState start_state;
-            NodeState end_state;
-            lock(nodes)
+            lock(connection_ends)
             {
-                start_state = nodes[connection.start.parentNode];
-                end_state = nodes[connection.end.parentNode];
+                connection_ends.Remove(connection.end);
             }
-            lock (start_state) lock (end_state)
-            {
-                start_state.outgoing_connections[connection.start.index].Remove(connection);
-                end_state.incoming_connections[connection.end.index] = null;
-                StartUpdateCacheAt(connection.end.parentNode);
-                AddDespawnQueue(connection);
-            }
+            StartUpdateCacheAt(connection.end.Node);
         }
 
+        public async Task WriteToWriter(Writer writer)
+        {
+            await writer.WriteArray("Connections", connection_ends.Values.ToArray());
+            await writer.WriteArray("Nodes", Nodes.ToArray());
+        }
+
+        public void FromReader(Region reader)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

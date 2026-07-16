@@ -10,6 +10,8 @@ namespace EffectPipeline.Effects
 {
     internal class InverseFourierTransform : IEffect
     {
+        public string Title => "Inverse Fourier Transform";
+
         public IEnumerable<(string, Type)> Inputs => [("Real", typeof(GreyscaleImage)), ("Imag", typeof(GreyscaleImage))];
 
         public IEnumerable<(string, Type)> Outputs => [("Real", typeof(GreyscaleImage)), ("Imag", typeof(GreyscaleImage))];
@@ -36,9 +38,6 @@ namespace EffectPipeline.Effects
     internal class InverseFourierTransformSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["inverse", "complex", "fourier transform", "fft", "frequency", "frequencies"];
-
-        public string Title => "Inverse Fourier Transform";
-
         public IEffect CreateEffect() => new InverseFourierTransform();
     }
 }

@@ -10,6 +10,8 @@ namespace EffectPipeline.Effects
 {
     internal class ImageOutput : IEffect
     {
+        public string Title => "Output";
+
         public IEnumerable<(string, Type)> Inputs => [("Output Image", typeof(RGBImage))];
 
         public IEnumerable<(string, Type)> Outputs => [];

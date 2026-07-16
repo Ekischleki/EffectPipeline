@@ -1,4 +1,4 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
@@ -15,6 +15,7 @@ namespace EffectPipeline.Effects
 
         public IEnumerable<(string, Type)> Outputs => [("Output Image", typeof(GreyscaleImage))];
 
+        public string Title => "Mono Audio To Image";
 
         public Property[] Properties => [new NumberInputProperty("Width") { Value = 256, Min = 1, Max = Int32.MaxValue }, new NumberInputProperty("Height") { Value = 256, Min = 1, Max = Int32.MaxValue }];
 
@@ -49,9 +50,6 @@ namespace EffectPipeline.Effects
     internal class AudioToImageSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["image", "greyscale", "audio", "convert", "from"];
-
-        public string Title => "Mono Audio To Image";
-
         public IEffect CreateEffect() => new AudioToImage();
 
     }

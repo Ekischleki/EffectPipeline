@@ -1,6 +1,7 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.GameObjects.GUIElements;
 using Pupilmonium.Framework;
 using Pupilmonium.Framework.Assets;
+using SixLabors.ImageSharp.Formats.Png;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -84,6 +85,10 @@ namespace EffectPipeline.types
         public static RGBImage LoadFrom(string path)
         {
             var data = File.ReadAllBytes(path);
+            return LoadFrom(data);
+        }
+        public static RGBImage LoadFrom(byte[] data)
+        {
             using var surface = new ImageAsset(data);
             var pixels = surface.GetPixels();
             var w = surface.Surface.w; var h = surface.Surface.h;
@@ -100,7 +105,24 @@ namespace EffectPipeline.types
             }
             return new(w, h, red, green, blue);
         }
+        public Task SaveTo(Stream stream)
+        {
+            var image = new SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgb24>(width, height);
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    var i = y * width + x;
+                    byte r = (byte)float.Clamp(red[i] * 255, 0f, 255f);
+                    byte g = (byte)float.Clamp(green[i] * 255, 0f, 255f);
+                    byte b = (byte)float.Clamp(blue[i] * 255, 0f, 255f);
 
-    
+
+                    image[x, y] = new(r, g, b);
+                }
+            }
+            return image.SaveAsync(stream, new PngEncoder());
+        }
+
     }
 }

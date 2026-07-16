@@ -1,4 +1,4 @@
-﻿using EffectPipeline.gameObjects.GUI_Elements;
+﻿using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Wacton.Unicolour;
 
-namespace EffectPipeline.effects
+namespace EffectPipeline.Effects
 {
     internal class Arithmetic : IEffect
     {
@@ -16,6 +16,8 @@ namespace EffectPipeline.effects
         public IEnumerable<(string, Type)> Outputs => [("Res", typeof(GreyscaleImage))];
 
         public Property[] Properties => [new DropdownProperty(["Add", "Sub", "Mul"], "Operation")];
+
+        public string Title => "Arithmetic";
 
         public async Task<IInstance[]> applyEffect(IInstance[] inputs, IPropertyState[] properties)
         {
@@ -49,9 +51,6 @@ namespace EffectPipeline.effects
     internal class AdditionSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["image", "operator", "addition", "add", "arithmetic", "sub", "subtraction", "mul", "multiplication"];
-
-        public string Title => "Arithmetic";
-
         public IEffect CreateEffect() => new Arithmetic();
     }
 
