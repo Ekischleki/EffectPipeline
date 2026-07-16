@@ -1,4 +1,5 @@
 ﻿using EffectPipeline.Effects;
+using EffectPipeline.gameObjects.GUI_Elements;
 using EffectPipeline.GameObjects;
 using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
@@ -21,8 +22,9 @@ namespace EffectPipeline.gameObjects
         internal Node parentNode;
         [DependencyCache(InteractionType.Download)]
         internal NodeStateManager manager = null!;
-        public Node(IEffect effect, string title) 
+        public Node(IEffect effect, string title, IEffectSearch? origin) 
         {
+            originSearch = origin?.GetType();
             parentNode = this;
             this.effect = effect;
             title_text = title;
@@ -31,6 +33,7 @@ namespace EffectPipeline.gameObjects
         const int HEIGHT_PER_PARAM = 20;
         internal string title_text;
         internal IEffect effect;
+        internal Type? originSearch;
         internal List<Parameter> inputs = [];
         internal List<Parameter> outputs = [];
         internal int width;
@@ -47,7 +50,7 @@ namespace EffectPipeline.gameObjects
         internal Vector2 position;
         public override void Init()
         {
-            position = offset;
+            offset = position;
 
             title = new TextGameObject()
             {

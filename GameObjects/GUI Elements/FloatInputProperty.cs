@@ -4,6 +4,7 @@ using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
 using Pupilmonium.Framework;
 using SDL2;
+using SimpleBinaryFormat;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -123,34 +124,42 @@ namespace EffectPipeline.gameObjects.GUI_Elements
             }
         }
 
-        public override string Save()
-        {
-            return Value.ToString();
-        }
 
-        public override bool TryLoad(string val)
+        public override bool TryLoad(IPropertyState val)
         {
-            if (float.TryParse(val, out var parsed))
+            if (val is FloatInputPropertyState state)
             {
-                if(!float.IsFinite(parsed))
+                if (state.Value < Min || state.Value > Max)
                 {
                     return false;
                 }
-                if (parsed < Min || parsed > Max)
-                {
-                    return false;
-                }
-                Value = parsed;
+                Value = state.Value;
                 display.Text = Value.ToString();
                 return true;
+
             }
             return false;
         }
 
         public override IPropertyState GetPropertyState() => new FloatInputPropertyState(Value);
     }
-    public class FloatInputPropertyState(float value) : IPropertyState
+    public class FloatInputPropertyState : IPropertyState
     {
-        public float Value = value;
+        public float Value { get; private set; }
+
+        public FloatInputPropertyState(float value)
+        {
+            Value = value;
+        }
+        public FloatInputPropertyState() { }
+        public void FromReader(Region reader)
+        {
+            Value = reader.ReadFloat("Value");
+        }
+
+        public async Task WriteToWriter(Writer writer)
+        {
+            await writer.WriteFloat("Value", Value);
+        }
     }
 }

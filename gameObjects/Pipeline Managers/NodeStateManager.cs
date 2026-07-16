@@ -79,15 +79,18 @@ namespace EffectPipeline.gameObjects
             }
             StartUpdateCacheAt(parent_node);
         }
-        internal Node CreateNode(IEffect effect, string title)
+        internal Node CreateNode(IEffect effect, string title, IEffectSearch? origin, Action<Node>? callback = null)
         {
-            if(output_node != null && effect is ImageOutput)
+            if(OutputNode != null && effect is ImageOutput)
             {
                 throw new ArgumentException("There can only be one end node per canvas");
             }
-            var node = new Node(effect, title);
+            var node = new Node(effect, title, origin);
             nodes.Add(node, new(node));
-            AddChildSpawnQueue(node, _ => StartUpdateCacheAt(node));
+            AddChildSpawnQueue(node, _ => {
+                StartUpdateCacheAt(node);
+                callback?.Invoke(node);
+            });
             return node;
         }
 
@@ -100,8 +103,8 @@ namespace EffectPipeline.gameObjects
 
         public override void Init()
         {
-            output_node = CreateNode(new ImageOutput(), "Output");
-            OutputNodeState = nodes[output_node];
+            OutputNode = CreateNode(new ImageOutput(), "Output", null);
+            OutputNodeState = nodes[OutputNode];
         }
 
 

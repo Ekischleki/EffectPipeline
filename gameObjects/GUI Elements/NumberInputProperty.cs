@@ -4,6 +4,7 @@ using Pandemonium.Engine.SetupAttributes;
 using Pandemonium.Engine.UIOI;
 using Pupilmonium.Framework;
 using SDL2;
+using SimpleBinaryFormat;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -113,22 +114,18 @@ namespace EffectPipeline.gameObjects.GUI_Elements
                 }
             }
         }
-        public override string Save()
+        public override bool TryLoad(IPropertyState val)
         {
-            return Value.ToString();
-        }
-
-        public override bool TryLoad(string val)
-        {
-            if (int.TryParse(val, out var parsed))
-            { 
-                if (parsed < Min || parsed > Max)
+            if (val is NumberInputPropertyState state)
+            {
+                if (state.Value < Min || state.Value > Max)
                 {
                     return false;
                 }
-                Value = parsed;
+                Value = state.Value;
                 display.Text = Value.ToString();
                 return true;
+
             }
             return false;
         }
@@ -136,8 +133,24 @@ namespace EffectPipeline.gameObjects.GUI_Elements
         public override IPropertyState GetPropertyState() => new NumberInputPropertyState(Value);
     }
 
-    public class NumberInputPropertyState(int value) : IPropertyState
+    public class NumberInputPropertyState : IPropertyState
     {
-        public int Value = value;
+        public int Value { get; private set; }
+
+        public NumberInputPropertyState(int value)
+        {
+            Value = value;
+        }
+        public NumberInputPropertyState() { }
+
+        public void FromReader(Region reader)
+        {
+            Value = reader.ReadInt("Value");
+        }
+
+        public async Task WriteToWriter(Writer writer)
+        {
+            await writer.WriteInt("Value", Value);
+        }
     }
 }

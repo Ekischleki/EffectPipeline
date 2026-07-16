@@ -1,5 +1,6 @@
 ﻿using EffectPipeline.Effects;
 using EffectPipeline.gameObjects.GUI_Elements;
+using EffectPipeline.persist;
 using EffectPipeline.types;
 using Pandemonium.Engine;
 using Pandemonium.Engine.GameObjectStuff;
@@ -67,10 +68,10 @@ namespace EffectPipeline.gameObjects
             AddChildSpawnQueue([camera, node_search]);
         }
 
-        public void CreateNode(string title, IEffect effect)
+        public void CreateNode(string title, IEffect effect, IEffectSearch origin)
         {
             HideSearch();
-            var node = manager.CreateNode(effect, title);
+            var node = manager.CreateNode(effect, title, origin);
             GUIElement.Focus = node;
             node.offset = camera.Cam_mouse_pos - new Vector2(30, 5);
         }
@@ -98,6 +99,15 @@ namespace EffectPipeline.gameObjects
                 {
                     defaultLogger.Error("Couldn't save output image");
                 }
+                var file_location = $"./exported/{dateTime.Year:0000}{dateTime.Month:00}{dateTime.Day:00}{dateTime.Hour:00}{dateTime.Minute:00}{dateTime.Second:00}{dateTime.Millisecond:000}{dateTime.Nanosecond:000}.ep";
+                var stream = new FileStream(file_location, FileMode.CreateNew);
+                Task.Run(() => Project.SaveTo(stream, this.manager));
+            }
+            if (keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LCTRL) && keyboard.ClickingKey((SDL2.SDL.SDL_Keycode)'l'))
+            {
+                var stream = new FileStream("C:\\Users\\ewolf\\repos\\EffectPipeline\\bin\\Debug\\net8.0\\exported\\20260715012459076900.ep", FileMode.Open);
+                Task.Run(() => Project.LoadFrom(stream, this.manager));
+
             }
             if (keyboard.ReleasedKey((SDL2.SDL.SDL_Keycode)'a'))
             {

@@ -3,10 +3,12 @@ using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.Positioning;
 using Pandemonium.Engine.SetupAttributes;
 using Pupilmonium.Framework;
+using SimpleBinaryFormat;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using static Wacton.Unicolour.RgbModels;
@@ -178,38 +180,41 @@ namespace EffectPipeline.gameObjects.GUI_Elements
             
         }
 
-        public override string Save()
+        public override bool TryLoad(IPropertyState val)
         {
-            return Selected.ToString();
-        }
-
-        public override bool TryLoad(string val)
-        {
-            if (int.TryParse(val, out var parsed))
+            if(val is DropdownPropertyState state)
             {
-                if (parsed < 0 || parsed > properties.Length)
+                if (state.Selected < 0 || state.Selected > properties.Length)
                 {
                     return false;
                 }
-                Selected = parsed;
+                Selected = state.Selected;
                 SetOpenClosedText();
                 return true;
             }
             return false;
         }
 
-        public override IPropertyState GetPropertyState() => new DropdownPropertyState(this.Selected, this.properties[this.Selected]);
+        public override IPropertyState GetPropertyState() => new DropdownPropertyState(this.Selected);
     }
 
     public class DropdownPropertyState : IPropertyState
     {
-        public readonly int Selected;
-        public readonly string Title;
+        public int Selected { get; private set; }
 
-        public DropdownPropertyState(int selected, string title)
+        public DropdownPropertyState(int selected)
         {
             Selected = selected;
-            Title = title;
+        }
+        public DropdownPropertyState() { }
+        public void FromReader(Region reader)
+        {
+            Selected = reader.ReadInt("Selected");
+        }
+
+        public async Task WriteToWriter(Writer writer)
+        {
+            await writer.WriteInt("Selected", Selected);
         }
     }
 }
