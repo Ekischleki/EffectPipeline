@@ -9,11 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectPipelineCoding", "Eff
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBinaryFormat", "SimpleBinaryFormat\SimpleBinaryFormat.csproj", "{45215F3D-2F06-0EA7-C803-BD752DFAC8CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDL2-CS", "SDL2-CS\SDL2-CS.csproj", "{85480198-8711-4355-830E-72FD794AD3F6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pandemonium.Engine", "PandemoniumEngine\Pandemonium.Engine.csproj", "{C74DD31C-3689-3A78-CA97-046BB7DC0580}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pupilmonium.Framework", "PupilmoniumFramework\Pupilmonium.Framework.csproj", "{620DE83F-FAAF-8594-A0A2-852E69A95F92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDL2-CS", "SDL2-CS\SDL2-CS.csproj", "{85480198-8711-4355-830E-72FD794AD3F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,6 @@ Global
 		{45215F3D-2F06-0EA7-C803-BD752DFAC8CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45215F3D-2F06-0EA7-C803-BD752DFAC8CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45215F3D-2F06-0EA7-C803-BD752DFAC8CC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{85480198-8711-4355-830E-72FD794AD3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{85480198-8711-4355-830E-72FD794AD3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{85480198-8711-4355-830E-72FD794AD3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85480198-8711-4355-830E-72FD794AD3F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C74DD31C-3689-3A78-CA97-046BB7DC0580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C74DD31C-3689-3A78-CA97-046BB7DC0580}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C74DD31C-3689-3A78-CA97-046BB7DC0580}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{620DE83F-FAAF-8594-A0A2-852E69A95F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{620DE83F-FAAF-8594-A0A2-852E69A95F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{620DE83F-FAAF-8594-A0A2-852E69A95F92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85480198-8711-4355-830E-72FD794AD3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85480198-8711-4355-830E-72FD794AD3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85480198-8711-4355-830E-72FD794AD3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85480198-8711-4355-830E-72FD794AD3F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
