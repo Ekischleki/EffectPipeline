@@ -1,6 +1,3 @@
 [submodule "PandemoniumEngine"]
 	path = PandemoniumEngine
 	url = https://github.com/Ekischleki/PandemoniumEngine.git
-[submodule "PupilmoniumFramework"]
-	path = PupilmoniumFramework
-	url = https://github.com/Ekischleki/PupilmoniumFramework.git
