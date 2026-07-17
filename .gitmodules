@@ -4,3 +4,6 @@
 [submodule "PupilmoniumFramework"]
 	path = PupilmoniumFramework
 	url = https://github.com/Ekischleki/PupilmoniumFramework.git
+[submodule "SDL2"]
+	path = SDL2
+	url = https://github.com/Ekischleki/SDL2-CS.git
