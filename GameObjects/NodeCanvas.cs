@@ -23,12 +23,16 @@ namespace EffectPipeline.GameObjects
 {
     public class NodeCanvas : GameObject
     {
-        internal NodeCanvas() {
+
+        internal NodeCanvas(NodeStateManager manager)
+        {
             clippingContainer = this;
             canvas = this;
             node_search = new() { height = 400, width = 300, searchIndex = new(Program.DefaultEffectSearch), Show = false, Pause = true, OnSelect = CreateNode, pauseBehavior = PauseBehavior.Inherit, showBehavior = ShowBehavior.Inherit };
+            this.manager = manager;
             editor = new(manager);
         }
+        internal NodeCanvas() : this(new()) {}
         [GetFrom(Singleton.Keyboard)]
         Keyboard keyboard = null!;
         [GetFrom(Singleton.Mouse)]
@@ -41,7 +45,7 @@ namespace EffectPipeline.GameObjects
         NodeSearch node_search;
         
         [DependencyCache(InteractionType.Upload)]
-        internal NodeStateManager manager = new();
+        internal NodeStateManager manager;
         [DependencyCache(InteractionType.Upload)]
         internal NodeStateEditor editor;
         [DependencyCache(InteractionType.Upload)]
@@ -96,17 +100,7 @@ namespace EffectPipeline.GameObjects
         protected override void Update()
         {
             /*
-            if (keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LCTRL) && keyboard.ClickingKey((SDL2.SDL.SDL_Keycode)'s'))
-            {
-                var dateTime = DateTime.Now;
-                var location = $"./exported/{dateTime.Year:0000}{dateTime.Month:00}{dateTime.Day:00}{dateTime.Hour:00}{dateTime.Minute:00}{dateTime.Second:00}{dateTime.Millisecond:000}{dateTime.Nanosecond:000}.png";
-                if (!TrySaveOutput(location))
-                {
-                    defaultLogger.Error("Couldn't save output image");
-                }
-                var file_location = $"./exported/{dateTime.Year:0000}{dateTime.Month:00}{dateTime.Day:00}{dateTime.Hour:00}{dateTime.Minute:00}{dateTime.Second:00}{dateTime.Millisecond:000}{dateTime.Nanosecond:000}.ep";
-                var stream = new FileStream(file_location, FileMode.CreateNew);
-                Task.Run(() => Project.SaveTo(stream, this.manager));
+            
             }*/
             if (keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LCTRL) && keyboard.ClickingKey((SDL2.SDL.SDL_Keycode)'l'))
             {
@@ -125,46 +119,6 @@ namespace EffectPipeline.GameObjects
             {
                 node_search.search_text_elem.text.Text = "";
             }
-        }
-        private async Task<bool> TrySaveOutput(string location)
-        {
-            if (!Directory.Exists(location)) {
-                try
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(location)));
-                } catch (Exception ex)
-                {
-                    defaultLogger.Warn($"Couldn't create path: {ex}");
-                    return false;
-                }
-            }
-            var outputImage = manager.OutputImage;
-            if (outputImage == null)
-            {
-                defaultLogger.Warn($"Output image doesn't exist right now");
-                return false;
-            }
-
-            
-
-            FileStream file;
-
-            try
-            {
-                file = new FileStream(location, FileMode.CreateNew);
-            }
-            catch (Exception ex)
-            {
-                defaultLogger.Warn($"Couldn't create file: {ex}");
-                return false;
-            }
-
-
-            await outputImage.SaveTo(file);
-
-            file.Dispose();
-
-            return true;
         }
     }
 

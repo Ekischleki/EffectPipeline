@@ -29,6 +29,7 @@ namespace EffectPipeline.GameObjects.GUIElements
             this.state = state;
             title_text = state.effect.Title;
             properties = state.effect.Properties;
+            position = state.position;
         }
         const int HEIGHT_PER_PARAM = 20;
         internal string title_text;
@@ -110,12 +111,14 @@ namespace EffectPipeline.GameObjects.GUIElements
         protected override void OnClick()
         {
             position = offset;
-
+            state.position = position;
         }
 
         protected override void OnRelease()
         {
             position += camera.Cam_mouse_pos - mouseDragStart!.Value;
+            //Doesn't need locking because we're the only one reading it anyways
+            state.position = position;
             offset = position;
         }
 

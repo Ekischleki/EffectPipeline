@@ -17,7 +17,7 @@ namespace EffectPipeline
                 game.Start();
             }
         }
-        protected override GameScene GetStartScene() => new MainScene();
+        protected override GameScene GetStartScene() => new MainMenu();
 
         protected override bool WindowResizable => true;
         protected override bool BlurryScaling => true;
@@ -26,6 +26,7 @@ namespace EffectPipeline
             DefaultEffectSearch = PluginLoad.LoadEffectSearches(defaultLogger).ToImmutableList();
 
             Dictionary<Type, IEffect> allEffects = [];
+            allEffects.Add(typeof(ImageOutput), new ImageOutput());
             foreach(var effectStearch in DefaultEffectSearch)
             {
                 var effect = effectStearch.CreateEffect();
@@ -34,7 +35,7 @@ namespace EffectPipeline
                     throw new Exception($"Effect {effect.GetType().Name} has multiple effect search instances which return the same type.");
                 }
             }
-
+            AllEffects = allEffects.AsReadOnly();
             AddFontUpload("std", new FileDataUpload("./assets/fonts"));
             AddTextureUpload("std", new FileDataUpload("./assets/textures"));
         }

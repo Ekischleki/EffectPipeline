@@ -16,15 +16,15 @@ namespace EffectPipeline.persist
     {
         public NodeStateManager nodeStateManager;
         public RGBImage thumbnail;
-        
+        public string Title;
         public Project() { }
 
-        private Project(NodeStateManager nodeStateManager)
+        private Project(NodeStateManager nodeStateManager, string title)
         {
+            Title = title;
             this.nodeStateManager = nodeStateManager;
 
-            //Lowkey im so funny
-            var image = nodeStateManager.OutputImage ?? RGBImage.LoadFrom($"./assets/textures/Consider.png");
+            var image = nodeStateManager.OutputImage ?? RGBImage.LoadFrom("./assets/textures/unknown.png");
             if (image.width * image.height == 0)
             {
                 image = RGBImage.LoadFrom($"./assets/textures/Consider.png");
@@ -43,9 +43,9 @@ namespace EffectPipeline.persist
 
         }
 
-        public static async Task SaveTo(Stream stream, NodeStateManager state)
+        public static async Task SaveTo(Stream stream, NodeStateManager state, string title)
         {
-            var proj = new Project(state);
+            var proj = new Project(state, title);
             await Writer.EncodeTo(stream, proj);
             await stream.FlushAsync();
         }
@@ -56,6 +56,7 @@ namespace EffectPipeline.persist
 
         public void FromReader(Region reader)
         {
+            Title = reader.ReadString("Title");
             byte[] thumbnailBytes = reader.ReadBytes("Thumbnail");
             thumbnail = RGBImage.LoadFrom(thumbnailBytes);
             nodeStateManager = reader.ReadObject<NodeStateManager>("NodeStateManager");
@@ -63,6 +64,7 @@ namespace EffectPipeline.persist
 
         public async Task WriteToWriter(Writer writer)
         {
+            await writer.WriteString("Title", Title);
             using MemoryStream imageBytes = new();
             await thumbnail.SaveTo(imageBytes);
             //Might come in handy :3

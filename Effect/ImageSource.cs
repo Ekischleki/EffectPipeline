@@ -38,19 +38,16 @@ namespace EffectPipeline.Effects
             _ => "Consider.png"
         };
 
-        // Image reference data idek
-        RGBImage imageData;
 
-        public ImageSource(RGBImage _imageData)
+        public ImageSource()
         {
-            imageData = _imageData;
         }
 
 
         public async Task<IInstance[]> applyEffect(IInstance?[] inputs, IPropertyState[] properties)
         {
             var selected = ((DropdownPropertyState)properties[0]).Selected;
-            imageData = RGBImage.LoadFrom($"./assets/textures/{SelectedToName(selected)}");
+            var imageData = RGBImage.LoadFrom($"./assets/textures/{SelectedToName(selected)}");
             return [imageData];
         }
     }
@@ -59,6 +56,6 @@ namespace EffectPipeline.Effects
     {
         public IEnumerable<string> Tags => ["image", "source", "load", "file", "input"];
         //Temporary
-        public IEffect CreateEffect() => new ImageSource(RGBImage.LoadFrom("./assets/textures/aquarellebg.png"));
+        public IEffect CreateEffect() => new ImageSource();
     }
 }

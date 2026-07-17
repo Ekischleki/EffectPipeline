@@ -1,6 +1,7 @@
 ﻿using EffectPipeline.Effects;
 using EffectPipeline.GameObjects;
 using EffectPipeline.GameObjects.GUIElements;
+using EffectPipeline.GameObjects.PipelineManagers;
 using Pandemonium.Engine.GameObjectStuff;
 using Pandemonium.Engine.GameSceneStuff;
 using Pandemonium.Engine.Positioning;
@@ -77,10 +78,11 @@ namespace EffectPipeline
         }
     }
 
-    internal class MainScene : GameScene
+    internal class MainScene(NodeStateManager manager, string title, string path) : GameScene
     {
-
-
+        NodeStateManager manager = manager;
+        string title = title;
+        string path = path;
         protected override IEnumerable<GameObject> GetStartingGameObjects()
         {
             /*
@@ -90,7 +92,7 @@ namespace EffectPipeline
                 anchor = IPositioning.Center,
             };
             yield break;*/
-            yield return new NodePipelineEditor() {
+            yield return new NodePipelineEditor(manager, title, path) {
                 origin = IPositioning.Center,
                 anchor = IPositioning.Center,
             };

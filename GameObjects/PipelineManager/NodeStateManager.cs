@@ -58,7 +58,9 @@ namespace EffectPipeline.GameObjects.PipelineManagers
         public void FromReader(Region reader)
         {
             var effectName = reader.ReadString("Effect");
-            var effect = Program.AllEffects.FirstOrDefault(x => x.Key.FullName == effectName).Value;
+            var effect = Program.AllEffects.Values.FirstOrDefault(
+                x => x.GetType().FullName == effectName
+                );
             if (effect == null)
             {
                 //All effect information like property state, connections and original effect type will be dropped.
@@ -398,7 +400,7 @@ namespace EffectPipeline.GameObjects.PipelineManagers
             }
             StartUpdateCacheAt(connection.end.Node);
         }
-
+        Connection[]? apply_connections;
         public async Task WriteToWriter(Writer writer)
         {
             await writer.WriteArray("Connections", connection_ends.Values.ToArray());
@@ -407,7 +409,14 @@ namespace EffectPipeline.GameObjects.PipelineManagers
 
         public void FromReader(Region reader)
         {
-            throw new NotImplementedException();
+            apply_connections = reader.ReadObjectArr<Connection>("Connections");
+            Nodes = reader.ReadObjectArr<NodeState>("Nodes").ToList();
+        }
+
+        void ISerializable.Apply()
+        {
+            OutputNodeState = Nodes.First(node => node.effect is ImageOutput);
+            connection_ends = apply_connections!.ToDictionary(x => x.end, x => x);
         }
     }
 }
