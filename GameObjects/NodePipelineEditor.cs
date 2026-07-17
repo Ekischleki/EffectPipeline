@@ -40,6 +40,10 @@ namespace EffectPipeline.GameObjects
 
         protected override void Update()
         {
+            if(keyboard.ClickingKey(SDL2.SDL.SDL_Keycode.SDLK_ESCAPE))
+            {
+                ChangeScene(new MainMenu());
+            }
             if (keyboard.HoldingKey(SDL2.SDL.SDL_Keycode.SDLK_LCTRL))
             {
                 if(keyboard.ClickingKey((SDL2.SDL.SDL_Keycode)'s')) {
