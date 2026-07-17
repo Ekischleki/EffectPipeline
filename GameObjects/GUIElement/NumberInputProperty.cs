@@ -20,7 +20,7 @@ namespace EffectPipeline.GameObjects.GUIElements
         [DependencyCache(InteractionType.Download)]
         internal GuiNode parentNode = null!;
         [DependencyCache(InteractionType.Download)]
-        internal NodeStateEditor manager = null!;
+        internal NodeStateEditor editor = null!;
 
         static char[] digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
@@ -79,7 +79,7 @@ namespace EffectPipeline.GameObjects.GUIElements
 
                 Value = int.Clamp(inputtedNumber, Min, Max);
                 display.Text = Value.ToString();
-                manager.UpdatePropertyState(parentNode, this, GetPropertyState());
+                editor.UpdatePropertyState(parentNode, this, GetPropertyState());
             }
             catch (FormatException)
             {
