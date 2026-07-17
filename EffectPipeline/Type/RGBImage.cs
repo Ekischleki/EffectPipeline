@@ -75,10 +75,9 @@ namespace EffectPipeline.types
 
         public ManagedTexture ToTexture(Canvas canvas)
         {
-            var image_asset = new ImageAsset(width, height);
             var colors = ToColors();
-            image_asset.SetPixels(colors);
-            return new ManagedTexture(canvas, image_asset, true);
+            var pixel_asset = new PixelAsset(colors, width, height);
+            return new ManagedTexture(canvas, pixel_asset);
         }
 
        
