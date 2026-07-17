@@ -18,6 +18,10 @@ namespace EffectPipeline
         private IEnumerable<(string, Project)> EnumerateProjects()
         {
             var path = Path.GetFullPath("./Project");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
             return Directory.EnumerateFiles(path).Select(projectPath => {
                 Project project = null!;
                 try
