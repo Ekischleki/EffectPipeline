@@ -246,13 +246,10 @@ namespace EffectPipeline.GameObjects.PipelineManagers
             IInstance?[] inputs;
             Task?[] dependencies;
             IPropertyState[] properties;
-            Connection[] incomingConnections;
+            Connection[] incomingConnections = getIncomingConnections(node).ToArray();
             lock (node)
             {
                 properties = (IPropertyState[])node.property_state.Clone();
-
-                incomingConnections = getIncomingConnections(node).ToArray();
-
                 dependencies = new Task[incomingConnections.Length];
                 inputs = new IInstance?[node.effect.Inputs.Count()];
             }
