@@ -1,0 +1,9 @@
+[submodule "PandemoniumEngine"]
+	path = PandemoniumEngine
+	url = https://github.com/Ekischleki/PandemoniumEngine.git
+[submodule "PupilmoniumFramework"]
+	path = PupilmoniumFramework
+	url = https://github.com/Ekischleki/PupilmoniumFramework.git
+[submodule "SDL2-CS"]
+	path = SDL2-CS
+	url = https://github.com/flibitijibibo/SDL2-CS.git

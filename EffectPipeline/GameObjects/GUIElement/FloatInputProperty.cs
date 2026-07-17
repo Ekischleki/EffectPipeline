@@ -1,0 +1,165 @@
+﻿using EffectPipeline.GameObjects.PipelineManagers;
+using Pandemonium.Engine;
+using Pandemonium.Engine.Positioning;
+using Pandemonium.Engine.SetupAttributes;
+using Pandemonium.Engine.UIOI;
+using Pupilmonium.Framework;
+using SDL2;
+using SimpleBinaryFormat;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EffectPipeline.GameObjects.GUIElements
+{
+    internal class FloatInputProperty : Property
+    {
+        [DependencyCache(InteractionType.Download)]
+        internal GuiNode parentNode = null!;
+        [DependencyCache(InteractionType.Download)]
+        internal NodeStateEditor editor = null!;
+
+        static char[] digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+        TextGameObject display = null!;
+        [GetFrom(StoreType.FontStore, "std:oxanium.ttf@10")]
+        internal RenderedFont font = null!;
+
+        private string title;
+
+        bool focus = false;
+        public float Value { get; set; }
+        public float Max { get; init; }
+        public float Min { get; init; }
+
+
+        public FloatInputProperty(string title)
+        {
+            this.title = title;
+        }
+
+        public override void Init()
+        {
+            if (Value < Min)
+                Value = Min;
+
+            AddChildSpawnQueue(display = new() {
+                Font = font, 
+                Color = Color.White, 
+                origin = IPositioning.Center, 
+                anchor = IPositioning.Center,
+                Text = Value.ToString()
+            });
+            RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/gray/70/{display.ContentDimensions.h + 10}");
+        }
+
+        protected override void OnClick()
+        {
+            focus = true;
+        }
+
+        protected override void OnDrag()
+        {
+        }
+
+        protected override void OnRelease()
+        {
+        }
+
+        string typingText = "";
+
+        void HandleValueChange()
+        {
+            try
+            {
+                //Implicit Culture shit sucks so much because it turns 0.5 into 5 tspmo
+                float inputtedNumber = float.Parse(typingText, CultureInfo.InvariantCulture);
+
+                Value = float.Clamp(inputtedNumber, Min, Max);
+                display.Text = Value.ToString();
+                editor.UpdatePropertyState(parentNode, this, GetPropertyState());
+            }
+            catch (FormatException)
+            {
+
+            }
+        }
+
+        protected override void Update()
+        {
+            HandleMouseInteraction();
+            if(!((IContainer)this).InContainer(mouse.Position))
+            {
+                if (focus) HandleValueChange();
+
+                typingText = "";
+                focus = false;
+            }
+            if (focus)
+            {
+                for (int i = 0; i < digits.Length; i++)
+                {
+                    if (keyboard.ClickingKey((SDL.SDL_Keycode)digits[i]))
+                    {
+                        typingText += i.ToString();
+                        display.Text = typingText;
+
+                        Console.WriteLine(typingText);
+                    }
+                }
+                if (keyboard.ClickingKey(SDL.SDL_Keycode.SDLK_PERIOD))
+                {
+                    typingText += ".";
+                    display.Text = typingText;
+                }
+                if (typingText != "" && keyboard.ClickingKey(SDL.SDL_Keycode.SDLK_BACKSPACE))
+                { 
+                    typingText.Remove(typingText.Length - 1);
+                    display.Text = typingText;
+                }
+            }
+        }
+
+
+        public override bool TryLoad(IPropertyState val)
+        {
+            if (val is FloatInputPropertyState state)
+            {
+                if (state.Value < Min || state.Value > Max)
+                {
+                    return false;
+                }
+                Value = state.Value;
+                display.Text = Value.ToString();
+                return true;
+
+            }
+            return false;
+        }
+
+        public override IPropertyState GetPropertyState() => new FloatInputPropertyState(Value);
+    }
+    public class FloatInputPropertyState : IPropertyState
+    {
+        public float Value { get; private set; }
+
+        public FloatInputPropertyState(float value)
+        {
+            Value = value;
+        }
+        public FloatInputPropertyState() { }
+        public void FromReader(Region reader)
+        {
+            Value = reader.ReadFloat("Value");
+        }
+
+        public async Task WriteToWriter(Writer writer)
+        {
+            await writer.WriteFloat("Value", Value);
+        }
+    }
+}
