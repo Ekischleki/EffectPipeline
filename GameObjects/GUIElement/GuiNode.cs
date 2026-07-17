@@ -14,6 +14,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace EffectPipeline.GameObjects.GUIElements
 {
@@ -71,7 +72,10 @@ namespace EffectPipeline.GameObjects.GUIElements
                     height += (int)((IContainer)prop).ContainerSize.Y + 5;
                     prop.offset = new(0, prop_offset);
                     prop_offset += (int)prop.ContainerSize.Y + 5;
-                    property.TryLoad(propertyState);
+                    if (property.TryLoad(propertyState))
+                    {
+                        editor.UpdatePropertyState(this, property, propertyState);
+                    }
                 });
             }
             float y = -15;
@@ -103,8 +107,19 @@ namespace EffectPipeline.GameObjects.GUIElements
 
         protected override void Update()
         {
-            RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/white/{width}/{height}");
             HandleMouseInteraction();
+            if (!state.assigned_task?.IsCompleted ?? false)
+            {
+                RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/LightYellow/{width}/{height}");
+            }
+            else if (state.last_exception != null)
+            {
+                RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/LightCoral/{width}/{height}");
+            }
+            else
+            {
+                RenderTexture = (ManagedTexture)GetFrom(StoreType.PlaceholderTextureStore, $"generated/box/white/{width}/{height}");
+            }
         }
 
 
