@@ -1,5 +1,5 @@
-﻿using EffectPipeline.effects;
-using EffectPipeline.gameObjects.GUI_Elements;
+﻿
+using EffectPipeline.GameObjects.GUIElements;
 using EffectPipeline.types;
 using Pandemonium.Engine.GameObjectStuff;
 using System;
@@ -13,6 +13,7 @@ namespace EffectPipeline.Effects
 {
     internal class Desaturate : IEffect
     {
+        public string Title => "Desature";
         public IEnumerable<(string, Type)> Inputs => [("Image", typeof(RGBImage))];
 
         public IEnumerable<(string, Type)> Outputs => [("Desaturated image", typeof(GreyscaleImage))];
@@ -57,9 +58,6 @@ namespace EffectPipeline.Effects
     internal class DesatureSearch : IEffectSearch
     {
         public IEnumerable<string> Tags => ["desat", "desature", "greyscale", "to greyscale", "convert"];
-
-        public string Title => "Desature";
-
         public IEffect CreateEffect() => new Desaturate();
     }
 
