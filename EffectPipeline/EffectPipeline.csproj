@@ -31,7 +31,6 @@
 
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Pandemonium.Engine\Pandemonium.Engine.csproj" />
 	  <ProjectReference Include="..\PandemoniumEngine\Pandemonium.Engine.csproj" />
 	  <ProjectReference Include="..\SimpleBinaryFormat\SimpleBinaryFormat.csproj" />
 	</ItemGroup>
